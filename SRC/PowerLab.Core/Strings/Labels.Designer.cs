@@ -86,5 +86,41 @@ namespace PowerLab.Core.Strings {
                 return ResourceManager.GetString("AppName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 关闭 的本地化字符串。
+        /// </summary>
+        public static string Window_Close {
+            get {
+                return ResourceManager.GetString("Window_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 最大化 的本地化字符串。
+        /// </summary>
+        public static string Window_Maximize {
+            get {
+                return ResourceManager.GetString("Window_Maximize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 最小化 的本地化字符串。
+        /// </summary>
+        public static string Window_Minimize {
+            get {
+                return ResourceManager.GetString("Window_Minimize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 还原 的本地化字符串。
+        /// </summary>
+        public static string Window_Reduction {
+            get {
+                return ResourceManager.GetString("Window_Reduction", resourceCulture);
+            }
+        }
     }
 }

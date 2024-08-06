@@ -106,4 +106,16 @@
   <data name="AppLanguage_en_US" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="Window_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Window_Maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="Window_Minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="Window_Reduction" xml:space="preserve">
+    <value>Reduction</value>
+  </data>
 </root>

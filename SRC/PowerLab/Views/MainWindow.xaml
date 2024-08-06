@@ -2,12 +2,203 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:constants="clr-namespace:PowerLab.Core.Constants;assembly=PowerLab.Core"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:powerlab="http://ui.powerlab.com/"
         xmlns:prism="http://prismlibrary.com/"
         Title="{Binding Source={StaticResource R}, Path=Labels.AppName}"
         Width="525"
         Height="350"
-        prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid>
-        <ContentControl prism:RegionManager.RegionName="{x:Static constants:RegionNames.MainRegion}" />
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Background="{DynamicResource App.Background}"
+        Closing="Window_Closing"
+        Foreground="{DynamicResource App.Foreground}"
+        Loaded="Window_Loaded"
+        ResizeMode="CanResizeWithGrip"
+        StateChanged="Window_StateChanged"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Storyboard x:Key="ShowMask">
+            <DoubleAnimation Storyboard.TargetName="AppContainer"
+                             Storyboard.TargetProperty="(Grid.Effect).Progress"
+                             To="0"
+                             Duration="0:0:.5">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation BeginTime="0:0:.5"
+                             Storyboard.TargetName="AppContainer"
+                             Storyboard.TargetProperty="(Grid.Effect).Progress"
+                             From="0"
+                             To="0"
+                             Duration="0:0:.5" />
+        </Storyboard>
+        <Storyboard x:Key="HideMask">
+            <DoubleAnimation Storyboard.TargetName="AppContainer"
+                             Storyboard.TargetProperty="(Grid.Effect).Progress"
+                             To="100"
+                             Duration="0:0:.5">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
+    <i:Interaction.Behaviors>
+        <powerlab:ClearFocusOnClickBehavior />
+    </i:Interaction.Behaviors>
+
+    <Window.InputBindings>
+        <!--
+            为什么不使用 Applications.NotACommand?
+            不知道为什么，使用 ApplicationCommands.NotACommand 不生效，所以使用了一个程序未进行处理的其他命令
+        -->
+        <KeyBinding Command="{x:Static ApplicationCommands.Paste}" Gesture="Alt+Space" />
+        <KeyBinding Command="{x:Static ApplicationCommands.Paste}" Gesture="Alt+F4" />
+    </Window.InputBindings>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+                      GlassFrameThickness="1"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+    <Grid x:Name="AppContainer">
+        <Grid.Effect>
+            <powerlab:TransitionRippleEffect Progress="100">
+                <powerlab:TransitionRippleEffect.Texture2>
+                    <VisualBrush Visual="{Binding ElementName=ShaderBackground}" />
+                </powerlab:TransitionRippleEffect.Texture2>
+            </powerlab:TransitionRippleEffect>
+        </Grid.Effect>
+        <Grid x:Name="ShaderBackground" Background="{DynamicResource Shader.Brush}" />
+        <Grid x:Name="HomeContainer" Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!-- 内容区域 -->
+            <ContentControl Grid.Row="0"
+                            Grid.RowSpan="2"
+                            prism:RegionManager.RegionName="{x:Static constants:RegionNames.MainRegion}" />
+
+
+            <!-- 提示消息区域 -->
+            <ContentControl Grid.Row="0"
+                            Grid.RowSpan="2"
+                            prism:RegionManager.RegionName="{x:Static constants:RegionNames.MessageRegion}" />
+
+            <!--#region 错误消息区域-->
+            <ContentControl Grid.Row="0"
+                            Height="36"
+                            prism:RegionManager.RegionName="{x:Static constants:RegionNames.ErrorRegion}" />
+            <!--#endregion-->
+
+        </Grid>
+
+        <!--#region 窗口标题栏-->
+        <Grid x:Name="AppTitleContainer"
+              Grid.Row="0"
+              Height="36"
+              VerticalAlignment="Top"
+              Background="Transparent"
+              UseLayoutRounding="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonDown">
+                    <i:CallMethodAction MethodName="DragMove" TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Margin="15,0"
+                           VerticalAlignment="Center"
+                           FontSize="12"
+                           Foreground="{DynamicResource App.Foreground2}"
+                           Text="{Binding Title}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+
+                <Button Width="47"
+                        powerlab:ButtonBrush.ButtonMouseOverBackground="{DynamicResource App.Background2}"
+                        powerlab:ButtonBrush.ButtonPressBackground="{DynamicResource AppTitleButton.Pressed.Background}"
+                        BorderThickness="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource App.Foreground}"
+                        IsTabStop="False"
+                        Style="{DynamicResource AppTitleButtonStyle}"
+                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Minimize}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:ChangePropertyAction PropertyName="WindowState"
+                                                    TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                    Value="Minimized" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Button.Content>
+                        <Viewbox Width="20" Height="20">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M19,13H5V11H19V13Z" Fill="{DynamicResource App.Foreground2}" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button.Content>
+                </Button>
+                <Button x:Name="WindowRestoreButton"
+                        Width="47"
+                        powerlab:ButtonBrush.ButtonMouseOverBackground="{DynamicResource App.Background2}"
+                        powerlab:ButtonBrush.ButtonPressBackground="{DynamicResource AppTitleButton.Pressed.Background}"
+                        BorderThickness="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="{DynamicResource App.Foreground}"
+                        IsTabStop="False"
+                        Style="{DynamicResource AppTitleButtonStyle}"
+                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Reduction}"
+                        Visibility="Collapsed">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:ChangePropertyAction PropertyName="WindowState"
+                                                    TargetObject="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
+                                                    Value="Normal" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Button.Content>
+                        <Viewbox Width="20" Height="20">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" Fill="{DynamicResource App.Foreground2}" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button.Content>
+                </Button>
+                <Button Width="47"
+                        powerlab:ButtonBrush.ButtonMouseOverBackground="{DynamicResource App.Background2}"
+                        powerlab:ButtonBrush.ButtonPressBackground="{DynamicResource AppTitleButton.Pressed.Background}"
+                        BorderThickness="0"
+                        Click="CloseWindowButton_Click"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="15"
+                        IsTabStop="False"
+                        Style="{DynamicResource CloseWindowButtonStyle}"
+                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Close}">
+                    <Button.Content>
+                        <Viewbox Width="20" Height="20">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M22,4V2H2V4H11V18.17L5.5,12.67L4.08,14.08L12,22L19.92,14.08L18.5,12.67L13,18.17V4H22Z" Fill="{DynamicResource App.Foreground2}" />
+                            </Canvas>
+                        </Viewbox>
+                        <!--<Image Source="pack://application:,,,/OTLog;component/Assets/Images/向下2.png"
+                                   Width="20"
+                                   Height="20" />-->
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <!--#endregion-->
     </Grid>
 </Window>

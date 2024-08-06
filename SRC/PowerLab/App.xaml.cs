@@ -2,12 +2,14 @@
 using System.Threading;
 using System.Windows;
 using DryIoc;
+using Hardcodet.Wpf.TaskbarNotification;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Tools;
 using PowerLab.Modules.ModuleName;
 using PowerLab.Services;
+using PowerLab.ViewModels;
 using PowerLab.Views;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -19,6 +21,8 @@ namespace PowerLab
     /// </summary>
     public partial class App
     {
+        private TaskbarIcon _notifyIcon;
+
         protected override Window CreateShell()
         {
             LoggingAttribute.Logger = Container.Resolve<ILogger>();
@@ -38,6 +42,9 @@ namespace PowerLab
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
         }
 
         /// <summary>

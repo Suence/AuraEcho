@@ -126,4 +126,16 @@
   <data name="AppLanguage_en_US" xml:space="preserve">
     <value>英语</value>
   </data>
+  <data name="Window_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Window_Maximize" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="Window_Minimize" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="Window_Reduction" xml:space="preserve">
+    <value>还原</value>
+  </data>
 </root>

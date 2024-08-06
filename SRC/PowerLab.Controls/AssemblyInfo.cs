@@ -10,3 +10,5 @@ using System.Windows.Markup;
                                                 // app, or any theme specific resource dictionaries)
 )]
 [assembly: XmlnsDefinition("http://ui.powerlab.com/", "PowerLab.Controls")]
+[assembly: XmlnsDefinition("http://ui.powerlab.com/", "PowerLab.Controls.Decorators")]
+[assembly: XmlnsDefinition("http://ui.powerlab.com/", "PowerLab.Controls.Shaders")]

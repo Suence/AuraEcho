@@ -8,7 +8,22 @@
         Width="800"
         Height="450"
         mc:Ignorable="d">
-    <Grid>
-        <powerlab:CustomControl1 Background="Gray" />
+    <Grid Width="128"
+          Height="128"
+          Background="Black">
+        <Viewbox Margin="16">
+            <Canvas Width="24.0"
+                    Height="24.0"
+                    UseLayoutRounding="False">
+                <Canvas.Clip>
+                    <RectangleGeometry Rect="0.0,0.0,24.0,24.0" />
+                </Canvas.Clip>
+                <Path Fill="White">
+                    <Path.Data>
+                        <PathGeometry Figures="M 9 5 V 10 C 13.03 12.47 8.44 14.97 6 16 V 19 H 21 V 16 C 14.59 13.27 17.47 9 22 8 V 5 H 9 M 2 6 C 2.81 8.13 4.42 9.5 7 10 V 6 H 2 Z" FillRule="Nonzero" />
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
     </Grid>
 </Window>

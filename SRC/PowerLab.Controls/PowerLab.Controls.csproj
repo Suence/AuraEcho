@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Light\" />
+    <None Remove="Shaders\PS\Transition_RippleEffect.ps" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PowerLab.UI.Core\PowerLab.UI.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Shaders\PS\Transition_RippleEffect.ps" />
   </ItemGroup>
 
 </Project>

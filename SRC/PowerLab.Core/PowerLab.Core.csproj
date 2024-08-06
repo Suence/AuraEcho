@@ -16,7 +16,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Events\" />
     <Folder Include="Models\" />
     <Folder Include="Native\Externals\" />
   </ItemGroup>

@@ -9,7 +9,8 @@
         <ResourceDictionary>
             <I18N:ApplicationResources x:Key="R" Language="zh-CN" />
             <ResourceDictionary.MergedDictionaries>
-                <x:Static Member="powerlab:DarkTheme.Instance"/>
+                <x:Static Member="powerlab:LightTheme.Instance"/>
+                <ResourceDictionary Source="/Views/NotifyIcon.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
