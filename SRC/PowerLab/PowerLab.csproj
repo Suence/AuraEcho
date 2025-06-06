@@ -15,15 +15,13 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.0" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="Rougamo.Fody" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Modules\ModuleName\ModuleName.csproj" />
-    <ProjectReference Include="..\PowerLab.Controls\PowerLab.Controls.csproj" />
-    <ProjectReference Include="..\PowerLab.Core\PowerLab.Core.csproj" />
-    <ProjectReference Include="..\PowerLab.UI.Core\PowerLab.UI.Core.csproj" />
-    <ProjectReference Include="..\Services\PowerLab.Services.Interfaces\PowerLab.Services.Interfaces.csproj" />
-    <ProjectReference Include="..\Services\PowerLab.Services\PowerLab.Services.csproj" />
+    <ProjectReference Include="..\Plugins\ModuleName\ModuleName.csproj" />
+    <ProjectReference Include="..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
+    <ProjectReference Include="..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\PowerLab.ico" />
