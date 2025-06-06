@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Toolkit.Uwp.Notifications;
+using PowerLab.Core.Attributes;
 namespace PowerLab.Views
 {
     /// <summary>
@@ -13,6 +14,7 @@ namespace PowerLab.Views
         /// <summary>
         /// 构造函数
         /// </summary>
+        [Logging]
         public MainWindow()
         {
             InitializeComponent();

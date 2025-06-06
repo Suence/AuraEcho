@@ -1,28 +1,22 @@
-﻿using System;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using DryIoc;
-using Hardcodet.Wpf.TaskbarNotification;
+using PluginInstaller.Tools;
+using PluginInstaller.Views;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Native.Win32;
-using PowerLab.Core.Tools;
-using PowerLab.Modules.ModuleName;
-using PowerLab.Services;
-using PowerLab.ViewModels;
-using PowerLab.Views;
+using PowerLab.Host.Core.Services;
+using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
 
-namespace PowerLab
+namespace PluginInstaller
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
+    public partial class App : PrismApplication
     {
-        private TaskbarIcon _notifyIcon;
-
         protected override Window CreateShell()
         {
             LoggingAttribute.Logger = Container.Resolve<ILogger>();
@@ -36,15 +30,13 @@ namespace PowerLab
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule<ModuleNameModule>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-            _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
+            GlobalObjectHolder.StartupArgs = e.Args;
         }
 
         /// <summary>
@@ -57,10 +49,10 @@ namespace PowerLab
 
             logger.Debug("程序已启动");
 
-            using var mutex = new Mutex(true, "E2A4C483-C59D-4856-BE14-F9B4AF07042C");
+            using var mutex = new Mutex(true, "7DE0BAA8-9D9A-46E1-82C1-947DBAABEE78");
             if (!mutex.WaitOne(TimeSpan.Zero, true))
             {
-                IntPtr mainWindowHandle = Win32Helper.FindWindow(null, ApplicationResources.GetString("AppName"));
+                IntPtr mainWindowHandle = Win32Helper.FindWindow(null, "PlixInstaller");
                 if (mainWindowHandle != IntPtr.Zero)
                     Win32Helper.SetForegroundWindow(mainWindowHandle);
 
@@ -74,4 +66,5 @@ namespace PowerLab
             app.Run();
         }
     }
+
 }

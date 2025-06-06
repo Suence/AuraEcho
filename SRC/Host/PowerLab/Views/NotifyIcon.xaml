@@ -11,9 +11,9 @@
                   Command="{Binding GoToTargetViewCommand}"
                   CommandParameter="{x:Static constants:ViewNames.Settings}"/>-->
         <Separator />
-        <MenuItem Header="关于"
+        <!--<MenuItem Header="关于"
                   Command="{Binding GoToTargetViewCommand}"
-                  CommandParameter="{x:Static constants:ViewNames.About}"/>
+                  CommandParameter="{x:Static constants:ViewNames.About}"/>-->
         <MenuItem Header="退出"
                   Command="{Binding ExitApplicationCommand}"/>
     </ContextMenu>
