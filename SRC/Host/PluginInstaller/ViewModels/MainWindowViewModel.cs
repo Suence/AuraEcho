@@ -5,7 +5,7 @@ namespace PluginInstaller.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         #region private members
-        private string _title = "PowerLab";
+        private string _title = "PlixInstaller";
         #endregion
 
         /// <summary>

@@ -1,0 +1,68 @@
+﻿using System.IO;
+using PluginInstaller.Constants;
+using PluginInstaller.Models;
+using PluginInstaller.Tools;
+using PowerLab.Core.Contracts;
+using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Regions;
+
+namespace PluginInstaller.ViewModels
+{
+    public class InstallingViewModel : BindableBase, INavigationAware
+    {
+        #region private members
+        private readonly IRegionManager _regionManager;
+        private readonly ILogger _logger;
+
+        private string _pluginTempDir;
+        private PluginManifest _pluginManifest;
+        private string _pluginDirectory;
+        #endregion
+
+        public PluginManifest PluginManifest
+        {
+            get => _pluginManifest;
+            set => SetProperty(ref _pluginManifest, value);
+        }
+
+        public DelegateCommand InstallPluginCommand { get; }
+        private void InstallPlugin()
+        {
+            Directory.CreateDirectory(_pluginDirectory);
+
+            // 拷贝到目标插件目录
+            string finalPath = Path.Combine(_pluginDirectory, PluginManifest.PluginName);
+            if (Directory.Exists(finalPath))
+                Directory.Delete(finalPath, true);
+
+            DirectoryUtils.SafeMoveDirectory(_pluginTempDir, finalPath);
+
+            _regionManager.RequestNavigate(
+                RegionNames.MainRegion,
+                ViewNames.InstallCompleted);
+        }
+
+        public InstallingViewModel(IRegionManager regionManager, ILogger logger)
+        {
+            _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            InstallPluginCommand = new DelegateCommand(InstallPlugin);
+            _pluginDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+            => true;
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            _pluginTempDir = navigationContext.Parameters.GetValue<string>("PluginTempDir");
+            PluginManifest = navigationContext.Parameters.GetValue<PluginManifest>("PluginManifest");
+        }
+    }
+}

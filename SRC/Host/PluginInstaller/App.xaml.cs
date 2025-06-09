@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using DryIoc;
+using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PluginInstaller.Views;
 using PowerLab.Core.Attributes;
@@ -9,6 +10,7 @@ using PowerLab.Host.Core.Services;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Regions;
 
 namespace PluginInstaller
 {
@@ -26,10 +28,21 @@ namespace PluginInstaller
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+            containerRegistry.RegisterForNavigation<InstallPreparation>();
+            containerRegistry.RegisterForNavigation<Installing>();
+            containerRegistry.RegisterForNavigation<InstallCompleted>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
+        }
+        
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            var regionManager = Container.Resolve<IRegionManager>();
+            regionManager.RequestNavigate(RegionNames.MainRegion, nameof(InstallPreparation));
         }
 
         protected override void OnStartup(StartupEventArgs e)
