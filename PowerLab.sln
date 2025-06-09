@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerLab", "SRC\Host\PowerL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerLab.Host.Core", "SRC\Host\PowerLab.Host.Core\PowerLab.Host.Core.csproj", "{917AE14F-08B2-4CEC-BE5F-134F3A714DBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginB", "SRC\Plugins\PluginB\PluginB.csproj", "{B6BA6DF3-1999-4EAF-A814-C6E5F6CB8692}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{917AE14F-08B2-4CEC-BE5F-134F3A714DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{917AE14F-08B2-4CEC-BE5F-134F3A714DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{917AE14F-08B2-4CEC-BE5F-134F3A714DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6BA6DF3-1999-4EAF-A814-C6E5F6CB8692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6BA6DF3-1999-4EAF-A814-C6E5F6CB8692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6BA6DF3-1999-4EAF-A814-C6E5F6CB8692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6BA6DF3-1999-4EAF-A814-C6E5F6CB8692}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{C07A439C-1C74-8A76-9BA0-82BA077FAE4C} = {FA764F9B-84DC-41D9-B0BB-20CD917B99AC}
 		{2CC6360F-262A-17C8-6D10-E461489C0EA8} = {FA764F9B-84DC-41D9-B0BB-20CD917B99AC}
 		{917AE14F-08B2-4CEC-BE5F-134F3A714DBD} = {FA764F9B-84DC-41D9-B0BB-20CD917B99AC}
+		{B6BA6DF3-1999-4EAF-A814-C6E5F6CB8692} = {AB56E983-2A5F-414B-B9E3-20FE57DEDFF9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17F090BE-05C4-4A3B-8E16-DE06367CAF21}

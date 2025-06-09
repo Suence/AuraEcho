@@ -2,12 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:constants="clr-namespace:PowerLab.Core.Constants;assembly=PowerLab.Core"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:powerlab="http://ui.powerlab.com/"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
         Title="{Binding Source={StaticResource R}, Path=Labels.AppName}"
         Width="525"
         Height="350"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Background="{DynamicResource App.Background}"
         Closing="Window_Closing"
@@ -15,7 +19,8 @@
         Loaded="Window_Loaded"
         ResizeMode="CanResizeWithGrip"
         StateChanged="Window_StateChanged"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
     <Window.Resources>
         <Storyboard x:Key="ShowMask">
             <DoubleAnimation Storyboard.TargetName="AppContainer"
@@ -80,18 +85,18 @@
             <!-- 内容区域 -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
-                            prism:RegionManager.RegionName="{x:Static constants:RegionNames.MainRegion}" />
+                            prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.MainRegion}" />
 
 
             <!-- 提示消息区域 -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
-                            prism:RegionManager.RegionName="{x:Static constants:RegionNames.MessageRegion}" />
+                            prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.MessageRegion}" />
 
             <!--#region 错误消息区域-->
             <ContentControl Grid.Row="0"
                             Height="36"
-                            prism:RegionManager.RegionName="{x:Static constants:RegionNames.ErrorRegion}" />
+                            prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.ErrorRegion}" />
             <!--#endregion-->
 
         </Grid>

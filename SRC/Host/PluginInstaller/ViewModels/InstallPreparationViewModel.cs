@@ -3,9 +3,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 using PluginInstaller.Constants;
-using PluginInstaller.Models;
 using PluginInstaller.Tools;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Host.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -45,7 +46,7 @@ namespace PluginInstaller.ViewModels
             }
 
             // 解压插件到临时目录
-            string tempExtractPath = Path.Combine(Path.GetTempPath(), "PluginInstall_" + Guid.NewGuid());
+            string tempExtractPath = Path.Combine(ApplicationPaths.Temp, "PluginInstall_" + Guid.NewGuid());
             ZipFile.ExtractToDirectory(filePath, tempExtractPath);
 
             _tempExtractPath = Path.Combine(tempExtractPath, Path.GetFileNameWithoutExtension(filePath));
@@ -83,7 +84,6 @@ namespace PluginInstaller.ViewModels
                     { "PluginTempDir", _tempExtractPath },
                     { "PluginManifest", PluginManifest }
                 });
-
         }
 
         public InstallPreparationViewModel(IRegionManager regionManager, ILogger logger)

@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using PowerLab.Core.Constants;
+using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
@@ -7,7 +8,9 @@ namespace PowerLab.Host.Core.Services
     public class SerilogService : PowerLab.Core.Contracts.ILogger
     {
         #region private members
-        private static string LogFilePath(string LogEvent) => $@"{Environment.CurrentDirectory}\Logs\{LogEvent}\log.log";
+        private static string LogFilePath(string LogEvent)
+            => Path.Combine(ApplicationPaths.Logs, LogEvent, "log.log");
+
         private static readonly string SerilogOutputTemplate = "{NewLine}{NewLine}日期：{Timestamp:yyyy-MM-dd HH:mm:ss.fff}{NewLine}日志级别：{Level}{NewLine}信息：{Message}{NewLine}{Exception}" + new string('-', 50);
         private readonly Logger Logger =
             new LoggerConfiguration()

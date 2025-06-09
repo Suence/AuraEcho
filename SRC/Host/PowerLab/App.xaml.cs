@@ -4,15 +4,16 @@ using System.Windows;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using PowerLab.Core.Attributes;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Tools;
 using PowerLab.Host.Core.Services;
-using PowerLab.Modules.ModuleName;
 using PowerLab.ViewModels;
 using PowerLab.Views;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Regions;
 
 namespace PowerLab
 {
@@ -32,11 +33,20 @@ namespace PowerLab
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+            containerRegistry.RegisterForNavigation<Homepage>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule<ModuleNameModule>();
+            //moduleCatalog.AddModule<ModuleNameModule>();
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            var regionManager = Container.Resolve<IRegionManager>();
+            regionManager.RegisterViewWithRegion(HostRegionNames.MainRegion, typeof(Homepage));
         }
 
         protected override void OnStartup(StartupEventArgs e)

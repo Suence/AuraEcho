@@ -1,8 +1,9 @@
 ﻿using System.IO;
 using PluginInstaller.Constants;
-using PluginInstaller.Models;
 using PluginInstaller.Tools;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Host.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -17,7 +18,6 @@ namespace PluginInstaller.ViewModels
 
         private string _pluginTempDir;
         private PluginManifest _pluginManifest;
-        private string _pluginDirectory;
         #endregion
 
         public PluginManifest PluginManifest
@@ -29,10 +29,8 @@ namespace PluginInstaller.ViewModels
         public DelegateCommand InstallPluginCommand { get; }
         private void InstallPlugin()
         {
-            Directory.CreateDirectory(_pluginDirectory);
-
             // 拷贝到目标插件目录
-            string finalPath = Path.Combine(_pluginDirectory, PluginManifest.PluginName);
+            string finalPath = Path.Combine(ApplicationPaths.Plugins, PluginManifest.Id);
             if (Directory.Exists(finalPath))
                 Directory.Delete(finalPath, true);
 
@@ -49,7 +47,6 @@ namespace PluginInstaller.ViewModels
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             InstallPluginCommand = new DelegateCommand(InstallPlugin);
-            _pluginDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

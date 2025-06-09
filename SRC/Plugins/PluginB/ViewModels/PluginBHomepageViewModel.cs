@@ -1,8 +1,8 @@
 ﻿using Prism.Mvvm;
 
-namespace PowerLab.Modules.ModuleName.ViewModels
+namespace PluginB.ViewModels
 {
-    public class ViewAViewModel : BindableBase
+    public class PluginBHomepageViewModel : BindableBase
     {
         private string _message;
         public string Message
@@ -11,9 +11,9 @@ namespace PowerLab.Modules.ModuleName.ViewModels
             set { SetProperty(ref _message, value); }
         }
 
-        public ViewAViewModel()
+        public PluginBHomepageViewModel()
         {
-            Message = "PluginA default view";
+            Message = "PluginB default view";
         }
     }
 }
