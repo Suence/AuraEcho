@@ -3,28 +3,12 @@
   "WorkspaceRootPath": "E:\\Personal\\DNF-PowerLab\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{917AE14F-08B2-4CEC-BE5F-134F3A714DBD}|SRC\\Host\\PowerLab.Host.Core\\PowerLab.Host.Core.csproj|e:\\personal\\dnf-powerlab\\src\\host\\powerlab.host.core\\services\\serilogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{917AE14F-08B2-4CEC-BE5F-134F3A714DBD}|SRC\\Host\\PowerLab.Host.Core\\PowerLab.Host.Core.csproj|solutionrelative:src\\host\\powerlab.host.core\\services\\serilogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55C3EED6-B728-4796-8873-4F6F2830006E}|SRC\\Tools\\PluginPacker\\PluginPacker.csproj|e:\\personal\\dnf-powerlab\\src\\tools\\pluginpacker\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{55C3EED6-B728-4796-8873-4F6F2830006E}|SRC\\Tools\\PluginPacker\\PluginPacker.csproj|solutionrelative:src\\tools\\pluginpacker\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{87A4B042-0585-953E-E6C0-2B0CB95089D3}|SRC\\Plugins\\ModuleName\\ModuleName.csproj|e:\\personal\\dnf-powerlab\\src\\plugins\\modulename\\modulename.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{87A4B042-0585-953E-E6C0-2B0CB95089D3}|SRC\\Plugins\\ModuleName\\ModuleName.csproj|solutionrelative:src\\plugins\\modulename\\modulename.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2CC6360F-262A-17C8-6D10-E461489C0EA8}|SRC\\Host\\PowerLab\\PowerLab.csproj|e:\\personal\\dnf-powerlab\\src\\host\\powerlab\\views\\homepage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CC6360F-262A-17C8-6D10-E461489C0EA8}|SRC\\Host\\PowerLab\\PowerLab.csproj|solutionrelative:src\\host\\powerlab\\views\\homepage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2CC6360F-262A-17C8-6D10-E461489C0EA8}|SRC\\Host\\PowerLab\\PowerLab.csproj|e:\\personal\\dnf-powerlab\\src\\host\\powerlab\\views\\homepage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{2CC6360F-262A-17C8-6D10-E461489C0EA8}|SRC\\Host\\PowerLab\\PowerLab.csproj|solutionrelative:src\\host\\powerlab\\views\\homepage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2CC6360F-262A-17C8-6D10-E461489C0EA8}|SRC\\Host\\PowerLab\\PowerLab.csproj|e:\\personal\\dnf-powerlab\\src\\host\\powerlab\\viewmodels\\homepageviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CC6360F-262A-17C8-6D10-E461489C0EA8}|SRC\\Host\\PowerLab\\PowerLab.csproj|solutionrelative:src\\host\\powerlab\\viewmodels\\homepageviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C07A439C-1C74-8A76-9BA0-82BA077FAE4C}|SRC\\Host\\PluginInstaller\\PluginInstaller.csproj|e:\\personal\\dnf-powerlab\\src\\host\\plugininstaller\\plugininstaller.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{C07A439C-1C74-8A76-9BA0-82BA077FAE4C}|SRC\\Host\\PluginInstaller\\PluginInstaller.csproj|solutionrelative:src\\host\\plugininstaller\\plugininstaller.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{55C3EED6-B728-4796-8873-4F6F2830006E}|SRC\\Tools\\PluginPacker\\PluginPacker.csproj|e:\\personal\\dnf-powerlab\\src\\tools\\pluginpacker\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55C3EED6-B728-4796-8873-4F6F2830006E}|SRC\\Tools\\PluginPacker\\PluginPacker.csproj|solutionrelative:src\\tools\\pluginpacker\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -127,76 +111,26 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "SerilogService.cs",
-              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab.Host.Core\\Services\\SerilogService.cs",
-              "RelativeDocumentMoniker": "SRC\\Host\\PowerLab.Host.Core\\Services\\SerilogService.cs",
-              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab.Host.Core\\Services\\SerilogService.cs",
-              "RelativeToolTip": "SRC\\Host\\PowerLab.Host.Core\\Services\\SerilogService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-09T09:55:34.105Z",
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Tools\\PluginPacker\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "SRC\\Tools\\PluginPacker\\MainWindow.xaml",
+              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Tools\\PluginPacker\\MainWindow.xaml",
+              "RelativeToolTip": "SRC\\Tools\\PluginPacker\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-06-10T03:38:32.291Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ModuleName",
-              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Plugins\\ModuleName\\ModuleName.csproj",
-              "RelativeDocumentMoniker": "SRC\\Plugins\\ModuleName\\ModuleName.csproj",
-              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Plugins\\ModuleName\\ModuleName.csproj",
-              "RelativeToolTip": "SRC\\Plugins\\ModuleName\\ModuleName.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-06-09T09:55:27.147Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Homepage.xaml.cs",
-              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab\\Views\\Homepage.xaml.cs",
-              "RelativeDocumentMoniker": "SRC\\Host\\PowerLab\\Views\\Homepage.xaml.cs",
-              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab\\Views\\Homepage.xaml.cs",
-              "RelativeToolTip": "SRC\\Host\\PowerLab\\Views\\Homepage.xaml.cs",
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Tools\\PluginPacker\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "SRC\\Tools\\PluginPacker\\MainWindow.xaml.cs",
+              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Tools\\PluginPacker\\MainWindow.xaml.cs",
+              "RelativeToolTip": "SRC\\Tools\\PluginPacker\\MainWindow.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-09T09:55:07.144Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "HomepageViewModel.cs",
-              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab\\ViewModels\\HomepageViewModel.cs",
-              "RelativeDocumentMoniker": "SRC\\Host\\PowerLab\\ViewModels\\HomepageViewModel.cs",
-              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab\\ViewModels\\HomepageViewModel.cs",
-              "RelativeToolTip": "SRC\\Host\\PowerLab\\ViewModels\\HomepageViewModel.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAAAFsAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-09T09:43:05.032Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Homepage.xaml",
-              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab\\Views\\Homepage.xaml",
-              "RelativeDocumentMoniker": "SRC\\Host\\PowerLab\\Views\\Homepage.xaml",
-              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PowerLab\\Views\\Homepage.xaml",
-              "RelativeToolTip": "SRC\\Host\\PowerLab\\Views\\Homepage.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-06-09T09:39:42.598Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "PluginInstaller",
-              "DocumentMoniker": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PluginInstaller\\PluginInstaller.csproj",
-              "RelativeDocumentMoniker": "SRC\\Host\\PluginInstaller\\PluginInstaller.csproj",
-              "ToolTip": "E:\\Personal\\DNF-PowerLab\\SRC\\Host\\PluginInstaller\\PluginInstaller.csproj",
-              "RelativeToolTip": "SRC\\Host\\PluginInstaller\\PluginInstaller.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-06-09T09:37:00.552Z",
+              "WhenOpened": "2025-06-10T03:38:30.985Z",
               "EditorCaption": ""
             }
           ]
