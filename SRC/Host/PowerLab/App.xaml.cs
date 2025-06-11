@@ -33,6 +33,7 @@ namespace PowerLab
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+            containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
             containerRegistry.RegisterForNavigation<Homepage>();
         }
 

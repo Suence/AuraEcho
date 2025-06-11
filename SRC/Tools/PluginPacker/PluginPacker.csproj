@@ -8,4 +8,15 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Host\PowerLab.Host.Core\PowerLab.Host.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
+  </ItemGroup>
+
 </Project>
