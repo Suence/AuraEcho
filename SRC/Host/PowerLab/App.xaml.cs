@@ -34,7 +34,9 @@ namespace PowerLab
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
             containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
+
             containerRegistry.RegisterForNavigation<Homepage>();
+            containerRegistry.RegisterForNavigation<PluginsDashboard>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

@@ -9,10 +9,10 @@
              xmlns:powerlab="http://ui.powerlab.com/"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
+             d:Background="#666666"
              d:DataContext="{d:DesignInstance Type=viewmodels:HomepageViewModel}"
              d:DesignHeight="290"
              d:DesignWidth="495"
-             d:Background="#666666"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <i:Interaction.Triggers>
@@ -22,11 +22,14 @@
     </i:Interaction.Triggers>
     <UserControl.Resources>
         <powerlab:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
-        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type cm:PluginMetadata}">
-            <Button d:Content="Plugin"
-                    Height="30"
+        <CollectionViewSource x:Key="EnabledPluginsView"
+                              Filter="EnabledPluginsFilter"
+                              Source="{Binding Plugins}" />
+        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type cm:PluginRegistry}">
+            <Button Height="30"
+                    Margin="0,0,0,1"
+                    d:Content="Plugin"
                     BorderThickness="0"
-                    Margin="0, 0, 0, 1"
                     Command="{Binding Source={StaticResource BindingProxy}, Path=Data.SwitchPluginCommand}"
                     CommandParameter="{Binding}"
                     Content="{Binding Name}" />
@@ -37,14 +40,20 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Width="141" Background="#33000000">
-            <TextBlock Text="ALL PLUGINS" Margin="8, 36, 0, 8" FontSize="16" />
-            <ItemsControl ItemTemplate="{StaticResource PluginTemplate}" ItemsSource="{Binding Plugins}">
+        <StackPanel Grid.Column="0"
+                    Width="141"
+                    Background="#33000000">
+            <Button Height="30"
+                    Margin="0,36,0,16"
+                    Command="{Binding NavigationToDashboardCommand}"
+                    Content="DASHBOARD" />
+
+            <ItemsControl ItemTemplate="{StaticResource PluginTemplate}" ItemsSource="{Binding Source={StaticResource EnabledPluginsView}}">
                 <d:ItemsControl.ItemsSource>
-                    <x:Array Type="{x:Type cm:PluginMetadata}">
-                        <cm:PluginMetadata />
-                        <cm:PluginMetadata />
-                        <cm:PluginMetadata />
+                    <x:Array Type="{x:Type cm:PluginRegistry}">
+                        <cm:PluginRegistry />
+                        <cm:PluginRegistry />
+                        <cm:PluginRegistry />
                     </x:Array>
                 </d:ItemsControl.ItemsSource>
             </ItemsControl>

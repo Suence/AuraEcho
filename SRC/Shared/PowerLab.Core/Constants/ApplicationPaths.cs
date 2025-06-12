@@ -11,12 +11,14 @@ namespace PowerLab.Core.Constants
         public static string Plugins => Path.Combine(BasePath, "plugins");
         public static string Logs => Path.Combine(BasePath, "logs");
         public static string Temp => Path.Combine(BasePath, "temp");
+        public static string Data => Path.Combine(BasePath, "data");
 
         static ApplicationPaths()
         {
             Directory.CreateDirectory(Plugins);
             Directory.CreateDirectory(Logs);
             Directory.CreateDirectory(Temp);
+            Directory.CreateDirectory(Data);
         }
     }
 }

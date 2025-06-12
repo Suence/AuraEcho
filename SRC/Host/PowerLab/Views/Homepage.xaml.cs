@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using PowerLab.Host.Core.Models;
 
 namespace PowerLab.Views
 {
@@ -10,6 +11,17 @@ namespace PowerLab.Views
         public Homepage()
         {
             InitializeComponent();
+        }
+
+        private void EnabledPluginsFilter(object sender, System.Windows.Data.FilterEventArgs e)
+        {
+            if (e.Item is not PluginRegistry plugin)
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            e.Accepted = plugin.IsEnabled;
         }
     }
 }

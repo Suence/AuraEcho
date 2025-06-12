@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Data;
+using PowerLab.Constants;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Extensions;
 using PowerLab.Host.Core.Models;
 using Prism.Commands;
 using Prism.Modularity;
@@ -21,17 +25,18 @@ namespace PowerLab.ViewModels
     {
         #region private members
         private string _title = "PowerLab";
+        private string _pluginRegistryPath;
         private readonly IRegionManager _regionManager;
         private readonly ILogger _logger;
         private readonly IModuleManager _moduleManager;
         private readonly IModuleCatalog _moduleCatalog;
 
-        private ObservableCollection<PluginMetadata> _plugins;
+        private ObservableCollection<PluginRegistry> _plugins;
         #endregion
 
-        public ObservableCollection<PluginMetadata> Plugins
+        public ObservableCollection<PluginRegistry> Plugins
         {
-            get => _plugins ??= new ObservableCollection<PluginMetadata>();
+            get => _plugins ??= new ObservableCollection<PluginRegistry>();
             set => SetProperty(ref _plugins, value);
         }
 
@@ -44,10 +49,113 @@ namespace PowerLab.ViewModels
             set => SetProperty(ref _title, value);
         }
 
+        public DelegateCommand NavigationToDashboardCommand { get; }
+        private void NavigationToDashboard()
+        {
+            _regionManager.RequestNavigate(HostRegionNames.PluginContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
+            {
+                { "PluginRegistries", Plugins }
+            });
+        }
+
+
         public DelegateCommand LoadPluginsCommand { get; }
         private void LoadPlugins()
         {
+            List<(PluginManifest Manifest, string PluginFolder)> pluginManifests = LoadPluginManifest();
+            List<PluginRegistry> pluginRegistries = LoadPluginRegistry();
+
+            foreach (var (manifest, pluginFolder) in pluginManifests)
+            {
+                var pluginRegistry = pluginRegistries.FirstOrDefault(pr => pr.Id == manifest.Id);
+
+                // 如果插件被禁用，跳过加载
+                if (pluginRegistry != null && !pluginRegistry.IsEnabled)
+                {
+                    _logger.Debug($"插件 {pluginRegistry.Name} 已被禁用，跳过加载。");
+                    continue;
+                }
+
+                // 统一加载插件程序集和读取 DefaultView
+                string entryAssemblyPath = Path.Combine(pluginFolder, manifest.EntryAssemblyName);
+
+                if (!File.Exists(entryAssemblyPath))
+                {
+                    _logger.Error($"插件 {manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
+                    continue;
+                }
+
+                Assembly pluginAssembly;
+                try
+                {
+                    pluginAssembly = Assembly.LoadFile(entryAssemblyPath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"加载插件程序集失败：{manifest.PluginName}，异常：{ex.Message}");
+                    continue;
+                }
+
+                var defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
+                if (defaultView is null)
+                {
+                    _logger.Error($"插件 {manifest.PluginName} 没有指定默认视图。");
+                    continue;
+                }
+
+                if (pluginRegistry == null)
+                {
+                    // 第一次加载新插件，添加到注册列表并默认启用
+                    pluginRegistry = new PluginRegistry
+                    {
+                        Id = manifest.Id,
+                        Name = manifest.PluginName,
+                        DefaultView = defaultView.ViewName,
+                        IsEnabled = true,
+                        PluginFolder = pluginFolder
+                    };
+                    pluginRegistries.Add(pluginRegistry);
+                }
+                else
+                {
+                    // 更新默认视图（防止之前版本旧）
+                    pluginRegistry.DefaultView = defaultView.ViewName;
+                }
+
+                LoadPluginEntryAssembly(pluginAssembly);
+            }
+
+            Plugins = pluginRegistries.ToObservableCollection();
+
+            _logger.Debug($"已加载 {Plugins.Count} 个插件。");
+            string pluginRegistriesJson = JsonSerializer.Serialize(pluginRegistries, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(_pluginRegistryPath, pluginRegistriesJson);
+
+            NavigationToDashboard();
+        }
+
+        private List<PluginRegistry> LoadPluginRegistry()
+        {
+            if (!File.Exists(_pluginRegistryPath))
+                return [];
+
+            string registryJson = File.ReadAllText(_pluginRegistryPath);
+            var pluginRegistries = JsonSerializer.Deserialize<List<PluginRegistry>>(registryJson);
+
+            if (pluginRegistries == null)
+            {
+                _logger.Error("无法解析插件注册表。");
+                return [];
+            }
+
+            return pluginRegistries;
+        }
+
+        private List<(PluginManifest Manifest, string PluginFolder)> LoadPluginManifest()
+        {
             string[] pluginFolders = Directory.GetDirectories(ApplicationPaths.Plugins);
+            List<(PluginManifest, string)> manifests = new();
+
             foreach (var pluginFolder in pluginFolders)
             {
                 string manifestPath = Path.Combine(pluginFolder, "plugin.manifest.json");
@@ -62,29 +170,15 @@ namespace PowerLab.ViewModels
                     _logger.Error($"无法解析插件 {pluginFolder} 的 manifest 文件。");
                     continue;
                 }
-                string entryAssemblyPath = Path.Combine(pluginFolder, manifest.EntryAssemblyName);
-                Assembly pluginAssembly = Assembly.LoadFile(entryAssemblyPath);
 
-                LoadPlugin(pluginAssembly);
-
-                PluginDefaultViewAttribute defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
-                if (defaultView is null)
-                {
-                    _logger.Error($"插件 {manifest.PluginName} 没有指定默认视图。");
-                    continue;
-                }
-
-                Plugins.Add(new PluginMetadata
-                {
-                    Id = manifest.Id,
-                    Name = manifest.PluginName,
-                    DefaultView = defaultView.ViewName,
-                });
+                manifests.Add((manifest, pluginFolder));
             }
+
+            return manifests;
         }
 
-        public DelegateCommand<PluginMetadata> SwitchPluginCommand { get; }
-        private void SwitchPlugin(PluginMetadata pluginMetadata)
+        public DelegateCommand<PluginRegistry> SwitchPluginCommand { get; }
+        private void SwitchPlugin(PluginRegistry pluginMetadata)
         {
             if (pluginMetadata is null)
                 return;
@@ -101,11 +195,13 @@ namespace PowerLab.ViewModels
             _moduleManager = moduleManager;
             _moduleCatalog = moduleCatalog;
 
+            _pluginRegistryPath = Path.Combine(ApplicationPaths.Data, "plugin.registry.json");
             LoadPluginsCommand = new DelegateCommand(LoadPlugins);
-            SwitchPluginCommand = new DelegateCommand<PluginMetadata>(SwitchPlugin);
+            SwitchPluginCommand = new DelegateCommand<PluginRegistry>(SwitchPlugin);
+            NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         }
 
-        private void LoadPlugin(Assembly pluginAssembly)
+        private void LoadPluginEntryAssembly(Assembly pluginAssembly)
         {
             Assembly moduleAssembly = AppDomain.CurrentDomain.GetAssemblies().First(asm => asm.FullName == typeof(IModule).Assembly.FullName);
             Type IModuleType = moduleAssembly.GetType(typeof(IModule).FullName);
