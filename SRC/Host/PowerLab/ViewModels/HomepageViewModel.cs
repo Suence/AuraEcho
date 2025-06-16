@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Data;
 using PowerLab.Constants;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Extensions;
 using PowerLab.Host.Core.Models;
+using PowerLab.Tools;
 using Prism.Commands;
 using Prism.Modularity;
 using Prism.Mvvm;
@@ -30,13 +29,12 @@ namespace PowerLab.ViewModels
         private readonly ILogger _logger;
         private readonly IModuleManager _moduleManager;
         private readonly IModuleCatalog _moduleCatalog;
-
         private ObservableCollection<PluginRegistry> _plugins;
         #endregion
 
         public ObservableCollection<PluginRegistry> Plugins
         {
-            get => _plugins ??= new ObservableCollection<PluginRegistry>();
+            get => _plugins ??= [];
             set => SetProperty(ref _plugins, value);
         }
 
@@ -58,7 +56,6 @@ namespace PowerLab.ViewModels
             });
         }
 
-
         public DelegateCommand LoadPluginsCommand { get; }
         private void LoadPlugins()
         {
@@ -69,14 +66,37 @@ namespace PowerLab.ViewModels
             {
                 var pluginRegistry = pluginRegistries.FirstOrDefault(pr => pr.Id == manifest.Id);
 
-                // 如果插件被禁用，跳过加载
-                if (pluginRegistry != null && !pluginRegistry.IsEnabled)
+                if (pluginRegistry != null)
                 {
-                    _logger.Debug($"插件 {pluginRegistry.Name} 已被禁用，跳过加载。");
-                    continue;
+                    if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
+                    {
+                        // TODO：卸载处理
+                        if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
+                        {
+                            Directory.Delete(pluginRegistry.PluginFolder, true);
+                            pluginRegistries.Remove(pluginRegistry);
+                            _logger.Debug($"插件 {pluginRegistry.Name} 已被卸载，跳过加载。");
+                            continue;
+                        }
+
+                        pluginRegistry.Status = pluginRegistry.PlanStatus switch
+                        {
+                            PluginPlanStatus.EnablePending => PluginStatus.Enabled,
+                            PluginPlanStatus.DisablePending => PluginStatus.Disabled,
+                            _ => pluginRegistry.Status
+                        };
+                        pluginRegistry.PlanStatus = PluginPlanStatus.None;
+                    }
+
+                    // 已禁用
+                    if (pluginRegistry.Status == PluginStatus.Disabled)
+                    {
+                        _logger.Debug($"插件 {pluginRegistry.Name} 已被禁用，跳过加载。");
+                        continue;
+                    }
                 }
 
-                // 统一加载插件程序集和读取 DefaultView
+
                 string entryAssemblyPath = Path.Combine(pluginFolder, manifest.EntryAssemblyName);
 
                 if (!File.Exists(entryAssemblyPath))
@@ -85,10 +105,11 @@ namespace PowerLab.ViewModels
                     continue;
                 }
 
+                var alc = new PluginLoadContext(entryAssemblyPath);
                 Assembly pluginAssembly;
                 try
                 {
-                    pluginAssembly = Assembly.LoadFile(entryAssemblyPath);
+                    pluginAssembly = alc.LoadFromAssemblyPath(entryAssemblyPath);
                 }
                 catch (Exception ex)
                 {
@@ -105,24 +126,18 @@ namespace PowerLab.ViewModels
 
                 if (pluginRegistry == null)
                 {
-                    // 第一次加载新插件，添加到注册列表并默认启用
                     pluginRegistry = new PluginRegistry
                     {
                         Id = manifest.Id,
                         Name = manifest.PluginName,
                         DefaultView = defaultView.ViewName,
-                        IsEnabled = true,
+                        Status = PluginStatus.Enabled,
                         PluginFolder = pluginFolder
                     };
                     pluginRegistries.Add(pluginRegistry);
                 }
-                else
-                {
-                    // 更新默认视图（防止之前版本旧）
-                    pluginRegistry.DefaultView = defaultView.ViewName;
-                }
 
-                LoadPluginEntryAssembly(pluginAssembly);
+                LoadPluginWithALC(pluginAssembly);
             }
 
             Plugins = pluginRegistries.ToObservableCollection();
@@ -201,26 +216,25 @@ namespace PowerLab.ViewModels
             NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         }
 
-        private void LoadPluginEntryAssembly(Assembly pluginAssembly)
+        private void LoadPluginWithALC(Assembly pluginAssembly)
         {
-            Assembly moduleAssembly = AppDomain.CurrentDomain.GetAssemblies().First(asm => asm.FullName == typeof(IModule).Assembly.FullName);
-            Type IModuleType = moduleAssembly.GetType(typeof(IModule).FullName);
+            Type IModuleType = typeof(IModule);
 
-            var moduleInfos = pluginAssembly.GetExportedTypes()
-                .Where(IModuleType.IsAssignableFrom)
-                .Where(t => t != IModuleType)
-                .Where(t => !t.IsAbstract)
-                .Select(CreateModuleInfo);
+            var moduleTypes = pluginAssembly.GetExportedTypes()
+                .Where(t => typeof(IModule).IsAssignableFrom(t))
+                .Where(t => t != typeof(IModule))
+                .Where(t => !t.IsAbstract);
 
-            foreach (var moduleInfo in moduleInfos)
+            foreach (var type in moduleTypes)
             {
+                ModuleInfo moduleInfo = CreateModuleInfo(type);
                 _moduleCatalog.AddModule(moduleInfo);
 
-                var d = Application.Current.Dispatcher;
-                if (d.CheckAccess())
+                var dispatcher = Application.Current.Dispatcher;
+                if (dispatcher.CheckAccess())
                     _moduleManager.LoadModule(moduleInfo.ModuleName);
                 else
-                    d.BeginInvoke(() => _moduleManager.LoadModule(moduleInfo.ModuleName));
+                    dispatcher.BeginInvoke(() => _moduleManager.LoadModule(moduleInfo.ModuleName));
             }
         }
 

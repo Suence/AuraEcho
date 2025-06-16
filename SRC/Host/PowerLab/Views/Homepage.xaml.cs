@@ -21,7 +21,7 @@ namespace PowerLab.Views
                 return;
             }
 
-            e.Accepted = plugin.IsEnabled;
+            e.Accepted = plugin.Status == PluginStatus.Enabled;
         }
     }
 }

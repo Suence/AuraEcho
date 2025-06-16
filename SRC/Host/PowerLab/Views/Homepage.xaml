@@ -45,6 +45,7 @@
                     Background="#33000000">
             <Button Height="30"
                     Margin="0,36,0,16"
+                    BorderThickness="0"
                     Command="{Binding NavigationToDashboardCommand}"
                     Content="DASHBOARD" />
 

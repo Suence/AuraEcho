@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="PowerLab.Views.PluginsDashboard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:PowerLab.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:hostModels="clr-namespace:PowerLab.Host.Core.Models;assembly=PowerLab.Host.Core"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -22,16 +23,164 @@
                     CornerRadius="4">
                 <Grid>
                     <TextBlock HorizontalAlignment="Left" Text="{Binding Name}" />
-                    <CheckBox HorizontalAlignment="Right" IsChecked="{Binding IsEnabled}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Checked">
-                                <i:InvokeCommandAction Command="{Binding Source={StaticResource BindingProxy}, Path=Data.EnablePluginCommand}" CommandParameter="{Binding}" />
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="Unchecked">
-                                <i:InvokeCommandAction Command="{Binding Source={StaticResource BindingProxy}, Path=Data.DisablePluginCommand}" CommandParameter="{Binding}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </CheckBox>
+                    <StackPanel HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                        <TextBlock Margin="0,0,4,0" d:Text="已启用">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{converters:PluginStatusTextConverter}">
+                                    <Binding Path="Status" />
+                                    <Binding Path="PlanStatus" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <Button x:Name="PluginPlanButton"
+                                Padding="8,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Content="...">
+                            <Button.ContextMenu>
+                                <ContextMenu x:Name="PluginContextMenu" StaysOpen="False">
+                                    <MenuItem x:Name="EnablePluginMenuItem"
+                                              Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanEnablePluginCommand}"
+                                              CommandParameter="{Binding}"
+                                              Header="ENABLE">
+                                        <i:Interaction.Triggers>
+                                            <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Enabled}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Disabled}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.EnablePending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.DisablePending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                <i:Interaction.Behaviors>
+                                                    <i:ConditionBehavior>
+                                                        <i:ConditionalExpression>
+                                                            <i:ComparisonCondition LeftOperand="{Binding Status}"
+                                                                                   Operator="Equal"
+                                                                                   RightOperand="{x:Static hostModels:PluginStatus.Enabled}" />
+                                                        </i:ConditionalExpression>
+                                                    </i:ConditionBehavior>
+                                                </i:Interaction.Behaviors>
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                <i:Interaction.Behaviors>
+                                                    <i:ConditionBehavior>
+                                                        <i:ConditionalExpression>
+                                                            <i:ComparisonCondition LeftOperand="{Binding Status}"
+                                                                                   Operator="Equal"
+                                                                                   RightOperand="{x:Static hostModels:PluginStatus.Disabled}" />
+                                                        </i:ConditionalExpression>
+                                                    </i:ConditionBehavior>
+                                                </i:Interaction.Behaviors>
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                        </i:Interaction.Triggers>
+                                    </MenuItem>
+
+                                    <MenuItem x:Name="DisablePluginMenuItem"
+                                              Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanDisablePluginCommand}"
+                                              CommandParameter="{Binding}"
+                                              Header="DISABLE">
+                                        <i:Interaction.Triggers>
+                                            <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Enabled}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Disabled}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.EnablePending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.DisablePending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                <i:Interaction.Behaviors>
+                                                    <i:ConditionBehavior>
+                                                        <i:ConditionalExpression>
+                                                            <i:ComparisonCondition LeftOperand="{Binding Status}"
+                                                                                   Operator="Equal"
+                                                                                   RightOperand="{x:Static hostModels:PluginStatus.Enabled}" />
+                                                        </i:ConditionalExpression>
+                                                    </i:ConditionBehavior>
+                                                </i:Interaction.Behaviors>
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                <i:Interaction.Behaviors>
+                                                    <i:ConditionBehavior>
+                                                        <i:ConditionalExpression>
+                                                            <i:ComparisonCondition LeftOperand="{Binding Status}"
+                                                                                   Operator="Equal"
+                                                                                   RightOperand="{x:Static hostModels:PluginStatus.Disabled}" />
+                                                        </i:ConditionalExpression>
+                                                    </i:ConditionBehavior>
+                                                </i:Interaction.Behaviors>
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+
+                                        </i:Interaction.Triggers>
+                                    </MenuItem>
+                                    <MenuItem Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanUninstallPluginCommand}"
+                                              CommandParameter="{Binding}"
+                                              Header="UNINSTALL">
+                                        <i:Interaction.Triggers>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}"
+                                                           Comparison="NotEqual"
+                                                           Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                        </i:Interaction.Triggers>
+                                    </MenuItem>
+                                    <MenuItem Command="{Binding Source={StaticResource BindingProxy}, Path=Data.CancelUninstallPluginCommand}"
+                                              CommandParameter="{Binding}"
+                                              Header="CANCEL UNINSTALL">
+                                        <i:Interaction.Triggers>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                                            </i:DataTrigger>
+                                            <i:DataTrigger Binding="{Binding PlanStatus}"
+                                                           Comparison="NotEqual"
+                                                           Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                                            </i:DataTrigger>
+                                        </i:Interaction.Triggers>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <i:ChangePropertyAction PropertyName="IsOpen"
+                                                            TargetName="PluginContextMenu"
+                                                            Value="True" />
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="Loaded">
+                                    <i:ChangePropertyAction PropertyName="DataContext"
+                                                            TargetName="PluginContextMenu"
+                                                            Value="{Binding}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -40,19 +189,12 @@
         </Style>
     </UserControl.Resources>
     <Grid Margin="0,36,0,0">
-        <StackPanel Margin="24, 0, 24, 24">
+        <StackPanel Margin="24,0,24,24">
             <TextBlock Margin="0,0,0,24"
                        HorizontalAlignment="Left"
                        FontSize="20"
                        Text="DASHBOARD" />
-            <TextBlock Margin="0,0,0,8"
-                       FontSize="16"
-                       Text="Pending Plugins" />
-            <ItemsControl Margin="0,0,0,16"
-                          d:ItemsSource="{d:SampleData ItemCount=3}"
-                          ItemContainerStyle="{StaticResource PluginContainerStyle}"
-                          ItemTemplate="{StaticResource PluginTemplate}"
-                          ItemsSource="{Binding PendingPlugins, Mode=OneWay}" />
+
             <TextBlock Margin="0,0,0,8"
                        FontSize="16"
                        Text="Enabled Plugins" />

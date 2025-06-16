@@ -46,10 +46,9 @@ namespace PluginInstaller.ViewModels
             }
 
             // 解压插件到临时目录
-            string tempExtractPath = Path.Combine(ApplicationPaths.Temp, "PluginInstall_" + Guid.NewGuid());
-            ZipFile.ExtractToDirectory(filePath, tempExtractPath);
+            _tempExtractPath = Path.Combine(ApplicationPaths.Temp, "PluginInstall_" + Guid.NewGuid());
+            ZipFile.ExtractToDirectory(filePath, _tempExtractPath);
 
-            _tempExtractPath = Path.Combine(tempExtractPath, Path.GetFileNameWithoutExtension(filePath));
             // 读取并解析 manifest 文件
             string manifestPath = Path.Combine(_tempExtractPath, MANIFEST_FILE_NAME);
             if (!File.Exists(manifestPath))

@@ -5,19 +5,18 @@ namespace PowerLab.Host.Core.Models
 {
     public class PluginRegistry : BindableBase
     {
-        private bool _isEnabled = true;
-        public bool IsEnabled
+        private PluginStatus _status;
+        public PluginStatus Status
         {
-            get => _isEnabled;
-            set => SetProperty(ref _isEnabled, value);
+            get => _status;
+            set => SetProperty(ref _status, value);
         }
 
-        private bool _isPending = false;
-        [JsonIgnore]
-        public bool IsPending
+        private PluginPlanStatus _planStatus;
+        public PluginPlanStatus PlanStatus
         {
-            get => _isPending;
-            set => SetProperty(ref _isPending, value);
+            get => _planStatus; 
+            set => SetProperty(ref _planStatus, value);
         }
 
         public string DefaultView { get; set; }
