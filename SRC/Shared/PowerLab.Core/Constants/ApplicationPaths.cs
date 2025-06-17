@@ -2,6 +2,9 @@
 
 namespace PowerLab.Core.Constants
 {
+    /// <summary>
+    /// 程序路径常量
+    /// </summary>
     public static class ApplicationPaths
     {
         public static string BasePath => Path.Combine(

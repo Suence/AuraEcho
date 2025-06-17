@@ -13,6 +13,9 @@ using Prism.Regions;
 
 namespace PluginInstaller.ViewModels
 {
+    /// <summary>
+    /// 安装准备
+    /// </summary>
     public class InstallPreparationViewModel : BindableBase
     {
         #region private members
@@ -26,7 +29,7 @@ namespace PluginInstaller.ViewModels
         #endregion
 
         /// <summary>
-        /// 插件信息
+        /// 模块清单信息
         /// </summary>
         public PluginManifest? PluginManifest
         {
@@ -35,6 +38,10 @@ namespace PluginInstaller.ViewModels
         }
 
         public DelegateCommand LoadPluginCommand { get; }
+        /// <summary>
+        /// 加载模块清单
+        /// </summary>
+        /// <exception cref="FileNotFoundException"></exception>
         private void LoadPlugin()
         {
             string? filePath = GlobalObjectHolder.StartupArgs.FirstOrDefault();
@@ -68,6 +75,10 @@ namespace PluginInstaller.ViewModels
         }
 
         public DelegateCommand BeginInstallCommand { get; }
+
+        /// <summary>
+        /// 开始安装
+        /// </summary>
         private void BeginInstall()
         {
             if (PluginManifest is null)
@@ -85,6 +96,12 @@ namespace PluginInstaller.ViewModels
                 });
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="regionManager"></param>
+        /// <param name="logger"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public InstallPreparationViewModel(IRegionManager regionManager, ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

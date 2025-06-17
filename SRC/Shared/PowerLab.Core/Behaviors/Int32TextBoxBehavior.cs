@@ -6,6 +6,9 @@ using System.Windows.Input;
 
 namespace PowerLab.Core.Behaviors
 {
+    /// <summary>
+    /// 数字输入框行为，限制输入为整数
+    /// </summary>
     public class Int32TextBoxBehavior : Behavior<TextBox>
     {
         protected override void OnAttached()

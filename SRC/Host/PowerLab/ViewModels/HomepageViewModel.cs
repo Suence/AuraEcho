@@ -32,6 +32,9 @@ namespace PowerLab.ViewModels
         private ObservableCollection<PluginRegistry> _plugins;
         #endregion
 
+        /// <summary>
+        /// 扩展模块列表
+        /// </summary>
         public ObservableCollection<PluginRegistry> Plugins
         {
             get => _plugins ??= [];
@@ -48,6 +51,9 @@ namespace PowerLab.ViewModels
         }
 
         public DelegateCommand NavigationToDashboardCommand { get; }
+        /// <summary>
+        /// 导航到仪表盘
+        /// </summary>
         private void NavigationToDashboard()
         {
             _regionManager.RequestNavigate(HostRegionNames.PluginContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
@@ -57,6 +63,9 @@ namespace PowerLab.ViewModels
         }
 
         public DelegateCommand LoadPluginsCommand { get; }
+        /// <summary>
+        /// 加载扩展模块
+        /// </summary>
         private void LoadPlugins()
         {
             List<(PluginManifest Manifest, string PluginFolder)> pluginManifests = LoadPluginManifest();
@@ -70,7 +79,7 @@ namespace PowerLab.ViewModels
                 {
                     if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
                     {
-                        // TODO：卸载处理
+                        // 卸载处理
                         if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
                         {
                             Directory.Delete(pluginRegistry.PluginFolder, true);
@@ -136,7 +145,7 @@ namespace PowerLab.ViewModels
                     pluginRegistries.Add(pluginRegistry);
                 }
 
-                LoadPluginWithALC(pluginAssembly);
+                LoadPluginByAssembly(pluginAssembly);
             }
 
             Plugins = pluginRegistries.ToObservableCollection();
@@ -148,6 +157,10 @@ namespace PowerLab.ViewModels
             NavigationToDashboard();
         }
 
+        /// <summary>
+        /// 读取插件配置
+        /// </summary>
+        /// <returns></returns>
         private List<PluginRegistry> LoadPluginRegistry()
         {
             if (!File.Exists(_pluginRegistryPath))
@@ -165,6 +178,11 @@ namespace PowerLab.ViewModels
             return pluginRegistries;
         }
 
+        /// <summary>
+        /// 读取插件 manifest 文件
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
         private List<(PluginManifest Manifest, string PluginFolder)> LoadPluginManifest()
         {
             string[] pluginFolders = Directory.GetDirectories(ApplicationPaths.Plugins);
@@ -192,6 +210,10 @@ namespace PowerLab.ViewModels
         }
 
         public DelegateCommand<PluginRegistry> SwitchPluginCommand { get; }
+        /// <summary>
+        /// 模块导航
+        /// </summary>
+        /// <param name="pluginMetadata"></param>
         private void SwitchPlugin(PluginRegistry pluginMetadata)
         {
             if (pluginMetadata is null)
@@ -202,6 +224,13 @@ namespace PowerLab.ViewModels
                 pluginMetadata.DefaultView);
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="regionManager"></param>
+        /// <param name="moduleManager"></param>
+        /// <param name="moduleCatalog"></param>
+        /// <param name="logger"></param>
         public HomepageViewModel(IRegionManager regionManager, IModuleManager moduleManager, IModuleCatalog moduleCatalog, ILogger logger)
         {
             _regionManager = regionManager;
@@ -215,7 +244,11 @@ namespace PowerLab.ViewModels
             NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         }
 
-        private void LoadPluginWithALC(Assembly pluginAssembly)
+        /// <summary>
+        /// 加载模块程序集，并注册到 Prism 模块管理器中
+        /// </summary>
+        /// <param name="pluginAssembly"></param>
+        private void LoadPluginByAssembly(Assembly pluginAssembly)
         {
             Type IModuleType = typeof(IModule);
 
@@ -237,6 +270,11 @@ namespace PowerLab.ViewModels
             }
         }
 
+        /// <summary>
+        /// 创建 Prism ModuleInfo 对象
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private static ModuleInfo CreateModuleInfo(Type type)
         {
             string moduleName = type.Name;

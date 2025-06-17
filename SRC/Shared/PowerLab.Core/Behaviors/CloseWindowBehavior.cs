@@ -3,6 +3,9 @@ using Microsoft.Xaml.Behaviors;
 
 namespace PowerLab.Core.Behaviors
 {
+    /// <summary>
+    /// 关闭窗口行为
+    /// </summary>
     public class CloseWindowBehavior : Behavior<Window>
     {
         public bool CloseTrigger

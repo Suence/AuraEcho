@@ -41,7 +41,7 @@ namespace PowerLab
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            //moduleCatalog.AddModule<ModuleNameModule>();
+            
         }
 
         protected override void OnInitialized()

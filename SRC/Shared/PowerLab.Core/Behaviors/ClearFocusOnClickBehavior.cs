@@ -5,6 +5,9 @@ using System.Windows.Input;
 
 namespace PowerLab.Core.Behaviors
 {
+    /// <summary>
+    /// 点击空白处清除焦点的行为
+    /// </summary>
     public class ClearFocusOnClickBehavior : Behavior<FrameworkElement>
     {
         protected override void OnAttached()

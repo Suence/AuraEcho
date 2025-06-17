@@ -4,6 +4,9 @@ using Microsoft.Xaml.Behaviors;
 
 namespace PowerLab.Core.Behaviors
 {
+    /// <summary>
+    /// 拖放命令行为，用于在拖放操作时执行指定的命令。
+    /// </summary>
     public class DropCommandBehavior : Behavior<UIElement>
     {
         public static readonly DependencyProperty CommandProperty 

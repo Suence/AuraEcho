@@ -19,15 +19,24 @@ namespace PowerLab.ViewModels
         private ObservableCollection<PluginRegistry> _pluginRegistries = [];
         #endregion
 
+        /// <summary>
+        /// 扩展模块列表
+        /// </summary>
         public ObservableCollection<PluginRegistry> PluginRegistries
         {
             get => _pluginRegistries;
             set => SetProperty(ref _pluginRegistries, value);
         }
 
+        /// <summary>
+        /// 已启用的扩展模块列表
+        /// </summary>
         public ObservableCollection<PluginRegistry> EnabledPlugins
             => new(PluginRegistries.Where(p => p.Status == PluginStatus.Enabled));
 
+        /// <summary>
+        /// 已禁用的扩展模块列表
+        /// </summary>
         public ObservableCollection<PluginRegistry> DisabledPlugins
             => new(PluginRegistries.Where(p => p.Status == PluginStatus.Disabled));
 
@@ -44,6 +53,9 @@ namespace PowerLab.ViewModels
             SaveData();
         }
 
+        /// <summary>
+        /// 保存模块配置
+        /// </summary>
         private void SaveData()
         {
             string pluginRegistriesJson = JsonSerializer.Serialize(PluginRegistries, new JsonSerializerOptions { WriteIndented = true });
@@ -51,6 +63,11 @@ namespace PowerLab.ViewModels
         }
 
         public DelegateCommand<PluginRegistry> PlanDisablePluginCommand { get; }
+        
+        /// <summary>
+        /// 计划禁用模块
+        /// </summary>
+        /// <param name="pluginRegistry"></param>
         private void PlanDisablePlugin(PluginRegistry pluginRegistry)
         {
             if (pluginRegistry == null) return;
@@ -65,6 +82,11 @@ namespace PowerLab.ViewModels
 
 
         public DelegateCommand<PluginRegistry> PlanUninstallPluginCommand { get; }
+        
+        /// <summary>
+        /// 计划卸载模块
+        /// </summary>
+        /// <param name="pluginRegistry"></param>
         private void PlanUninstallPlugin(PluginRegistry pluginRegistry)
         {
             if (pluginRegistry == null) return;
@@ -75,6 +97,11 @@ namespace PowerLab.ViewModels
         }
 
         public DelegateCommand<PluginRegistry> CancelUninstallPluginCommand { get; }
+        
+        /// <summary>
+        /// 取消卸载计划
+        /// </summary>
+        /// <param name="pluginRegistry"></param>
         private void CancelUninstallPlugin(PluginRegistry pluginRegistry)
         {
             if (pluginRegistry == null) return;
@@ -83,6 +110,9 @@ namespace PowerLab.ViewModels
             SaveData();
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public PluginsDashboardViewModel()
         {
             PlanEnablePluginCommand = new DelegateCommand<PluginRegistry>(PlanEnablePlugin);

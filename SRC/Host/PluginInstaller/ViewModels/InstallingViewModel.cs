@@ -10,6 +10,9 @@ using Prism.Regions;
 
 namespace PluginInstaller.ViewModels
 {
+    /// <summary>
+    /// 正在安装
+    /// </summary>
     public class InstallingViewModel : BindableBase, INavigationAware
     {
         #region private members
@@ -20,6 +23,9 @@ namespace PluginInstaller.ViewModels
         private PluginManifest _pluginManifest;
         #endregion
 
+        /// <summary>
+        /// 模块清单
+        /// </summary>
         public PluginManifest PluginManifest
         {
             get => _pluginManifest;
@@ -27,6 +33,9 @@ namespace PluginInstaller.ViewModels
         }
 
         public DelegateCommand InstallPluginCommand { get; }
+        /// <summary>
+        /// 安装模块
+        /// </summary>
         private void InstallPlugin()
         {
             // 拷贝到目标插件目录
@@ -41,6 +50,12 @@ namespace PluginInstaller.ViewModels
                 ViewNames.InstallCompleted);
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="regionManager"></param>
+        /// <param name="logger"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public InstallingViewModel(IRegionManager regionManager, ILogger logger)
         {
             _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));

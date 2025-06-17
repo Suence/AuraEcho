@@ -2,9 +2,15 @@
 
 namespace PowerLab.Host.Core.Models
 {
+    /// <summary>
+    /// 模块配置信息
+    /// </summary>
     public class PluginRegistry : BindableBase
     {
         private PluginStatus _status;
+        /// <summary>
+        /// 当前状态
+        /// </summary>
         public PluginStatus Status
         {
             get => _status;
@@ -12,6 +18,9 @@ namespace PowerLab.Host.Core.Models
         }
 
         private PluginPlanStatus _planStatus;
+        /// <summary>
+        /// 计划状态
+        /// </summary>
         public PluginPlanStatus PlanStatus
         {
             get => _planStatus; 
@@ -19,6 +28,9 @@ namespace PowerLab.Host.Core.Models
         }
 
         private PluginManifest _manifest;
+        /// <summary>
+        /// 清单信息
+        /// </summary>
         public PluginManifest Manifest
         {
             get => _manifest;
@@ -26,6 +38,9 @@ namespace PowerLab.Host.Core.Models
         }
 
         private string _defaultView;
+        /// <summary>
+        /// 默认视图
+        /// </summary>
         public string DefaultView
         {
             get => _defaultView;
@@ -33,7 +48,7 @@ namespace PowerLab.Host.Core.Models
         }
 
         /// <summary>
-        /// 插件所在目录路径
+        /// 模块所在目录路径
         /// </summary>
         public string PluginFolder { get; set; } = string.Empty;
     }

@@ -33,7 +33,6 @@ namespace PowerLab.ViewModels
         public ICommand ExitApplicationCommand { get; }
         private void ExitApplication() => Application.Current.Shutdown();
 
-
         public DelegateCommand<string> GoToTargetViewCommand { get; }
         private async void GoToTargetView(string viewName)
         {
@@ -53,25 +52,4 @@ namespace PowerLab.ViewModels
             _regionManager = container.Resolve(typeof(IRegionManager)) as IRegionManager;
         }
     }
-
-    //public class DelegateCommand : ICommand
-    //{
-    //    public DelegateCommand(Action commandAction, Func<bool> canExecuteFunc)
-    //        => (CommandAction, CanExecuteFunc) = (commandAction, canExecuteFunc);
-
-    //    public Action CommandAction { get; set; }
-    //    public Func<bool> CanExecuteFunc { get; set; }
-
-    //    public void Execute(object parameter)
-    //        => CommandAction();
-
-    //    public bool CanExecute(object parameter)
-    //        => CanExecuteFunc?.Invoke() ?? true;
-
-    //    public event EventHandler CanExecuteChanged
-    //    {
-    //        add => CommandManager.RequerySuggested += value; 
-    //        remove => CommandManager.RequerySuggested -= value; 
-    //    }
-    //}
 }

@@ -11,6 +11,9 @@ using PowerLab.Host.Core.Models;
 
 namespace PowerLab.Converters
 {
+    /// <summary>
+    /// 插件图标转换器
+    /// </summary>
     public class PluginIconConverter : MarkupExtension, IValueConverter
     {
         public PluginIconConverter _instance;

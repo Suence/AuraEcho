@@ -5,13 +5,23 @@ using Serilog.Events;
 
 namespace PowerLab.Host.Core.Services
 {
+    /// <summary>
+    /// Serilog 日志服务
+    /// </summary>
     public class SerilogService : PowerLab.Core.Contracts.ILogger
     {
         #region private members
         private static string LogFilePath(string LogEvent)
             => Path.Combine(ApplicationPaths.Logs, LogEvent, "log.log");
 
+        /// <summary>
+        /// 输出模板
+        /// </summary>
         private static readonly string SerilogOutputTemplate = "{NewLine}{NewLine}日期：{Timestamp:yyyy-MM-dd HH:mm:ss.fff}{NewLine}日志级别：{Level}{NewLine}信息：{Message}{NewLine}{Exception}" + new string('-', 50);
+
+        /// <summary>
+        /// 日志记录器实例
+        /// </summary>
         private readonly Logger Logger =
             new LoggerConfiguration()
                .Enrich.FromLogContext()
@@ -24,10 +34,34 @@ namespace PowerLab.Host.Core.Services
                .CreateLogger();
         #endregion
 
+        /// <summary>
+        /// Debug 级别日志
+        /// </summary>
+        /// <param name="message"></param>
         public void Debug(string message) => Logger.Debug(message);
+        
+        /// <summary>
+        /// Information 级别日志
+        /// </summary>
+        /// <param name="message"></param>
         public void Information(string message) => Logger.Information(message);
+        
+        /// <summary>
+        /// Warning 级别日志
+        /// </summary>
+        /// <param name="message"></param>
         public void Warning(string message) => Logger.Warning(message);
+        
+        /// <summary>
+        /// Error 级别日志
+        /// </summary>
+        /// <param name="message"></param>
         public void Error(string message) => Logger.Error(message);
+
+        /// <summary>
+        /// Fatal 级别日志
+        /// </summary>
+        /// <param name="message"></param>
         public void Fatal(string message) => Logger.Fatal(message);
     }
 }

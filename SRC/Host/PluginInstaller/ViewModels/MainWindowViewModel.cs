@@ -19,7 +19,6 @@ namespace PluginInstaller.ViewModels
 
         public MainWindowViewModel()
         {
-            // Initialize any necessary properties or commands here
         }
     }
 }

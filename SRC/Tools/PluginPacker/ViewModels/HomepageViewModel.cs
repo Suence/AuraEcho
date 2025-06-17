@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Resources;
 using PluginPacker.Models;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Extensions;
@@ -15,6 +14,9 @@ using Prism.Mvvm;
 
 namespace PluginPacker.ViewModels
 {
+    /// <summary>
+    /// 首页
+    /// </summary>
     public class HomepageViewModel : BindableBase
     {
         #region private members
@@ -28,30 +30,45 @@ namespace PluginPacker.ViewModels
         private string _manifestFileContent = string.Empty;
         #endregion
 
+        /// <summary>
+        /// 模块清单内容
+        /// </summary>
         public string ManifestFileContent
         {
             get => _manifestFileContent;
             set => SetProperty(ref _manifestFileContent, value);
         }
 
+        /// <summary>
+        /// 模块清单
+        /// </summary>
         public PluginManifest PluginManifest
         {
             get => _pluginManifest;
             set => SetProperty(ref _pluginManifest, value);
         }
 
+        /// <summary>
+        /// 模块包输出目录
+        /// </summary>
         public string OutputFolder
         {
             get => _outputFolder;
             set => SetProperty(ref _outputFolder, value);
         }
 
+        /// <summary>
+        /// 模块文件列表
+        /// </summary>
         public ObservableCollection<PluginFile> PluginFiles
         {
             get => _pluginFiles;
             set => SetProperty(ref _pluginFiles, value);
         }
 
+        /// <summary>
+        /// 图标文件
+        /// </summary>
         public PluginFile IconFile
         {
             get => _iconFile;
@@ -59,12 +76,21 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand<PluginFile> AddPluginFileCommand { get; }
+
+        /// <summary>
+        /// 添加模块文件
+        /// </summary>
+        /// <param name="pluginFile"></param>
         private void AddPluginFile(PluginFile pluginFile)
         {
             PluginFiles.Add(pluginFile);
         }
 
         public DelegateCommand<DragEventArgs> DropPluginFilesCommand { get; }
+        /// <summary>
+        /// 拖放模块文件
+        /// </summary>
+        /// <param name="e"></param>
         private void DropPluginFiles(DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -84,6 +110,9 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand GenPluginIdCommand { get; }
+        /// <summary>
+        /// 生成模块 ID
+        /// </summary>
         private void GenPluginId()
         {
             PluginManifest.Id = Guid.NewGuid().ToString("N").ToUpperInvariant();
@@ -91,6 +120,10 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand<PluginFile> SetEntryFileCommand { get; }
+        /// <summary>
+        /// 设置入口程序集
+        /// </summary>
+        /// <param name="pluginFile"></param>
         private void SetEntryFile(PluginFile pluginFile)
         {
             PluginFiles.ForEach(pf => pf.IsEntryFile = false);
@@ -100,6 +133,9 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand OpenFileCommand { get; }
+        /// <summary>
+        /// 通过文件夹对话框添加模块文件
+        /// </summary>
         private void OpenFile()
         {
             var filePath = _fileDialogService.OpenFile("选择插件文件", "所有文件 (*.*)|*.*");
@@ -114,12 +150,19 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand<PluginFile> RemovePluginFileCommand { get; }
+        /// <summary>
+        /// 移除模块文件
+        /// </summary>
+        /// <param name="pluginFile"></param>
         private void RemovePluginFile(PluginFile pluginFile)
         {
             PluginFiles.Remove(pluginFile);
         }
 
         public DelegateCommand SetIconCmmand { get; }
+        /// <summary>
+        /// 设置模块图标
+        /// </summary>
         private void SetIcon()
         {
             var filePath = _fileDialogService.OpenFile("选择图像文件", "图像文件|*.jpg;*.png;*.jpeg;*.bmp");
@@ -132,6 +175,9 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand SetOutputFolderCommand { get; }
+        /// <summary>
+        /// 设置输出目录
+        /// </summary>
         private void SetOutputFolder()
         {
             var folderPath = _fileDialogService.SelectFolder("选择输出目录");
@@ -142,6 +188,10 @@ namespace PluginPacker.ViewModels
         }
 
         public DelegateCommand PackPluginCommand { get; }
+        /// <summary>
+        /// 可打包
+        /// </summary>
+        /// <returns></returns>
         private bool PackPluginCommandCanExecute()
         {
             return !String.IsNullOrWhiteSpace(PluginManifest.Id) &&
@@ -152,6 +202,10 @@ namespace PluginPacker.ViewModels
                    !String.IsNullOrWhiteSpace(PluginManifest.Author) &&
                    IconFile is not null;
         }
+
+        /// <summary>
+        /// 开始打包
+        /// </summary>
         private void PackPlugin()
         {
             _logger.Debug("开始打包");
@@ -189,6 +243,12 @@ namespace PluginPacker.ViewModels
             MessageBox.Show("插件打包完成！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="fileDialogService"></param>
+        /// <param name="logger"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public HomepageViewModel(IFileDialogService fileDialogService, ILogger logger)
         {
             _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
@@ -216,6 +276,11 @@ namespace PluginPacker.ViewModels
             PluginManifestChanged(null, null);
         }
 
+        /// <summary>
+        /// 模块清单信息已更改
+        /// </summary>
+        /// <param name="_"></param>
+        /// <param name="__"></param>
         private void PluginManifestChanged(object? _, PropertyChangedEventArgs? __)
         {
             string pluginManifestContent =

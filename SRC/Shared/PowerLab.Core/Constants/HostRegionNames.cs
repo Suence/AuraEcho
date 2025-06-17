@@ -1,5 +1,8 @@
 ﻿namespace PowerLab.Core.Constants
 {
+    /// <summary>
+    /// 宿主区域名称常量
+    /// </summary>
     public static class HostRegionNames
     {
         public const string MainRegion = nameof(MainRegion);

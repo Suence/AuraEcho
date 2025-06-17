@@ -2,6 +2,9 @@
 {
     using System.IO;
 
+    /// <summary>
+    /// 目录操作工具类
+    /// </summary>
     public static class DirectoryUtils
     {
         public static void SafeMoveDirectory(string sourceDir, string destinationDir)

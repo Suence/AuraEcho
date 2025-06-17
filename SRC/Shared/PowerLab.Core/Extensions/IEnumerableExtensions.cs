@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace PowerLab.Core.Extensions
 {
+    /// <summary>
+    /// <see cref="IEnumerable{T}"/> 扩展方法
+    /// </summary>
     public static class IEnumerableExtensions
     {
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> @this)

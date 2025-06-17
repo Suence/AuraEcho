@@ -4,6 +4,9 @@ using PowerLab.Core.Strings;
 
 namespace PowerLab.Core.Enums
 {
+    /// <summary>
+    /// 程序语言枚举
+    /// </summary>
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum AppLanguage
     {

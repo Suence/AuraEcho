@@ -9,6 +9,9 @@ using System.Windows.Media;
 
 namespace PowerLab.Core.Converters
 {
+    /// <summary>
+    /// <see cref="Color"/> 转换为 <see cref="SolidColorBrush"/> 的转换器"/>
+    /// </summary>
     [ValueConversion(typeof(Color), typeof(SolidColorBrush))]
     public class ColorToSolidColorBrushConverter : IValueConverter
     {

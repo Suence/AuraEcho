@@ -6,6 +6,9 @@ using PowerLab.Host.Core.Models;
 
 namespace PowerLab.Converters
 {
+    /// <summary>
+    /// 插件状态文本转换器
+    /// </summary>
     public class PluginStatusTextConverter : MarkupExtension, IMultiValueConverter
     {
         private PluginStatusTextConverter _instance;

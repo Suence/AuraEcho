@@ -3,6 +3,9 @@ using System.Runtime.Loader;
 
 namespace PowerLab.Tools
 {
+    /// <summary>
+    /// 自定义程序集加载上下文，用于加载插件程序集
+    /// </summary>
     public class PluginLoadContext : AssemblyLoadContext
     {
         private readonly AssemblyDependencyResolver _resolver;

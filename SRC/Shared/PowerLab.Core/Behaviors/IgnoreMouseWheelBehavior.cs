@@ -5,6 +5,9 @@ using System.Windows.Input;
 
 namespace PowerLab.Core.Behaviors
 {
+    /// <summary>
+    /// 忽略鼠标滚轮事件的行为
+    /// </summary>
     public class IgnoreMouseWheelBehavior : Behavior<UIElement>
     {
         protected override void OnAttached()
