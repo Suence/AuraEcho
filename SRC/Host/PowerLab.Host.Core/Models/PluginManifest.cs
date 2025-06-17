@@ -9,6 +9,8 @@ namespace PowerLab.Host.Core.Models
         private string? _version;
         private string? _description;
         private string? _entryAssemblyName;
+        private string? _author;
+        private string? _icon;
 
         public string? Id 
         { 
@@ -16,6 +18,18 @@ namespace PowerLab.Host.Core.Models
             set => SetProperty(ref _id, value); 
         }
         
+        public string? Icon
+        {
+            get => _icon;
+            set => SetProperty(ref _icon, value);
+        }
+
+        public string? Author
+        {
+            get => _author;
+            set => SetProperty(ref _author, value);
+        }
+
         public string? PluginName 
         { 
             get => _pluginName;

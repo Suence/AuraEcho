@@ -61,6 +61,70 @@
         <StackPanel Grid.Column="0">
             <TextBlock Margin="0,8"
                        FontSize="20"
+                       Text="BASE" />
+            <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                <Border Width="60"
+                        Height="60"
+                        Margin="0,0,8,0"
+                        Background="Transparent"
+                        DockPanel.Dock="Left">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseEnter">
+                            <i:ChangePropertyAction PropertyName="Visibility"
+                                                    TargetName="SelectIconButton"
+                                                    Value="{x:Static Visibility.Visible}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeave">
+                            <i:ChangePropertyAction PropertyName="Visibility"
+                                                    TargetName="SelectIconButton"
+                                                    Value="{x:Static Visibility.Hidden}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Grid>
+                        <Grid.Background>
+                            <ImageBrush ImageSource="{Binding IconFile.FilePath}"/>
+                        </Grid.Background>
+                        <Rectangle Stroke="#333333"
+                                   StrokeDashArray="2 2"
+                                   StrokeThickness="2" />
+                        <Button x:Name="SelectIconButton"
+                                Width="30"
+                                Command="{Binding SetIconCmmand}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                BorderThickness="0"
+                                Content="+"
+                                Visibility="Hidden"
+                                av:Visibility="Visible"
+                                FontSize="18" />
+                    </Grid>
+                </Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0"
+                             Width="200"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             av:Text="PLUGIN NAME"
+                             Text="{Binding PluginManifest.PluginName, UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel Grid.Row="1"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                        <TextBox Width="100"
+                                 Margin="0,0,8,0"
+                                 av:Text="AUTHOR"
+                                 Text="{Binding PluginManifest.Author, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Width="80"
+                                 av:Text="1.0.0"
+                                 Text="{Binding PluginManifest.Version, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+            <TextBlock Margin="0,8"
+                       FontSize="20"
                        Text="PLUGIN FILES" />
             <Grid Height="150"
                   Margin="0,0,0,8"
@@ -112,38 +176,15 @@
                            Text="PLUGIN ID" />
                 <DockPanel Margin="0,0,0,8" LastChildFill="True">
                     <Button Padding="16,4"
+                            Command="{Binding GenPluginIdCommand}"
                             Content="GEN"
                             DockPanel.Dock="Right"
-                            Command="{Binding GenPluginIdCommand}"
                             FontSize="14" />
                     <TextBox VerticalContentAlignment="Center"
                              av:Text="ID"
                              FontSize="14"
                              Text="{Binding PluginManifest.Id, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>
-                <Grid Margin="0,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                        <TextBlock Margin="0,0,0,4"
-                                   FontSize="16"
-                                   Text="PLUGIN NAME" />
-                        <TextBox av:Text="PLUGIN NAME"
-                                 FontSize="14"
-                                 Text="{Binding PluginManifest.PluginName, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-
-                        <TextBlock Margin="0,0,0,4"
-                                   FontSize="16"
-                                   Text="VERSION" />
-                        <TextBox av:Text="VERSION"
-                                 FontSize="14"
-                                 Text="{Binding PluginManifest.Version, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                </Grid>
 
                 <TextBlock Margin="0,0,0,4"
                            FontSize="16"

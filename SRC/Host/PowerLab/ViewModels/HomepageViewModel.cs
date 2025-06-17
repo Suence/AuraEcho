@@ -64,7 +64,7 @@ namespace PowerLab.ViewModels
 
             foreach (var (manifest, pluginFolder) in pluginManifests)
             {
-                var pluginRegistry = pluginRegistries.FirstOrDefault(pr => pr.Id == manifest.Id);
+                var pluginRegistry = pluginRegistries.FirstOrDefault(pr => pr.Manifest.Id == manifest.Id);
 
                 if (pluginRegistry != null)
                 {
@@ -75,7 +75,7 @@ namespace PowerLab.ViewModels
                         {
                             Directory.Delete(pluginRegistry.PluginFolder, true);
                             pluginRegistries.Remove(pluginRegistry);
-                            _logger.Debug($"插件 {pluginRegistry.Name} 已被卸载，跳过加载。");
+                            _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
                             continue;
                         }
 
@@ -91,7 +91,7 @@ namespace PowerLab.ViewModels
                     // 已禁用
                     if (pluginRegistry.Status == PluginStatus.Disabled)
                     {
-                        _logger.Debug($"插件 {pluginRegistry.Name} 已被禁用，跳过加载。");
+                        _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被禁用，跳过加载。");
                         continue;
                     }
                 }
@@ -117,7 +117,7 @@ namespace PowerLab.ViewModels
                     continue;
                 }
 
-                var defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
+                PluginDefaultViewAttribute defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
                 if (defaultView is null)
                 {
                     _logger.Error($"插件 {manifest.PluginName} 没有指定默认视图。");
@@ -128,8 +128,7 @@ namespace PowerLab.ViewModels
                 {
                     pluginRegistry = new PluginRegistry
                     {
-                        Id = manifest.Id,
-                        Name = manifest.PluginName,
+                        Manifest = manifest,
                         DefaultView = defaultView.ViewName,
                         Status = PluginStatus.Enabled,
                         PluginFolder = pluginFolder

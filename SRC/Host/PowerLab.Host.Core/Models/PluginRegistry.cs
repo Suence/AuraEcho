@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 
 namespace PowerLab.Host.Core.Models
 {
@@ -19,11 +18,19 @@ namespace PowerLab.Host.Core.Models
             set => SetProperty(ref _planStatus, value);
         }
 
-        public string DefaultView { get; set; }
-        
-        public string Name { get; set; }
+        private PluginManifest _manifest;
+        public PluginManifest Manifest
+        {
+            get => _manifest;
+            set => SetProperty(ref _manifest, value);
+        }
 
-        public string Id { get; set; }
+        private string _defaultView;
+        public string DefaultView
+        {
+            get => _defaultView;
+            set => SetProperty(ref _defaultView, value);
+        }
 
         /// <summary>
         /// 插件所在目录路径

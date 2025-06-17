@@ -5,6 +5,7 @@
              xmlns:cm="clr-namespace:PowerLab.Host.Core.Models;assembly=PowerLab.Host.Core"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:converters="clr-namespace:PowerLab.Converters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:powerlab="http://ui.powerlab.com/"
              xmlns:prism="http://prismlibrary.com/"
@@ -23,16 +24,22 @@
     <UserControl.Resources>
         <powerlab:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <CollectionViewSource x:Key="EnabledPluginsView"
+                              IsLiveSortingRequested="True"
                               Filter="EnabledPluginsFilter"
                               Source="{Binding Plugins}" />
         <DataTemplate x:Key="PluginTemplate" DataType="{x:Type cm:PluginRegistry}">
-            <Button Height="30"
-                    Margin="0,0,0,1"
+            <Button Margin="0,0,0,1"
                     d:Content="Plugin"
                     BorderThickness="0"
+                    Padding="8"
+                    HorizontalContentAlignment="Stretch"
                     Command="{Binding Source={StaticResource BindingProxy}, Path=Data.SwitchPluginCommand}"
-                    CommandParameter="{Binding}"
-                    Content="{Binding Name}" />
+                    CommandParameter="{Binding}">
+                <DockPanel LastChildFill="True">
+                    <Image Width="24" Height="24" Source="{Binding Path=., Converter={converters:PluginIconConverter}}" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="0, 0, 4, 0"/>
+                    <TextBlock d:Text="Plugin Name" VerticalAlignment="Center" Text="{Binding Manifest.PluginName}"/>
+                </DockPanel>
+            </Button>
         </DataTemplate>
     </UserControl.Resources>
     <Grid>

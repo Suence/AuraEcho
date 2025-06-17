@@ -21,6 +21,7 @@ namespace PluginPacker.ViewModels
         private readonly IFileDialogService _fileDialogService;
         private readonly ILogger _logger;
 
+        private PluginFile _iconFile;
         private string _outputFolder;
         private ObservableCollection<PluginFile> _pluginFiles;
         private PluginManifest _pluginManifest;
@@ -49,6 +50,12 @@ namespace PluginPacker.ViewModels
         {
             get => _pluginFiles;
             set => SetProperty(ref _pluginFiles, value);
+        }
+
+        public PluginFile IconFile
+        {
+            get => _iconFile;
+            set => SetProperty(ref _iconFile, value);
         }
 
         public DelegateCommand<PluginFile> AddPluginFileCommand { get; }
@@ -112,6 +119,18 @@ namespace PluginPacker.ViewModels
             PluginFiles.Remove(pluginFile);
         }
 
+        public DelegateCommand SetIconCmmand { get; }
+        private void SetIcon()
+        {
+            var filePath = _fileDialogService.OpenFile("选择图像文件", "图像文件|*.jpg;*.png;*.jpeg;*.bmp");
+
+            if (filePath is null) return;
+
+            string? fileName = Path.GetFileName(filePath);
+            IconFile = new PluginFile(filePath, fileName);
+            PluginManifest.Icon = IconFile.FileName;
+        }
+
         public DelegateCommand SetOutputFolderCommand { get; }
         private void SetOutputFolder()
         {
@@ -129,7 +148,9 @@ namespace PluginPacker.ViewModels
                    !String.IsNullOrWhiteSpace(PluginManifest.PluginName) &&
                    !String.IsNullOrWhiteSpace(PluginManifest.Version) &&
                    !String.IsNullOrWhiteSpace(PluginManifest.EntryAssemblyName) &&
-                   !String.IsNullOrWhiteSpace(OutputFolder);
+                   !String.IsNullOrWhiteSpace(OutputFolder) &&
+                   !String.IsNullOrWhiteSpace(PluginManifest.Author) &&
+                   IconFile is not null;
         }
         private void PackPlugin()
         {
@@ -142,17 +163,17 @@ namespace PluginPacker.ViewModels
             using (var zipStream = new FileStream(pluginPackageFilePath, FileMode.Create))
             using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
             {
-                foreach (var file in PluginFiles.Select(pf => pf.FilePath))
+                var allPluginFiles = PluginFiles.Concat([IconFile]);
+                foreach (var file in allPluginFiles)
                 {
-                    if (File.Exists(file))
+                    if (File.Exists(file.FilePath))
                     {
                         // 在压缩包中保留相对路径（可根据需要修改）
-                        string entryName = Path.GetFileName(file); // 或者使用 Path.GetRelativePath(baseDir, file)
-                        archive.CreateEntryFromFile(file, entryName);
+                        archive.CreateEntryFromFile(file.FilePath, file.FileName);
                     }
                     else
                     {
-                        _logger.Debug($"文件未找到: {file}");
+                        _logger.Debug($"文件未找到: {file.FilePath}");
                     }
                 }
 
@@ -173,8 +194,13 @@ namespace PluginPacker.ViewModels
             _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            PluginFiles = new ObservableCollection<PluginFile>();
-            PluginManifest = new PluginManifest();
+            PluginFiles = [];
+            PluginManifest = new()
+            {
+                Author = "AUTHOR",
+                PluginName = "PLUGIN NAME",
+                Version = "1.0.0"
+            };
             PluginManifest.PropertyChanged += PluginManifestChanged;
 
             AddPluginFileCommand = new DelegateCommand<PluginFile>(AddPluginFile);
@@ -185,6 +211,7 @@ namespace PluginPacker.ViewModels
             SetEntryFileCommand = new DelegateCommand<PluginFile>(SetEntryFile);
             SetOutputFolderCommand = new DelegateCommand(SetOutputFolder);
             GenPluginIdCommand = new DelegateCommand(GenPluginId);
+            SetIconCmmand = new DelegateCommand(SetIcon);
 
             PluginManifestChanged(null, null);
         }
