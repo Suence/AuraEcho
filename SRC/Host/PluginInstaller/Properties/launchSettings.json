@@ -1,8 +1,7 @@
 {
   "profiles": {
     "PluginInstaller": {
-      "commandName": "Project",
-      "commandLineArgs": "\"D:\\Inbox\\PlixInstallerTest\\826A24D18C764569B5F1741C0AA16810.plix\""
+      "commandName": "Project"
     }
   }
 }

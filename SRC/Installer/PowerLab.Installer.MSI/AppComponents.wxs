@@ -1,0 +1,21 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+		<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
+			<File Id="PluginInstaller.exe" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.exe" />
+			<File Id="plix.ico" Source="Assets/Icons/PowerLab.ico" />
+			<!-- 文件关联 -->
+			<ProgId Id="Suence.Plix" Description="PowerLab plugin file" Icon="plix.ico">
+				<Extension Id="plix" ContentType="application/plix" >
+					<Verb Id="open" Command="Open" TargetFile="PluginInstaller.exe" Argument="&quot;%1&quot;" />
+				</Extension>
+			</ProgId>
+		</Component>
+
+		<Files Include="$(var.PluginInstaller.TargetDir)**" >
+			<Exclude Files="*.pdb"/>
+			<Exclude Files="PluginInstaller.exe"/>
+		</Files>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
