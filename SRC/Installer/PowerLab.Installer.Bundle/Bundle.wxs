@@ -1,12 +1,25 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
-  <Bundle Id="TODO_Manufacturer.PowerLab.Installer.Bundle" Name="PowerLab.Installer.Bundle" Manufacturer="TODO Manufacturer" Version="1.0.0.0">
-    <BootstrapperApplication>
-      <bal:WixStandardBootstrapperApplication LicenseUrl="https://www.example.com/license" Theme="hyperlinkLicense" />
-    </BootstrapperApplication>
+	<Bundle Name="PowerLab.Installer.Bundle"
+			Manufacturer="Suencesoft"
+			Version="1.0.0.0"
+			IconSourceFile="Assets/Icons/PowerLab.ico"
+			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
+		<BootstrapperApplication>
+			<bal:WixStandardBootstrapperApplication LicenseUrl="https://www.example.com/license" Theme="hyperlinkLicense" />
+		</BootstrapperApplication>
 
-    <Chain>
+		<Chain DisableSystemRestore="yes" >
+			<MsiPackage Id="PowerLabInstallerMSI"
+						Visible="no"
+						Compressed="yes"
+						EnableFeatureSelection="yes"
+						SourceFile="PowerLab.Installer.MSI.msi"/>
+			<MsiPackage Id="PluginInstallerMSI"
+						Visible="no"
+						Compressed="yes"
+						EnableFeatureSelection="yes"
+						SourceFile="PowerLab.PluginInstaller.MSI.msi"/>
+		</Chain>
 
-    </Chain>
-
-  </Bundle>
+	</Bundle>
 </Wix>

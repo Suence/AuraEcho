@@ -1,21 +1,39 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
-		<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
-			<File Id="PluginInstaller.exe" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.exe" />
-			<File Id="plix.ico" Source="Assets/Icons/PowerLab.ico" />
-			<!-- 文件关联 -->
-			<ProgId Id="Suence.Plix" Description="PowerLab plugin file" Icon="plix.ico">
-				<Extension Id="plix" ContentType="application/plix" >
-					<Verb Id="open" Command="Open" TargetFile="PluginInstaller.exe" Argument="&quot;%1&quot;" />
-				</Extension>
-			</ProgId>
-		</Component>
+	<Fragment>
+		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
+		<ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
+				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
+				<File Id="PowerLabIcon" Source="Assets/Icons/PowerLab.ico" />
+			</Component>
 
-		<Files Include="$(var.PluginInstaller.TargetDir)**" >
-			<Exclude Files="*.pdb"/>
-			<Exclude Files="PluginInstaller.exe"/>
-		</Files>
-    </ComponentGroup>
-  </Fragment>
+			<Files Include="$(var.PowerLab.TargetDir)**" >
+				<Exclude Files="*.pdb"/>
+				<Exclude Files="PowerLab.exe"/>
+			</Files>
+
+		</ComponentGroup>
+
+		<!-- 开始菜单快捷方式 -->
+		<Component Id="UninstallShortcut" Guid="*" Directory="ProductFolder" >
+			<Shortcut Id="ApplicationStartMenuShortcut"
+					  Name="PowerLab"
+					  Icon="PowerLab.ico"
+					  Description="PowerLab by suence"
+					  Target="[INSTALLFOLDER]PowerLab.exe"
+					  WorkingDirectory="INSTALLFOLDER"/>
+
+			<Shortcut Id="UninstallShortcut"
+					  Name="卸载 PowerLab"
+					  Icon="PowerLab.ico"
+					  Description="卸载 PowerLab"
+					  Target="[SystemFolder]msiexec.exe"
+					  Arguments="/x [ProductCode]"
+					  WorkingDirectory="SystemFolder" />
+
+			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolder"/>
+			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>
+			<RegistryValue Root="HKCU" Key="Software\Suencesoft\PowerLab" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+		</Component>
+	</Fragment>
 </Wix>

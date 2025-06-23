@@ -1,0 +1,26 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
+		<ComponentGroup Id="FileComponents" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
+				<File Id="PluginInstaller.exe" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.exe" />
+				<File Id="PowerLabIcon" Source="Assets/Icons/PowerLab.ico" />
+			</Component>
+
+			<Files Include="$(var.PluginInstaller.TargetDir)**" >
+				<Exclude Files="*.pdb"/>
+				<Exclude Files="PluginInstaller.exe"/>
+			</Files>
+
+		</ComponentGroup>
+		
+		<!-- 文件关联 -->
+		<Component Id="FileAssociations" Guid="F850DAE9-1CA8-4529-BDA4-461C4FFFEA9E">
+			<ProgId Id="Suence.Plix" Description="PowerLab plugin file" Icon="PowerLabIcon">
+				<Extension Id="plix" ContentType="application/plix" >
+					<Verb Id="open" Command="Open" TargetFile="PluginInstaller.exe" Argument="&quot;%1&quot;" />
+				</Extension>
+			</ProgId>
+		</Component>
+	</Fragment>
+</Wix>

@@ -1,0 +1,20 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="PowerLab.PluginInstaller" 
+		   Manufacturer="Suencesoft" 
+		   Version="1.1.0.0"
+		   Codepage="65001"
+		   UpgradeCode="50E1E8C4-5997-466B-8A2D-0307A086C810">
+	  
+	  <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+	  
+	  <!--UpgradeCode="8D5E5DFF-2706-48F8-B247-1004FEE56DAD"-->
+	  <!-- 需要 PowerLab 前置安装条件 -->
+	  
+	  <MediaTemplate EmbedCab="yes"/>
+
+	  <Feature Id="Main">
+		  <ComponentGroupRef Id="FileComponents" />
+		  <ComponentRef Id="FileAssociations"/>
+	  </Feature>
+  </Package>
+</Wix>
