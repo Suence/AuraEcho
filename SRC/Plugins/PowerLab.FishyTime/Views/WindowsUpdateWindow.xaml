@@ -1,0 +1,24 @@
+﻿<Window x:Class="PowerLab.FishyTime.Views.WindowsUpdateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="http://prismlibrary.com/"
+        d:DesignHeight="150"
+        d:DesignWidth="220"
+        Background="Black"
+        WindowStyle="None"
+        Topmost="True"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        mc:Ignorable="d">
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{x:Static ApplicationCommands.Close}" />
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static ApplicationCommands.Close}"
+                        Executed="CloseCommand_Executed"/>
+    </Window.CommandBindings>
+    <Grid/>
+</Window>
