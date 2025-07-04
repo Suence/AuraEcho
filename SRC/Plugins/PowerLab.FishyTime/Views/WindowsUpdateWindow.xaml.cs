@@ -10,25 +10,6 @@ namespace PowerLab.FishyTime.Views
         public WindowsUpdateWindow()
         {
             InitializeComponent();
-            SetWindowFullScreen();
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void SetWindowFullScreen()
-        {
-            double screenWidth = SystemParameters.PrimaryScreenWidth;
-            double screenHeight = SystemParameters.PrimaryScreenHeight;
-
-            Width = screenWidth;
-            Height = screenHeight;
-            Left = 0;
-            Top = 0;
-        }
-
-        private void CloseCommand_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-            => Close();
     }
 }

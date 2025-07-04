@@ -10,15 +10,11 @@ namespace PowerLab.FishyTime
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
-#if DEBUG
-            containerProvider.Resolve<IRegionManager>()
-                .RegisterViewWithRegion(HostRegionNames.PluginContentRegion, typeof(FishyTimeHome));
-#endif
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterForNavigation<FishyTimeHome>();
         }
     }
 }
