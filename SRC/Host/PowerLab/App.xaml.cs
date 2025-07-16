@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using PowerLab.Core.Attributes;
@@ -14,6 +18,7 @@ using PowerLab.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Serilog.Core;
 
 namespace PowerLab
 {
@@ -56,6 +61,8 @@ namespace PowerLab
         {
             base.OnStartup(e);
 
+            RegisterEvents();
+
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
         }
@@ -85,6 +92,99 @@ namespace PowerLab
             var app = new App();
             app.InitializeComponent();
             app.Run();
+        }
+
+        /// <summary>
+        /// 订阅全局异常处理事件
+        /// </summary>
+        private void RegisterEvents()
+        {
+            //Task线程内未捕获异常处理事件
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
+            //UI线程未捕获异常处理事件（UI主线程）
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+
+            //非UI线程未捕获异常处理事件(例如自己创建的一个子线程)
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+        /// <summary>
+        /// Task 线程异常处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            try
+            {
+                if (e.Exception is Exception exception)
+                {
+                    HandleException(exception);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+            finally
+            {
+                e.SetObserved();
+            }
+        }
+
+        /// <summary>
+        /// UI 线程异常处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                HandleException(e.Exception);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+            finally
+            {
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// 非 UI 线程异常处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                if (e.ExceptionObject is Exception exception)
+                {
+                    HandleException(exception);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
+            finally
+            {
+
+            }
+        }
+
+        /// <summary>
+        /// 全局异常处理逻辑
+        /// </summary>
+        /// <param name="exception"></param>
+        private void HandleException(Exception exception)
+        {
+            Debug.WriteLine(exception);
+            LoggingAttribute.Logger.Debug(exception.ToString());
         }
     }
 }
