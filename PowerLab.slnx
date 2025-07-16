@@ -1,0 +1,42 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/DOC/" />
+  <Folder Name="/SRC/" />
+  <Folder Name="/SRC/Host/">
+    <Project Path="SRC/Host/PluginInstaller/PluginInstaller.csproj" />
+    <Project Path="SRC/Host/PowerLab.Host.Core/PowerLab.Host.Core.csproj" />
+    <Project Path="SRC/Host/PowerLab/PowerLab.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Installer/">
+    <Project Path="SRC/Installer/PowerLab.Installer.Bootstrapper/PowerLab.Installer.Bootstrapper.csproj" />
+    <Project Path="SRC/Installer/PowerLab.Installer.Bundle/PowerLab.Installer.Bundle.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/PowerLab.Installer.MSI/PowerLab.Installer.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/PowerLab.PluginInstaller.MSI/PowerLab.PluginInstaller.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/SRC/Plugins/">
+    <Project Path="SRC/Plugins/ModuleName/ModuleName.csproj" />
+    <Project Path="SRC/Plugins/PluginB/PluginB.csproj" />
+    <Project Path="SRC/Plugins/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Shared/">
+    <Project Path="SRC/Shared/PowerLab.Controls/PowerLab.Controls.csproj" />
+    <Project Path="SRC/Shared/PowerLab.Core/PowerLab.Core.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Tools/">
+    <Project Path="SRC/Tools/PluginPacker/PluginPacker.csproj" />
+  </Folder>
+  <Folder Name="/TEST/">
+    <Project Path="TEST/PowerLab.Control.Tests/PowerLab.Control.Tests.csproj" />
+  </Folder>
+</Solution>
