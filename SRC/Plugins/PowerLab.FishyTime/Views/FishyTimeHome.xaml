@@ -139,17 +139,11 @@
                                             IsMoveToPointEnabled="True"
                                             IsSnapToTickEnabled="True"
                                             LargeChange="10"
-                                            Maximum="{Binding TargetScreenWidth}"
+                                            Maximum="{Binding ManagedWindowInfo.MaxWidth}"
                                             Minimum="100"
                                             SmallChange="1"
                                             TickFrequency="1"
-                                            Value="{Binding ManagedWindowInfo.Width}">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="ValueChanged">
-                                                <i:InvokeCommandAction Command="{Binding ApplyCommand}" CommandParameter="Rect" />
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </Slider>
+                                            Value="{Binding ManagedWindowInfo.Width}"/>
                                 </DockPanel>
                                 <DockPanel Margin="4" LastChildFill="True">
                                     <TextBlock Width="60"
@@ -165,17 +159,11 @@
                                             IsMoveToPointEnabled="True"
                                             IsSnapToTickEnabled="True"
                                             LargeChange="10"
-                                            Maximum="{Binding TargetScreenHeight}"
+                                            Maximum="{Binding ManagedWindowInfo.MaxHeight}"
                                             Minimum="100"
                                             SmallChange="1"
                                             TickFrequency="1"
-                                            Value="{Binding ManagedWindowInfo.Height}">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="ValueChanged">
-                                                <i:InvokeCommandAction Command="{Binding ApplyCommand}" CommandParameter="Rect" />
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </Slider>
+                                            Value="{Binding ManagedWindowInfo.Height}"/>
                                 </DockPanel>
                             </StackPanel>
                             <Grid Margin="4">
@@ -200,20 +188,12 @@
                                             Minimum="0"
                                             SmallChange="0.01"
                                             TickFrequency="0.01"
-                                            Value="{Binding ManagedWindowInfo.Opacity}">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="ValueChanged">
-                                                <i:InvokeCommandAction Command="{Binding ApplyCommand}" CommandParameter="Opacity" />
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </Slider>
+                                            Value="{Binding ManagedWindowInfo.Opacity}"/>
                                 </DockPanel>
                                 <CheckBox Grid.Column="1"
                                           Margin="4"
                                           VerticalAlignment="Center"
                                           VerticalContentAlignment="Center"
-                                          Command="{Binding ApplyCommand}"
-                                          CommandParameter="Topmost"
                                           Content="TOPMOST"
                                           IsChecked="{Binding ManagedWindowInfo.IsTopmost}" />
                             </Grid>
@@ -229,9 +209,10 @@
                             <CheckBox Margin="4"
                                       Content="ENABLE WINDOW MASK"
                                       FontSize="14" 
-                                      IsChecked="{Binding FishyTimeConfig.IsWindowMaskEnabled}"
+                                      HorizontalAlignment="Left"
+                                      IsChecked="{Binding ManagedWindowInfo.IsEnabledMask}"
                                       Command="{Binding SaveDataCommand}"/>
-                            <StackPanel x:Name="ModeLayout">
+                            <StackPanel x:Name="ModeLayout" IsEnabled="{Binding ManagedWindowInfo.IsEnabledMask}">
                                 <Border Height="32"
                                         Margin="4"
                                         BorderBrush="#333333"
@@ -239,24 +220,17 @@
                                     <DockPanel LastChildFill="True">
                                         <ComboBox x:Name="WindowMaskModeComboBox" Width="150"
                                                   Margin="4"
-                                                  SelectedItem="{Binding FishyTimeConfig.WindowMaskMode}"
+                                                  SelectedItem="{Binding ManagedWindowInfo.MaskMode}"
                                                   ItemsSource="{Binding WindowMaskModes}"
                                                   DockPanel.Dock="Right"
-                                                  SelectedIndex="0">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="SelectionChanged">
-                                                    <i:InvokeCommandAction Command="{Binding SwtichWindowMaskModeCommand}" CommandParameter="{Binding ElementName=WindowMaskModeComboBox, Path=SelectedItem}" />
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </ComboBox>
+                                                  SelectedIndex="0"/>
+
                                         <TextBlock Margin="4"
                                                    VerticalAlignment="Center"
                                                    FontSize="12"
                                                    Text="MODE" />
                                     </DockPanel>
                                 </Border>
-
-
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>

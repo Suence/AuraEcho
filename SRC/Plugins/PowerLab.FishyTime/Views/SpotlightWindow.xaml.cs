@@ -1,6 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
-using PowerLab.FishyTime.Events;
+using System.Windows.Interop;
+using PowerLab.FishyTime.Contracts;
+using PowerLab.FishyTime.Models;
 using Prism.Events;
 
 namespace PowerLab.FishyTime.Views
@@ -8,18 +12,27 @@ namespace PowerLab.FishyTime.Views
     /// <summary>
     /// SpotlightWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class SpotlightWindow : Window
+    public partial class SpotlightWindow : Window, IWindowMask
     {
         #region private members
-        private readonly IEventAggregator _eventAggregator;
-        #endregion
-        public SpotlightWindow(IEventAggregator eventAggregator)
-        {
-            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
+        private Win32Window _win32Window;
 
+        public event Action MaskClosed;
+
+        public nint Handle => new WindowInteropHelper(this).Handle;
+        #endregion
+
+        public SpotlightWindow(Win32Window win32Window)
+        {
+            _win32Window = win32Window ?? throw new ArgumentNullException(nameof(win32Window));
             InitializeComponent();
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            MaskClosed?.Invoke();
+        }
 
         private void UpdateSpotlight(Point mousePosition)
         {
@@ -41,6 +54,11 @@ namespace PowerLab.FishyTime.Views
 
         private void RootGrid_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateSpotlightBrushRadius();
+        }
+
+        private void UpdateSpotlightBrushRadius()
+        {
             double w = RootGrid.ActualWidth;
             double h = RootGrid.ActualHeight;
 
@@ -53,9 +71,51 @@ namespace PowerLab.FishyTime.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<MouseMoveEvent>().Subscribe(UpdateSpotlight, ThreadOption.UIThread);
-            _eventAggregator.GetEvent<WindowMaskDisabledEvent>().Subscribe(Close, ThreadOption.UIThread);
-            _eventAggregator.GetEvent<SpotlightWindowCloseRequestedEvent>().Subscribe(Close, ThreadOption.UIThread);
+            Top = _win32Window.Position.Y;
+            Left = _win32Window.Position.X;
+            Width = _win32Window.Width;
+            Height = _win32Window.Height;
+
+            _win32Window.MouseMove += UpdateSpotlight;
+            _win32Window.Activated += ManagedWindowActivated;
+            _win32Window.Deactivated += ManagedWindowDeactivated;
+            _win32Window.RectChanged += ManagedWindowRectChanged;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            _win32Window.MouseMove -= UpdateSpotlight;
+            _win32Window.Activated -= ManagedWindowActivated;
+            _win32Window.Deactivated -= ManagedWindowDeactivated;
+            _win32Window.RectChanged -= ManagedWindowRectChanged;
+        }
+
+        private void ManagedWindowRectChanged(Rect rect)
+        {
+            Dispatcher.BeginInvoke(UpdateRectAndBrushRadius);
+
+            void UpdateRectAndBrushRadius()
+            {
+                Left = rect.Left;
+                Top = rect.Top;
+                Width = rect.Width;
+                Height = rect.Height;
+                UpdateSpotlightBrushRadius();
+            }
+        }
+
+        private void ManagedWindowActivated()
+        {
+            Debug.WriteLine("Tomost: true");
+            Topmost = true;
+        }
+
+        private void ManagedWindowDeactivated()
+        {
+            Debug.WriteLine("Tomost: false");
+            Topmost = false;
         }
     }
 }

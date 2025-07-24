@@ -155,6 +155,8 @@ namespace PowerLab.FishyTime.Utils
 
             return Drawing::SystemIcons.Application;
         }
+        public static Task<Drawing::Icon> GetWindowIconAsync(IntPtr hwnd)
+            => Task.Run(() => GetWindowIcon(hwnd));
 
         public static void SetWindowTopmost(IntPtr hwnd, bool topmost)
         {
@@ -163,6 +165,8 @@ namespace PowerLab.FishyTime.Utils
                 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         }
+        public static Task SetWindowTopmostAsync(IntPtr hwnd, bool topmost)
+            => Task.Run(() => SetWindowTopmost(hwnd, topmost));
 
         public static void SetWindowTopmoastWithoutShow(nint hwnd, bool topmost)
         {
@@ -171,12 +175,16 @@ namespace PowerLab.FishyTime.Utils
                 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE);
         }
+        public static Task SetWindowTopmoastWithoutShowAsync(nint hwnd, bool topmost)
+            => Task.Run(() => SetWindowTopmoastWithoutShow(hwnd, topmost));
 
         public static bool IsWindowTopmost(IntPtr hwnd)
         {
             int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
             return (exStyle & WS_EX_TOPMOST) == WS_EX_TOPMOST;
         }
+        public static Task<bool> IsWindowTopmostAsync(IntPtr hwnd)
+            => Task.Run(() => IsWindowTopmost(hwnd));
 
 
         public static Rect GetWindowRect(IntPtr hwnd)
@@ -188,6 +196,8 @@ namespace PowerLab.FishyTime.Utils
                new Point(winRect.Left, winRect.Top),
                new Size(winRect.Right - winRect.Left, winRect.Bottom - winRect.Top));
         }
+        public static Task<Rect> GetWindowRectAsync(IntPtr hwnd)
+            => Task.Run(() => GetWindowRect(hwnd));
 
         public static IntPtr GetWindowUnderMouse()
         {
@@ -209,6 +219,8 @@ namespace PowerLab.FishyTime.Utils
 
             return alpha / 255.0;
         }
+        public static Task<double> GetWindowOpacityAsync(IntPtr hwnd)
+            => Task.Run(() => GetWindowOpacity(hwnd));
 
         public static IntPtr GetTopLevelWindowUnderMouse()
         {
@@ -229,6 +241,8 @@ namespace PowerLab.FishyTime.Utils
             }
             return string.Empty;
         }
+        public static Task<string> GetWindowTitleAsync(IntPtr hwnd)
+            => Task.Run(() => GetWindowTitle(hwnd));
 
         public static string GetWindowClassName(IntPtr hwnd)
         {
@@ -251,6 +265,9 @@ namespace PowerLab.FishyTime.Utils
             bool result = SetLayeredWindowAttributes(hwnd, 0, opacity, LWA_ALPHA);
             return result;
         }
+        public static Task<bool> TrySetWindowOpacityAsync(IntPtr hwnd, byte opacity)
+            => Task.Run(() => TrySetWindowOpacity(hwnd, opacity));
+
         public static bool IsFullScreen(IntPtr hwnd)
         {
             if (!GetWindowRect(hwnd, out RECT rect))
@@ -282,6 +299,8 @@ namespace PowerLab.FishyTime.Utils
 
             return placement.showCmd;
         }
+        public static Task<ShowWindowCommands> GetWindowStateAsync(IntPtr hwnd)
+            => Task.Run(() => GetWindowState(hwnd));
 
         public static void TrackMouseLeave(IntPtr hwnd)
         {
@@ -310,6 +329,8 @@ namespace PowerLab.FishyTime.Utils
             var windowRectangle = new System.Drawing.Rectangle(rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top);
             return Screen.AllScreens.FirstOrDefault(s => s.Bounds.IntersectsWith(windowRectangle));
         }
+        public static Task<Screen> GetWindowScreenAsync(IntPtr hwnd)
+            => Task.Run(() => GetWindowScreen(hwnd));
 
     }
 

@@ -1,30 +1,51 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
-using PowerLab.FishyTime.Events;
-using Prism.Events;
+using System.Windows.Interop;
+using PowerLab.FishyTime.Contracts;
+using PowerLab.FishyTime.Models;
 
 namespace PowerLab.FishyTime.Views
 {
     /// <summary>
     /// MaskWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MaskWindow : Window
+    public partial class MaskWindow : Window, IWindowMask
     {
-        private readonly IEventAggregator _eventAggregator;
+        private readonly Win32Window _win32Window;
 
-        public MaskWindow(IEventAggregator eventAggregator)
+        public nint Handle => new WindowInteropHelper(this).Handle;
+
+        public MaskWindow(Win32Window win32Window)
         {
-            _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<WindowMaskDisabledEvent>().Subscribe(Close, ThreadOption.UIThread);
-            _eventAggregator.GetEvent<MaskWindowCloseRequestedEvent>().Subscribe(Close, ThreadOption.UIThread);
+            _win32Window = win32Window;
             InitializeComponent();
+        }
+
+        public event Action MaskClosed;
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            MaskClosed?.Invoke();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            _win32Window.Position = RestoreBounds.Location;
+            _win32Window.Width = RestoreBounds.Width;
+            _win32Window.Height = RestoreBounds.Height;
+            _win32Window.Show();
         }
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Middle) return;
 
-            Close();
+            base.Close();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -33,5 +54,16 @@ namespace PowerLab.FishyTime.Views
 
             DragMove();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Top = _win32Window.Position.Y;
+            Left = _win32Window.Position.X;
+            Width = _win32Window.Width;
+            Height = _win32Window.Height;
+
+            _win32Window.Hide();
+        }
+
     }
 }

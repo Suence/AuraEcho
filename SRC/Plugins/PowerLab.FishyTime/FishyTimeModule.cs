@@ -1,8 +1,6 @@
-﻿using PowerLab.Core.Constants;
-using PowerLab.FishyTime.Views;
+﻿using PowerLab.FishyTime.Views;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 
 namespace PowerLab.FishyTime
 {

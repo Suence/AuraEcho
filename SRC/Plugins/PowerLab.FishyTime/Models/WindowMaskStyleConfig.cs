@@ -9,9 +9,6 @@ namespace PowerLab.FishyTime.Models
 {
     public class WindowMaskStyleConfig : BindableBase
     {
-
-
-
         private string _backgroundImagePath;
         public string BackgroundImagePath
         {

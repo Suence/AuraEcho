@@ -10,6 +10,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="Black"
+        Loaded="Window_Loaded"
         MouseUp="Window_MouseUp"
         MouseDown="Window_MouseDown"
         AllowsTransparency="True"
