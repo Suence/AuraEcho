@@ -292,7 +292,7 @@ namespace PowerLab.FishyTime.Models
 
         public void Deattach()
         {
-            if (!IsClosed)
+            if (!IsClosed && !Win32Helper.IsWindowVisible(Handle))
             {
                 Win32Helper.ShowWindowNoActivate(Handle);
             }
