@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Interop;
 using PowerLab.FishyTime.Contracts;
 using PowerLab.FishyTime.Models;
+using PowerLab.FishyTime.Utils;
 using Prism.Events;
 
 namespace PowerLab.FishyTime.Views
@@ -52,15 +53,10 @@ namespace PowerLab.FishyTime.Views
             SpotlightBrush.GradientOrigin = new Point(x, y);
         }
 
-        private void RootGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-            UpdateSpotlightBrushRadius();
-        }
-
         private void UpdateSpotlightBrushRadius()
         {
-            double w = RootGrid.ActualWidth;
-            double h = RootGrid.ActualHeight;
+            double w = ActualWidth;
+            double h = ActualHeight;
 
             double radiusX = Math.Min(0.5, h / (2 * w)); // = min(0.5, h / 2w)
             double radiusY = Math.Min(w / (2 * h), 0.5); // = min(w / 2h, 0.5)
@@ -77,9 +73,11 @@ namespace PowerLab.FishyTime.Views
             Height = _win32Window.Height;
 
             _win32Window.MouseMove += UpdateSpotlight;
-            _win32Window.Activated += ManagedWindowActivated;
-            _win32Window.Deactivated += ManagedWindowDeactivated;
             _win32Window.RectChanged += ManagedWindowRectChanged;
+
+            UpdateSpotlightBrushRadius();
+
+            Win32Helper.SetWindowOwner(Handle, _win32Window.Handle);
         }
 
         protected override void OnClosing(CancelEventArgs e)

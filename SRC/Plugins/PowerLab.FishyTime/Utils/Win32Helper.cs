@@ -10,7 +10,7 @@ using Drawing = System.Drawing;
 
 namespace PowerLab.FishyTime.Utils
 {
-    public class Win32Helper
+    public static class Win32Helper
     {
         public const int SWP_NOZORDER = 0x0004;
         public const int SWP_NOACTIVATE = 0x0010;
@@ -32,6 +32,7 @@ namespace PowerLab.FishyTime.Utils
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_SHOWWINDOW = 0x0040;
+        public const int GWLP_HWNDPARENT = -8;
 
         public const uint EVENT_SYSTEM_MINIMIZESTART = 0x0016;
         public const uint EVENT_SYSTEM_MINIMIZEEND = 0x0017;
@@ -64,6 +65,12 @@ namespace PowerLab.FishyTime.Utils
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr", SetLastError = true)]
+        public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
         private static extern bool GetLayeredWindowAttributes(IntPtr hwnd, out uint pcrKey, out byte pbAlpha, out uint pdwFlags);
@@ -338,6 +345,11 @@ namespace PowerLab.FishyTime.Utils
         public static Task<Screen> GetWindowScreenAsync(IntPtr hwnd)
             => Task.Run(() => GetWindowScreen(hwnd));
 
+
+        public static void SetWindowOwner(nint childrenHandle, nint parentHandle)
+        {
+            SetWindowLongPtr(childrenHandle, GWLP_HWNDPARENT, parentHandle);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
