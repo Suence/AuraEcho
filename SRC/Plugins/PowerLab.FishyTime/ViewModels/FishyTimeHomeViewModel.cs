@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Constants;
@@ -13,9 +14,9 @@ namespace PowerLab.FishyTime.ViewModels
     public class FishyTimeHomeViewModel : BindableBase
     {
         #region private members
-        private Win32Window _managedWindowInfo;
         private FishyTimeConfig _fishyTimeConfig;
         private const string FishyTimeConfigFileName = "FishyTimeConfig.json";
+        private ObservableCollection<Win32Window> _win32Windows;
         private ObservableCollection<WindowMaskMode> _windowMaskModes =
         [
             WindowMaskMode.MouseLeave,
@@ -24,15 +25,16 @@ namespace PowerLab.FishyTime.ViewModels
         ];
         #endregion
 
+        public ObservableCollection<Win32Window> Win32Windows
+        {
+            get => _win32Windows;
+            set => SetProperty(ref _win32Windows, value);
+        }
+
         public ObservableCollection<WindowMaskMode> WindowMaskModes
         {
             get => _windowMaskModes;
             set => SetProperty(ref _windowMaskModes, value);
-        }
-        public Win32Window ManagedWindowInfo
-        {
-            get => _managedWindowInfo;
-            set => SetProperty(ref _managedWindowInfo, value);
         }
 
         public FishyTimeConfig FishyTimeConfig
@@ -41,14 +43,37 @@ namespace PowerLab.FishyTime.ViewModels
             set => SetProperty(ref _fishyTimeConfig, value);
         }
 
-        public DelegateCommand<IntPtr?> SetManagedWindowInfoCommand { get; }
-        private async void SetManagedWindowInfo(IntPtr? handle)
+        public DelegateCommand<IntPtr?> AddWin32WindowCommand { get; }
+        private async void AddWin32Window(IntPtr? handle)
         {
             if (handle is null or 0) return;
-            if (handle == ManagedWindowInfo?.Handle || handle == ManagedWindowInfo?.MaskHandle) return;
 
-            ManagedWindowInfo = new Win32Window(handle.Value);
-            await ManagedWindowInfo.LoadAsync();
+            var isExist = Win32Windows.Any(w => w.Handle == handle || w.MaskHandle == handle);
+            if (isExist) return;
+
+            var win32Window = new Win32Window(handle.Value);
+            await win32Window.LoadAsync();
+            win32Window.Closed += Win32WindowClosed;
+            
+            Win32Windows.Add(win32Window);
+        }
+
+        private void Win32WindowClosed(Win32Window win32Window)
+        {
+            if (win32Window is null) return;
+
+            RemoveWin32Window(win32Window);
+        }
+
+        public DelegateCommand<Win32Window> RemoveWin32WindowCommand { get; }
+        private void RemoveWin32Window(Win32Window win32Window)
+        {
+            if (win32Window is null) return;
+
+            if (Win32Windows.Remove(win32Window))
+            {
+                win32Window.Dispose();
+            }
         }
 
         public DelegateCommand LoadDataCommand { get; }
@@ -93,7 +118,9 @@ namespace PowerLab.FishyTime.ViewModels
         [Logging]
         public FishyTimeHomeViewModel()
         {
-            SetManagedWindowInfoCommand = new DelegateCommand<nint?>(SetManagedWindowInfo);
+            Win32Windows = new ObservableCollection<Win32Window>();
+            AddWin32WindowCommand = new DelegateCommand<nint?>(AddWin32Window);
+            RemoveWin32WindowCommand = new DelegateCommand<Win32Window>(RemoveWin32Window);
 
             LoadDataCommand = new DelegateCommand(LoadData);
             SaveDataCommand = new DelegateCommand(SaveData);

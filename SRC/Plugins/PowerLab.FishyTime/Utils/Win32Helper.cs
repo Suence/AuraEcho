@@ -96,12 +96,12 @@ namespace PowerLab.FishyTime.Utils
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr
+        public static extern WinEventSafeHandle SetWinEventHook(uint eventMin, uint eventMax, IntPtr
             hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess,
             uint idThread, uint dwFlags);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+        public static extern MouseHookSafeHandle SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
         
         [DllImport("user32.dll")]
         public static extern bool UnhookWindowsHookEx(IntPtr hhk);

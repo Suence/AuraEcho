@@ -10,11 +10,11 @@ using PowerLab.FishyTime.Contracts;
 
 namespace PowerLab.FishyTime.Utils.HookManager
 {
-    public class MouseHookManager : IHookManager
+    public class MouseHookManager : IHookManager, IDisposable
     {
         public static MouseHookManager Instance { get; } = new MouseHookManager();
 
-        private nint _hookHandle = IntPtr.Zero;
+        private MouseHookSafeHandle _hookHandle;
         private readonly LowLevelMouseProc _mouseEventDelegate;
 
         private MouseHookManager()
@@ -40,14 +40,13 @@ namespace PowerLab.FishyTime.Utils.HookManager
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode < 0 || wParam != Win32Helper.WM_MOUSEMOVE)
-                return Win32Helper.CallNextHookEx(_hookHandle, nCode, wParam, lParam);
+            if (nCode >= 0 && (int)wParam == Win32Helper.WM_MOUSEMOVE && !IsDisposed)
+            {
+                if (Win32Helper.GetCursorPos(out POINT pt))
+                    _mouseMove?.Invoke(new Point(pt.X, pt.Y));
+            }
 
-            Win32Helper.GetCursorPos(out POINT pt);
-
-            OnMouseMove(new Point(pt.X, pt.Y));
-
-            return Win32Helper.CallNextHookEx(_hookHandle, nCode, wParam, lParam);
+            return Win32Helper.CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
         }
 
         public void OnMouseMove(Point point)
@@ -57,7 +56,8 @@ namespace PowerLab.FishyTime.Utils.HookManager
 
         public void StartHook()
         {
-            if (_hookHandle != IntPtr.Zero) return;
+            if (_hookHandle != null && !_hookHandle.IsClosedOrInvalid)
+                return;
 
             _hookHandle = Win32Helper.SetWindowsHookEx(
                 Win32Helper.WH_MOUSE_LL,
@@ -65,17 +65,18 @@ namespace PowerLab.FishyTime.Utils.HookManager
                 IntPtr.Zero,
                 0);
 
-            if (_hookHandle == IntPtr.Zero)
+            if (_hookHandle == null || _hookHandle.IsInvalid)
             {
                 int error = Marshal.GetLastWin32Error();
-                throw new InvalidOperationException($"Hook 安装失败，错误码: {error}");
+                _hookHandle?.Dispose();
+                _hookHandle = null;
+                throw new InvalidOperationException($"鼠标 Hook 安装失败，Win32Error={error}");
             }
         }
         public void StopHook()
         {
-            if (_hookHandle == IntPtr.Zero) return;
-            Win32Helper.UnhookWindowsHookEx(_hookHandle);
-            _hookHandle = IntPtr.Zero;
+            _hookHandle?.Dispose();
+            _hookHandle = null;
         }
 
         public void ClearEventSubscribers()
@@ -83,10 +84,19 @@ namespace PowerLab.FishyTime.Utils.HookManager
             _mouseMove = null;
         }
 
+        #region IDisposable Implementation
+        public bool IsDisposed { get; private set; }
+
         public void Dispose()
         {
+            if (IsDisposed) return;
+            IsDisposed = true;
+
             StopHook();
             ClearEventSubscribers();
+
+            GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }

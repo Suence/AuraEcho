@@ -33,11 +33,13 @@ namespace PowerLab.FishyTime.Models
         private Drawing::Icon _icon;
         private bool _isMasked;
         private bool _isLoaded;
-
+        private bool _isActivated;
+        private bool _isClosed;
+        private bool _isDisposed;
         private bool _isEnabledMask;
         private WindowMaskMode _maskMode;
         private List<Rect> _hotZoneRegions;
-
+        private List<IHookManager> _hookManagers = [];
         private IWindowMask _windowMask;
         #endregion
 
@@ -64,7 +66,7 @@ namespace PowerLab.FishyTime.Models
         }
 
         public ClosedHookManager _closedHookManager;
-        public event Action Closed
+        public event Action<Win32Window> Closed
         {
             add => _closedHookManager.Closed += value;
             remove => _closedHookManager.Closed -= value;
@@ -86,11 +88,10 @@ namespace PowerLab.FishyTime.Models
         public event Action MouseEnter;
         public event Action MouseLeave;
 
-        private MouseHookManager _mouseHookManager;
         public event Action<Point> MouseMove
         {
-            add => _mouseHookManager.MouseMove += value;
-            remove => _mouseHookManager.MouseMove -= value;
+            add => MouseHookManager.Instance.MouseMove += value;
+            remove => MouseHookManager.Instance.MouseMove -= value;
         }
 
         #endregion
@@ -183,6 +184,24 @@ namespace PowerLab.FishyTime.Models
 
                 if (value) Loaded?.Invoke();
             }
+        }
+
+        public bool IsActivated
+        {
+            get => _isActivated;
+            private set => SetProperty(ref _isActivated, value);
+        }
+
+        public bool IsClosed
+        {
+            get => _isClosed;
+            private set => SetProperty(ref _isClosed, value);
+        }
+
+        public bool IsDisposed
+        {
+            get => _isDisposed;
+            private set => SetProperty(ref _isDisposed, value);
         }
 
         public bool IsMasked
@@ -278,22 +297,29 @@ namespace PowerLab.FishyTime.Models
 
             _hotZoneRegions = BuildHotZones(targetScreen);
 
-            _rectHookManager = new RectHookManager(this);
+            _hookManagers.AddRange(
+            [
+                _rectHookManager = new RectHookManager(this),
+                _topmostHookManager = new TopmostHookManager(this),
+                _activationHookManager = new ActivationHookManager(this),
+                _closedHookManager = new ClosedHookManager(this),
+                _windowStateHookManager = new WindowStateHookManager(this)
+            ]);
+
             RectChanged += OnBoundsChanged;
-
-            _topmostHookManager = new TopmostHookManager(this);
-            _activationHookManager = new ActivationHookManager(this);
-
-            _closedHookManager = new ClosedHookManager(this);
-            Closed += Dispose;
-
-            _windowStateHookManager = new WindowStateHookManager(this);
+            Activated += OnActivated;
+            Deactivated += OnDeactivated;
+            Closed += OnClosed;
             WindowStateChanged += OnWindowStateChanged;
-
-            _mouseHookManager = MouseHookManager.Instance;
 
             IsLoaded = true;
         }
+
+        private void OnDeactivated()
+            => _isActivated = false;
+
+        private void OnActivated()
+            => _isActivated = true;
 
         private static List<Rect> BuildHotZones(WinForms::Screen screen)
         {
@@ -460,6 +486,7 @@ namespace PowerLab.FishyTime.Models
             _windowMask.Show();
             IsMasked = true;
         }
+
         #endregion
         public void Show()
         {
@@ -471,21 +498,29 @@ namespace PowerLab.FishyTime.Models
             Win32Helper.HideWindow(Handle);
         }
 
+        private void OnClosed(Win32Window _)
+        {
+            IsClosed = true;
+            Debug.WriteLine($"{Name} is closed.");
+            _windowMask?.Close();
+            Dispose();
+        }
+
         public void Dispose()
         {
-            new IHookManager[]
-            {
-                _rectHookManager,
-                _topmostHookManager,
-                _activationHookManager,
-                _closedHookManager,
-                _windowStateHookManager
-            }.ForEach(hook => hook?.Dispose());
+            if (IsDisposed) return;
+
+            _hookManagers.ForEach(hook => hook?.Dispose());
 
             MouseMove -= OnMouseMove;
             MouseEnter = null;
             MouseLeave = null;
             Loaded = null;
+            IsDisposed = true;
+
+            Debug.WriteLine($"{Name} is disposed.");
+
+            GC.SuppressFinalize(this);
         }
     }
 }

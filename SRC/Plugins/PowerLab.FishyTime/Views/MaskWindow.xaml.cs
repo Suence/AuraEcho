@@ -35,6 +35,8 @@ namespace PowerLab.FishyTime.Views
         {
             base.OnClosing(e);
 
+            if (_win32Window.IsClosed) return;
+
             _win32Window.Position = RestoreBounds.Location;
             _win32Window.Width = RestoreBounds.Width;
             _win32Window.Height = RestoreBounds.Height;

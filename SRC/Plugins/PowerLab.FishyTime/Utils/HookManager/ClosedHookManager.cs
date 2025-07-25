@@ -4,13 +4,13 @@ using PowerLab.FishyTime.Models;
 
 namespace PowerLab.FishyTime.Utils.HookManager
 {
-    public class ClosedHookManager : IHookManager
+    public class ClosedHookManager : IHookManager, IDisposable
     {
-        private nint _hookHandle = IntPtr.Zero;
+        private WinEventSafeHandle _hookHandle;
         private readonly WinEventDelegate _winEventDelegate;
         public Win32Window Win32Window { get; private set; }
-        private event Action _closed;
-        public event Action Closed
+        private event Action<Win32Window> _closed;
+        public event Action<Win32Window> Closed
         {
             add
             {
@@ -41,11 +41,11 @@ namespace PowerLab.FishyTime.Utils.HookManager
         }
         public void OnClosed()
         {
-            _closed?.Invoke();
+            _closed?.Invoke(Win32Window);
         }
         public void StartHook()
         {
-            if (_hookHandle != IntPtr.Zero) return;
+            if (_hookHandle is { IsInvalid: false }) return;
             uint threadId = Win32Helper.GetWindowThreadProcessId(Win32Window.Handle, out uint processId);
             _hookHandle = Win32Helper.SetWinEventHook(
                 Win32Helper.EVENT_OBJECT_DESTROY,
@@ -58,19 +58,27 @@ namespace PowerLab.FishyTime.Utils.HookManager
         }
         public void StopHook()
         {
-            if (_hookHandle == IntPtr.Zero) return;
-            Win32Helper.UnhookWinEvent(_hookHandle);
-            _hookHandle = IntPtr.Zero;
+            _hookHandle?.Dispose();
+            _hookHandle = null;
         }
         public void ClearEventSubscribers()
         {
             _closed = null;
         }
 
+        #region IDisposable Implementation
+        public bool IsDisposed { get; private set; }
+
         public void Dispose()
         {
+            if (IsDisposed) return;
+            IsDisposed = true;
+
             StopHook();
             ClearEventSubscribers();
+
+            GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }

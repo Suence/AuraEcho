@@ -3,14 +3,15 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Win32.SafeHandles;
 using PowerLab.FishyTime.Contracts;
 using PowerLab.FishyTime.Models;
 
 namespace PowerLab.FishyTime.Utils.HookManager
 {
-    public class RectHookManager : IHookManager
+    public sealed class RectHookManager : IHookManager, IDisposable
     {
-        private nint _hookHandle = IntPtr.Zero;
+        private WinEventSafeHandle _hookHandle;
         private readonly WinEventDelegate _winEventDelegate;
         private DateTime _lastRectEventTime = DateTime.MinValue;
         private readonly TimeSpan _rectEventThrottleInterval = TimeSpan.FromMilliseconds(10);
@@ -45,8 +46,11 @@ namespace PowerLab.FishyTime.Utils.HookManager
         private void WinEventProc(IntPtr hWinEventHook, uint eventType,
             IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
+            if (IsDisposed) return;
+
             if (hwnd == IntPtr.Zero || hwnd != Win32Window.Handle) return;
             if (eventType != Win32Helper.EVENT_OBJECT_LOCATIONCHANGE) return;
+
             var now = DateTime.Now;
             if ((now - _lastRectEventTime) < _rectEventThrottleInterval)
                 return;
@@ -55,6 +59,8 @@ namespace PowerLab.FishyTime.Utils.HookManager
 
             Task.Run(() =>
             {
+                if (IsDisposed) return;
+
                 var windowRect = Win32Helper.GetWindowRect(Win32Window.Handle);
                 if (windowRect == Rect.Empty) return;
 
@@ -68,14 +74,11 @@ namespace PowerLab.FishyTime.Utils.HookManager
             });
         }
 
-        public void OnRectChanged(Rect rect)
-        {
-            _rectChanged?.Invoke(rect);
-        }
+        private void OnRectChanged(Rect rect) => _rectChanged?.Invoke(rect);
 
         public void StartHook()
         {
-            if (_hookHandle != IntPtr.Zero) return;
+            if (_hookHandle is { IsInvalid: false }) return;
 
             uint threadId = Win32Helper.GetWindowThreadProcessId(Win32Window.Handle, out uint processId);
 
@@ -88,22 +91,29 @@ namespace PowerLab.FishyTime.Utils.HookManager
                 threadId,
                 Win32Helper.WINEVENT_OUTOFCONTEXT);
         }
+
         public void StopHook()
         {
-            if (_hookHandle == IntPtr.Zero) return;
-            Win32Helper.UnhookWinEvent(_hookHandle);
-            _hookHandle = IntPtr.Zero;
+            _hookHandle?.Dispose();
+            _hookHandle = null;
         }
 
-        public void ClearEventSubscribers()
-        {
-            _rectChanged = null;
-        }
+        public void ClearEventSubscribers() => _rectChanged = null;
+
+        #region IDisposable Implementation
+        public bool IsDisposed { get; private set; }
 
         public void Dispose()
         {
+            if (IsDisposed) return;
+            IsDisposed = true;
+
             StopHook();
             ClearEventSubscribers();
+
+            GC.SuppressFinalize(this);
         }
+        #endregion
     }
+
 }

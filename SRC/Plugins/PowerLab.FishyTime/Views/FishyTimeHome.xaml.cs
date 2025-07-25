@@ -85,7 +85,7 @@ namespace PowerLab.FishyTime.Views
             var ownerWindowHandle = new WindowInteropHelper(_ownerWindow).Handle;
             if (hwnd == ownerWindowHandle) return;
 
-            (DataContext as FishyTimeHomeViewModel).SetManagedWindowInfoCommand.Execute(hwnd);
+            (DataContext as FishyTimeHomeViewModel).AddWin32WindowCommand.Execute(hwnd);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
