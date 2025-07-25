@@ -37,6 +37,7 @@ namespace PowerLab.FishyTime.Utils.HookManager
         {
             if (hwnd == IntPtr.Zero || hwnd != Win32Window.Handle) return;
             if (eventType != Win32Helper.EVENT_OBJECT_DESTROY) return;
+            if (idObject != 0 || idChild != 0) return;
             OnClosed();
         }
         public void OnClosed()
