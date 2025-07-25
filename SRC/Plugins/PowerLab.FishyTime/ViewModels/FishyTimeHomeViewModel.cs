@@ -16,7 +16,7 @@ namespace PowerLab.FishyTime.ViewModels
         #region private members
         private FishyTimeConfig _fishyTimeConfig;
         private const string FishyTimeConfigFileName = "FishyTimeConfig.json";
-        private ObservableCollection<Win32Window> _win32Windows;
+        private ObservableCollection<Win32Window> _win32Windows = [];
         private ObservableCollection<WindowMaskMode> _windowMaskModes =
         [
             WindowMaskMode.MouseLeave,
@@ -51,8 +51,7 @@ namespace PowerLab.FishyTime.ViewModels
             var isExist = Win32Windows.Any(w => w.Handle == handle || w.MaskHandle == handle);
             if (isExist) return;
 
-            var win32Window = new Win32Window(handle.Value);
-            await win32Window.LoadAsync();
+            var win32Window = await Win32Window.AttachAsync(handle.Value);
             win32Window.Closed += Win32WindowClosed;
             
             Win32Windows.Add(win32Window);
@@ -72,7 +71,7 @@ namespace PowerLab.FishyTime.ViewModels
 
             if (Win32Windows.Remove(win32Window))
             {
-                win32Window.Dispose();
+                win32Window.Deattach();
             }
         }
 
@@ -115,6 +114,7 @@ namespace PowerLab.FishyTime.ViewModels
             var configJson = JsonSerializer.Serialize(FishyTimeConfig);
             File.WriteAllText(FishyTimeConfigFilePath, configJson);
         }
+
         [Logging]
         public FishyTimeHomeViewModel()
         {

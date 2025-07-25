@@ -120,7 +120,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <DockPanel Grid.Column="0" LastChildFill="True">
+                            <DockPanel Grid.Column="0" LastChildFill="True" IsEnabled="{Binding CanSetOpacity}">
                                 <TextBlock Width="60"
                                            VerticalAlignment="Center"
                                            DockPanel.Dock="Left"

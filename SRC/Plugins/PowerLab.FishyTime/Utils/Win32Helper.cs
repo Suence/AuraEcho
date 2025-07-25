@@ -19,6 +19,7 @@ namespace PowerLab.FishyTime.Utils
         public const int LWA_ALPHA = 0x2;
         public const int SW_SHOW = 5;
         public const int SW_HIDE = 0;
+        public const int SW_SHOWNOACTIVATE = 4;
         private const uint GA_ROOT = 2;
         public const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
         public const uint WINEVENT_OUTOFCONTEXT = 0;
@@ -319,6 +320,11 @@ namespace PowerLab.FishyTime.Utils
         public static void ShowWindow(IntPtr hwnd)
         {
             ShowWindow(hwnd, SW_SHOW);
+        }
+
+        public static void ShowWindowNoActivate(IntPtr hwnd)
+        {
+            ShowWindow(hwnd, SW_SHOWNOACTIVATE);
         }
 
         public static Screen GetWindowScreen(IntPtr hwnd)

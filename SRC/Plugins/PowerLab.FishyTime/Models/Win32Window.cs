@@ -279,9 +279,28 @@ namespace PowerLab.FishyTime.Models
 
         public bool CanSetOpacity { get; set; }
 
-        public Win32Window(nint handle) => Handle = handle;
+        private Win32Window(nint handle) => Handle = handle;
 
-        public async Task LoadAsync()
+        public static Task<Win32Window> AttachAsync(nint handle)
+        {
+            if (handle == IntPtr.Zero)
+                throw new ArgumentException("Handle cannot be zero.", nameof(handle));
+
+            Win32Window win32Window = new(handle);
+            return win32Window.LoadAsync().ContinueWith(_ => win32Window);
+        }
+
+        public void Deattach()
+        {
+            if (!IsClosed)
+            {
+                Win32Helper.ShowWindowNoActivate(Handle);
+            }
+            _windowMask?.Close();
+            Dispose();
+        }
+
+        private async Task LoadAsync()
         {
             Name = await Win32Helper.GetWindowTitleAsync(Handle);
             IsTopmost = await Win32Helper.IsWindowTopmostAsync(Handle);
