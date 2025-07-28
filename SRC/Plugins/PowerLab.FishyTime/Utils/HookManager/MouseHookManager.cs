@@ -97,7 +97,7 @@ namespace PowerLab.FishyTime.Utils.HookManager
             _hookHandle?.Dispose();
             _hookHandle = null;
 
-            _mousePointChannel.Writer.TryComplete();
+            _mousePointChannel?.Writer.TryComplete();
         }
 
         public void ClearEventSubscribers()
