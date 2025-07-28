@@ -441,7 +441,7 @@ namespace PowerLab.FishyTime.Models
 
             if (IsMasked) return;
 
-            ShowMaskWindow();
+            Application.Current.Dispatcher.BeginInvoke(ShowMaskWindow);
         }
 
         private void OnMouseLeave()
@@ -450,7 +450,7 @@ namespace PowerLab.FishyTime.Models
 
             if (IsMasked || WindowState == ShowWindowCommands.Minimized) return;
 
-            ShowMaskWindow();
+            Application.Current.Dispatcher.BeginInvoke(ShowMaskWindow);
         }
 
         private bool CheckBounds(Point point)
