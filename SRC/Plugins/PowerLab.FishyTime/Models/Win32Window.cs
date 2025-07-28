@@ -242,12 +242,8 @@ namespace PowerLab.FishyTime.Models
 
         public bool IsMouseOver
         {
-            get => _isMouseOver;
-            set
-            {
-                SetProperty(ref _isMouseOver, value);
-                Debug.WriteLine(value);
-            }
+            get => _isMouseOver; 
+            set => SetProperty(ref _isMouseOver, value);
         }
 
         public bool IsVisible
@@ -441,8 +437,6 @@ namespace PowerLab.FishyTime.Models
 
         private void OnMouseEnter()
         {
-            Debug.WriteLine("MouseEnter");
-
             if (MaskMode != WindowMaskMode.HotZone) return;
 
             if (IsMasked) return;
@@ -452,8 +446,6 @@ namespace PowerLab.FishyTime.Models
 
         private void OnMouseLeave()
         {
-            Debug.WriteLine("MouseLeave");
-
             if (MaskMode != WindowMaskMode.MouseLeave) return;
 
             if (IsMasked || WindowState == ShowWindowCommands.Minimized) return;

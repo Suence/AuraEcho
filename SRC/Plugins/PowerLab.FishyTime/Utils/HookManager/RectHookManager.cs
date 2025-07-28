@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Win32.SafeHandles;
 using PowerLab.FishyTime.Contracts;
 using PowerLab.FishyTime.Models;
 
@@ -13,8 +11,7 @@ namespace PowerLab.FishyTime.Utils.HookManager
     {
         private WinEventSafeHandle _hookHandle;
         private readonly WinEventDelegate _winEventDelegate;
-        private DateTime _lastRectEventTime = DateTime.MinValue;
-        private readonly TimeSpan _rectEventThrottleInterval = TimeSpan.FromMilliseconds(10);
+        private Channel<Guid> _rectChangedChannel;
 
         public Win32Window Win32Window { get; }
 
@@ -51,27 +48,24 @@ namespace PowerLab.FishyTime.Utils.HookManager
             if (hwnd == IntPtr.Zero || hwnd != Win32Window.Handle) return;
             if (eventType != Win32Helper.EVENT_OBJECT_LOCATIONCHANGE) return;
 
-            var now = DateTime.Now;
-            if ((now - _lastRectEventTime) < _rectEventThrottleInterval)
-                return;
+            _rectChangedChannel.Writer.TryWrite(Guid.NewGuid());
+        }
 
-            _lastRectEventTime = now;
-
-            Task.Run(() =>
+        private async Task RectChangedHandler()
+        {
+            await foreach (var _ in _rectChangedChannel.Reader.ReadAllAsync())
             {
-                if (IsDisposed) return;
-
                 var windowRect = Win32Helper.GetWindowRect(Win32Window.Handle);
-                if (windowRect == Rect.Empty) return;
+                if (windowRect == Rect.Empty) continue;
 
                 var newRect = new Rect(
                     new Point(windowRect.Left, windowRect.Top),
                     new Size(windowRect.Right - windowRect.Left, windowRect.Bottom - windowRect.Top));
 
-                if (newRect == Win32Window.Bounds) return;
+                if (newRect == Win32Window.Bounds) continue;
 
                 OnRectChanged(newRect);
-            });
+            }
         }
 
         private void OnRectChanged(Rect rect) => _rectChanged?.Invoke(rect);
@@ -79,6 +73,14 @@ namespace PowerLab.FishyTime.Utils.HookManager
         public void StartHook()
         {
             if (_hookHandle is { IsInvalid: false }) return;
+
+            _rectChangedChannel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(1)
+            {
+                FullMode = BoundedChannelFullMode.DropOldest
+            });
+
+
+            Task.Run(RectChangedHandler);
 
             uint threadId = Win32Helper.GetWindowThreadProcessId(Win32Window.Handle, out uint processId);
 
@@ -96,6 +98,8 @@ namespace PowerLab.FishyTime.Utils.HookManager
         {
             _hookHandle?.Dispose();
             _hookHandle = null;
+
+            _rectChangedChannel.Writer.TryComplete();
         }
 
         public void ClearEventSubscribers() => _rectChanged = null;
