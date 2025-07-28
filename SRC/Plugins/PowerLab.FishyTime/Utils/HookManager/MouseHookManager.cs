@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using PowerLab.FishyTime.Contracts;
@@ -12,6 +13,7 @@ namespace PowerLab.FishyTime.Utils.HookManager
 {
     public class MouseHookManager : IHookManager, IDisposable
     {
+        private Channel<Guid> _mousePointChannel;
         public static MouseHookManager Instance { get; } = new MouseHookManager();
 
         private MouseHookSafeHandle _hookHandle;
@@ -42,8 +44,7 @@ namespace PowerLab.FishyTime.Utils.HookManager
         {
             if (nCode >= 0 && (int)wParam == Win32Helper.WM_MOUSEMOVE && !IsDisposed)
             {
-                if (Win32Helper.GetCursorPos(out POINT pt))
-                    _mouseMove?.Invoke(new Point(pt.X, pt.Y));
+                _mousePointChannel.Writer.TryWrite(Guid.NewGuid());
             }
 
             return Win32Helper.CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
@@ -59,6 +60,12 @@ namespace PowerLab.FishyTime.Utils.HookManager
             if (_hookHandle != null && !_hookHandle.IsClosedOrInvalid)
                 return;
 
+            _mousePointChannel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(1)
+            {
+                FullMode = BoundedChannelFullMode.DropOldest
+            });
+            Task.Run(MousePointChangedHandler);
+
             _hookHandle = Win32Helper.SetWindowsHookEx(
                 Win32Helper.WH_MOUSE_LL,
                 _mouseEventDelegate,
@@ -73,10 +80,24 @@ namespace PowerLab.FishyTime.Utils.HookManager
                 throw new InvalidOperationException($"鼠标 Hook 安装失败，Win32Error={error}");
             }
         }
+
+        private async Task MousePointChangedHandler()
+        {
+            await foreach (var _ in _mousePointChannel.Reader.ReadAllAsync())
+            {
+                if (Win32Helper.GetCursorPos(out POINT pt))
+                {
+                    OnMouseMove(new Point(pt.X, pt.Y));
+                }
+            }
+        }
+
         public void StopHook()
         {
             _hookHandle?.Dispose();
             _hookHandle = null;
+
+            _mousePointChannel.Writer.TryComplete();
         }
 
         public void ClearEventSubscribers()

@@ -19,7 +19,6 @@ namespace PowerLab.FishyTime.Views
         private Win32Window _win32Window;
 
         public event Action MaskClosed;
-
         public nint Handle => new WindowInteropHelper(this).Handle;
         #endregion
 
@@ -35,7 +34,7 @@ namespace PowerLab.FishyTime.Views
             MaskClosed?.Invoke();
         }
 
-        private void UpdateSpotlight(Point mousePosition)
+        private void UpdateSpotlight(Point mousePosition) => Dispatcher.BeginInvoke(() =>
         {
             PresentationSource source = PresentationSource.FromVisual(RootGrid);
             if (source is null) return;
@@ -48,10 +47,9 @@ namespace PowerLab.FishyTime.Views
 
             //x = Math.Clamp(x, 0.0, 1.0);
             //y = Math.Clamp(y, 0.0, 1.0);
-
             SpotlightBrush.Center = new Point(x, y);
             SpotlightBrush.GradientOrigin = new Point(x, y);
-        }
+        });
 
         private void UpdateSpotlightBrushRadius()
         {
