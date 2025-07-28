@@ -288,9 +288,12 @@ namespace PowerLab.FishyTime.Models
 
         public void Deattach()
         {
-            if (!IsClosed && !Win32Helper.IsWindowVisible(Handle))
+            if (!IsClosed)
             {
-                Win32Helper.ShowWindowNoActivate(Handle);
+                if (!Win32Helper.IsWindowVisible(Handle))
+                    Win32Helper.ShowWindowNoActivate(Handle);
+
+                Win32Helper.TrySetWindowOpacity(Handle, 1);
             }
             _windowMask?.Close();
             Dispose();
@@ -303,7 +306,7 @@ namespace PowerLab.FishyTime.Models
             WindowState = await Win32Helper.GetWindowStateAsync(Handle);
             Icon = await Win32Helper.GetWindowIconAsync(Handle);
             Opacity = await Win32Helper.GetWindowOpacityAsync(Handle);
-            CanSetOpacity = await Win32Helper.TrySetWindowOpacityAsync(Handle, (byte)(Opacity * 255));
+            CanSetOpacity = await Win32Helper.TrySetWindowOpacityAsync(Handle, Opacity);
             Bounds = await Win32Helper.GetWindowRectAsync(Handle);
 
             WinForms::Screen targetScreen = await Win32Helper.GetWindowScreenAsync(Handle);
@@ -415,7 +418,7 @@ namespace PowerLab.FishyTime.Models
 
         private async void ApplyOpacityToSourceWindow()
         {
-            await Win32Helper.SetLayeredWindowAttributesAsync(Handle, 0, (byte)(Opacity * 255), Win32Helper.LWA_ALPHA);
+            await Win32Helper.TrySetWindowOpacityAsync(Handle, Opacity);
         }
 
         private void OnMouseMove(Point point)

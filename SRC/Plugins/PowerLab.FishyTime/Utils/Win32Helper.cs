@@ -262,7 +262,7 @@ namespace PowerLab.FishyTime.Utils
             return string.Empty;
         }
 
-        public static bool TrySetWindowOpacity(IntPtr hwnd, byte opacity)
+        public static bool TrySetWindowOpacity(IntPtr hwnd, double opacity)
         {
             int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
             if ((exStyle & WS_EX_LAYERED) == 0)
@@ -270,10 +270,10 @@ namespace PowerLab.FishyTime.Utils
                 SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);
             }
 
-            bool result = SetLayeredWindowAttributes(hwnd, 0, opacity, LWA_ALPHA);
+            bool result = SetLayeredWindowAttributes(hwnd, 0, (byte)(opacity * 255), LWA_ALPHA);
             return result;
         }
-        public static Task<bool> TrySetWindowOpacityAsync(IntPtr hwnd, byte opacity)
+        public static Task<bool> TrySetWindowOpacityAsync(IntPtr hwnd, double opacity)
             => Task.Run(() => TrySetWindowOpacity(hwnd, opacity));
 
         public static bool IsFullScreen(IntPtr hwnd)
