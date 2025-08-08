@@ -25,8 +25,6 @@
     </Project>
   </Folder>
   <Folder Name="/SRC/Plugins/">
-    <Project Path="SRC/Plugins/ModuleName/ModuleName.csproj" />
-    <Project Path="SRC/Plugins/PluginB/PluginB.csproj" />
     <Project Path="SRC/Plugins/PowerLab.ExternalTools/PowerLab.ExternalTools.csproj" Id="78d9c381-8c4d-48c3-b13e-10ae131b694f" />
     <Project Path="SRC/Plugins/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
