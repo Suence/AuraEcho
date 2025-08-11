@@ -15,6 +15,8 @@ namespace PowerLab.ExternalTools
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<ExternalToolsHome>();
+            containerRegistry.RegisterForNavigation<AddExternalTool>();
+            containerRegistry.RegisterForNavigation<EditExternalTool>();
         }
     }
 }

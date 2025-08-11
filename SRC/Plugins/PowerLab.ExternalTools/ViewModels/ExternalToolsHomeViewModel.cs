@@ -1,16 +1,112 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using PowerLab.ExternalTools.Constants;
+using PowerLab.ExternalTools.Events;
+using PowerLab.ExternalTools.Models;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace PowerLab.ExternalTools.ViewModels
 {
     public class ExternalToolsHomeViewModel : BindableBase
     {
-        public ExternalToolsHomeViewModel()
-        {
+        #region private members
+        private readonly IRegionManager _regionManager;
+        private readonly IEventAggregator _eventAggregator;
+        private ObservableCollection<ExternalTool> _externalTools;
+        #endregion
 
+        public ObservableCollection<ExternalTool> ExternalTools
+        {
+            get => _externalTools;
+            set => SetProperty(ref _externalTools, value);
+        }
+
+        public DelegateCommand LoadDataCommand { get; }
+        private void LoadData()
+        {
+            ExternalTools =
+            [
+                new() { Id = Guid.NewGuid().ToString(), Name = "Tool 1", Command = "https://www.lenovo.com", Type = ExternalToolType.Website },
+                new() { Id = Guid.NewGuid().ToString(), Name = "Tool 2", Command = "path/to/tool2", Arguments = "--option2" }
+            ];
+        }
+
+        public DelegateCommand<ExternalTool> LunchExternalToolCommand { get; }
+        private void LunchExternalTool(ExternalTool externalTool)
+        {
+            if (externalTool is null) return;
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = externalTool.Command,
+                UseShellExecute = true,
+                Arguments = externalTool.Arguments
+            });
+        }
+
+        public DelegateCommand AddExternalToolCommand { get; }
+        private void AddExternalTool()
+        {
+            _regionManager.RequestNavigate(ExternalToolsRegionNames.DialogRegion, ExternalToolsViewNames.AddExternalTool);
+        }
+
+        public DelegateCommand<ExternalTool> RemoveExternalToolCommand { get; }
+        private void RemoveExternalTool(ExternalTool tool)
+        {
+            if (tool is null) return;
+            if (!ExternalTools.Contains(tool)) return;
+
+            ExternalTools.Remove(tool);
+        }
+
+        public DelegateCommand<ExternalTool> EditExternalToolCommand { get; }
+        private void EditExternalTool(ExternalTool tool)
+        {
+            _regionManager.RequestNavigate(
+                ExternalToolsRegionNames.DialogRegion,
+                ExternalToolsViewNames.EditExternalTool,
+                new NavigationParameters
+                {
+                    { "ExternalTool", tool }
+                });
+        }
+
+        public ExternalToolsHomeViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            _regionManager = regionManager;
+            _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<ExternalToolAddedEvent>().Subscribe(ExternalToolAdded);
+            _eventAggregator.GetEvent<ExternalToolUpdatedEvent>().Subscribe(ExternalToolUpdated);
+
+            LoadDataCommand = new DelegateCommand(LoadData);
+            AddExternalToolCommand = new DelegateCommand(AddExternalTool);
+            RemoveExternalToolCommand = new DelegateCommand<ExternalTool>(RemoveExternalTool);
+            EditExternalToolCommand = new DelegateCommand<ExternalTool>(EditExternalTool);
+            LunchExternalToolCommand = new DelegateCommand<ExternalTool>(LunchExternalTool);
+        }
+
+        private void ExternalToolUpdated(ExternalTool tool)
+        {
+            if (tool is null) throw new Exception("Tool cannot be null");
+
+            var existingTool = ExternalTools.FirstOrDefault(t => t.Id == tool.Id) ?? throw new Exception("Tool not found");
+
+            existingTool.Name = tool.Name;
+            existingTool.Command = tool.Command;
+            existingTool.Arguments = tool.Arguments;
+            existingTool.Type = tool.Type;
+        }
+
+        private void ExternalToolAdded(ExternalTool tool)
+        {
+            if (tool is null) return;
+
+            ExternalTools.Add(tool);
         }
     }
 }
