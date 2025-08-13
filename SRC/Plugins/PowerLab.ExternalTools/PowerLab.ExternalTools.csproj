@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Assets\Images\command.png" />
-    <None Remove="Assets\Images\external_tool.png" />
-    <None Remove="Assets\Images\web.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Images\command.png" />
-    <Resource Include="Assets\Images\external_tool.png" />
-    <Resource Include="Assets\Images\web.png" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Assets\Images\command.png" />
+		<None Remove="Assets\Images\external_tool.png" />
+		<None Remove="Assets\Images\web.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+		<PackageReference Include="Prism.Wpf" Version="8.1.97" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="Assets\Images\command.png" />
+		<Resource Include="Assets\Images\external_tool.png" />
+		<Resource Include="Assets\Images\web.png" />
+	</ItemGroup>
 </Project>
