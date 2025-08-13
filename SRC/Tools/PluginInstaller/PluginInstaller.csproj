@@ -23,9 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Host\PowerLab.Core\PowerLab.Core.csproj" />
     <ProjectReference Include="..\..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
-    <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
-    <ProjectReference Include="..\PowerLab.Host.Core\PowerLab.Host.Core.csproj" />
   </ItemGroup>
 
 </Project>

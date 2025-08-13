@@ -1,9 +1,10 @@
-﻿using PowerLab.Core.Constants;
+﻿using System.IO;
+using PowerLab.Core.Constants;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 
-namespace PowerLab.Host.Core.Services
+namespace PowerLab.Core.Services
 {
     /// <summary>
     /// Serilog 日志服务

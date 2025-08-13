@@ -1,4 +1,4 @@
-﻿namespace PowerLab.Core.Attributes
+﻿namespace PowerLab.PluginContracts.Attributes
 {
     /// <summary>
     /// 模块默认视图

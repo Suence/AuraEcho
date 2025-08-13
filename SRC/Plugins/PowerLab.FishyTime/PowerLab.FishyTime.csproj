@@ -12,9 +12,9 @@
 		<PackageReference Include="System.Management" Version="9.0.6" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
+	  <Folder Include="Events\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Events\" />
+	  <ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
 	</ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace PowerLab.Core.Constants
+﻿namespace PowerLab.PluginContracts.Constants
 {
     /// <summary>
     /// 宿主区域名称常量

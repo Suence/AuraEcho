@@ -8,7 +8,7 @@ using System.Windows;
 using PluginPacker.Models;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Extensions;
-using PowerLab.Host.Core.Models;
+using PowerLab.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using PowerLab.Core.Contracts;
 
-namespace PowerLab.Host.Core.Services
+namespace PowerLab.Core.Services
 {
     /// <summary>
     /// 文件对话框服务

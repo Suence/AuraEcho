@@ -3,6 +3,6 @@
     <Content Include="Assets\Icons\PowerLab.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Host\PluginInstaller\PluginInstaller.csproj" />
+    <ProjectReference Include="..\..\Tools\PluginInstaller\PluginInstaller.csproj" />
   </ItemGroup>
 </Project>

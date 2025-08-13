@@ -7,7 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:tools="http://ui.powerlab.com/"
+             xmlns:utils="clr-namespace:PowerLab.ExternalTools.Utils"
              xmlns:viewmodels="clr-namespace:PowerLab.ExternalTools.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:ExternalToolsHomeViewModel}"
              d:DesignHeight="520"
@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
-        <tools:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
+        <utils:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="24">

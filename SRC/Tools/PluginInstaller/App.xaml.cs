@@ -6,7 +6,7 @@ using PluginInstaller.Views;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Native.Win32;
-using PowerLab.Host.Core.Services;
+using PowerLab.Core.Services;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;

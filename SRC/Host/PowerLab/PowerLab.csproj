@@ -20,8 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
-    <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
-    <ProjectReference Include="..\PowerLab.Host.Core\PowerLab.Host.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
+    <ProjectReference Include="..\PowerLab.Core\PowerLab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\PowerLab.ico" />

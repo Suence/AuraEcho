@@ -1,6 +1,6 @@
 ﻿using Prism.Mvvm;
 
-namespace PowerLab.Host.Core.Models
+namespace PowerLab.Core.Models
 {
     /// <summary>
     /// 扩展模块清单

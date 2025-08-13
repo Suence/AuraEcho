@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:PowerLab.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:hostModels="clr-namespace:PowerLab.Host.Core.Models;assembly=PowerLab.Host.Core"
+             xmlns:models="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:powerlab="http://ui.powerlab.com/"
@@ -17,7 +17,7 @@
 
     <UserControl.Resources>
         <powerlab:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
-        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type hostModels:PluginRegistry}">
+        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type models:PluginRegistry}">
             <Border Padding="8"
                     Background="#33333333"
                     CornerRadius="4">
@@ -63,44 +63,44 @@
                                                   CommandParameter="{Binding}"
                                                   Header="ENABLE">
                                                 <i:Interaction.Triggers>
-                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Enabled}">
+                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginStatus.Enabled}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Disabled}">
+                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginStatus.Disabled}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.EnablePending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.EnablePending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.DisablePending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.DisablePending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
 
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.None}">
                                                         <i:Interaction.Behaviors>
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
                                                                                        Operator="Equal"
-                                                                                       RightOperand="{x:Static hostModels:PluginStatus.Enabled}" />
+                                                                                       RightOperand="{x:Static models:PluginStatus.Enabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.None}">
                                                         <i:Interaction.Behaviors>
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
                                                                                        Operator="Equal"
-                                                                                       RightOperand="{x:Static hostModels:PluginStatus.Disabled}" />
+                                                                                       RightOperand="{x:Static models:PluginStatus.Disabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
                                                 </i:Interaction.Triggers>
@@ -111,41 +111,41 @@
                                                   CommandParameter="{Binding}"
                                                   Header="DISABLE">
                                                 <i:Interaction.Triggers>
-                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Enabled}">
+                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginStatus.Enabled}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static hostModels:PluginStatus.Disabled}">
+                                                    <i:DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginStatus.Disabled}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.EnablePending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.EnablePending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.DisablePending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.DisablePending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
 
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.None}">
                                                         <i:Interaction.Behaviors>
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
                                                                                        Operator="Equal"
-                                                                                       RightOperand="{x:Static hostModels:PluginStatus.Enabled}" />
+                                                                                       RightOperand="{x:Static models:PluginStatus.Enabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.None}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.None}">
                                                         <i:Interaction.Behaviors>
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
                                                                                        Operator="Equal"
-                                                                                       RightOperand="{x:Static hostModels:PluginStatus.Disabled}" />
+                                                                                       RightOperand="{x:Static models:PluginStatus.Disabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
@@ -158,12 +158,12 @@
                                                   CommandParameter="{Binding}"
                                                   Header="UNINSTALL">
                                                 <i:Interaction.Triggers>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
                                                     <i:DataTrigger Binding="{Binding PlanStatus}"
                                                                Comparison="NotEqual"
-                                                               Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                               Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
                                                 </i:Interaction.Triggers>
@@ -172,12 +172,12 @@
                                                   CommandParameter="{Binding}"
                                                   Header="CANCEL UNINSTALL">
                                                 <i:Interaction.Triggers>
-                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                    <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
                                                     <i:DataTrigger Binding="{Binding PlanStatus}"
                                                                Comparison="NotEqual"
-                                                               Value="{x:Static hostModels:PluginPlanStatus.UninstallPending}">
+                                                               Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
                                                 </i:Interaction.Triggers>

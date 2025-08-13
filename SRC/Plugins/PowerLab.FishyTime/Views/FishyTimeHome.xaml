@@ -7,7 +7,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:PowerLab.FishyTime.Models"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:tools="http://ui.powerlab.com/"
+             xmlns:utils="clr-namespace:PowerLab.FishyTime.Utils"
              xmlns:viewmodels="clr-namespace:PowerLab.FishyTime.ViewModels"
              av:Background="#EFEFEF"
              av:DataContext="{av:DesignInstance Type=viewmodels:FishyTimeHomeViewModel}"
@@ -23,7 +23,7 @@
     </i:Interaction.Triggers>
 
     <UserControl.Resources>
-        <tools:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
+        <utils:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <DataTemplate x:Key="Win32WindowTemplate" DataType="{x:Type models:Win32Window}">
             <Border BorderBrush="#333333" BorderThickness="1">
                 <StackPanel>

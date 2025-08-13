@@ -4,7 +4,7 @@ using System.Windows;
 using PluginPacker.Constants;
 using PluginPacker.Views;
 using PowerLab.Core.Contracts;
-using PowerLab.Host.Core.Services;
+using PowerLab.Core.Services;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Regions;

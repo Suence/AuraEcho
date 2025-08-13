@@ -1,4 +1,4 @@
-﻿namespace PowerLab.Host.Core.Models
+﻿namespace PowerLab.Core.Models
 {
     /// <summary>
     /// 模块状态

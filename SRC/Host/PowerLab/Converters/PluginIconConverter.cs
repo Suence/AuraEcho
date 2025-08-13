@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 using PowerLab.Core.Converters;
-using PowerLab.Host.Core.Models;
+using PowerLab.Core.Models;
 
 namespace PowerLab.Converters
 {

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
-using PowerLab.Core.Extensions;
 using PowerLab.FishyTime.Contracts;
 using PowerLab.FishyTime.Utils;
 using PowerLab.FishyTime.Utils.HookManager;

@@ -3,7 +3,7 @@ using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
-using PowerLab.Host.Core.Models;
+using PowerLab.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;

@@ -1,5 +1,5 @@
 ﻿using System.Windows.Controls;
-using PowerLab.Host.Core.Models;
+using PowerLab.Core.Models;
 
 namespace PowerLab.Views
 {

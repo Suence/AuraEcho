@@ -3,9 +3,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using PowerLab.Core.Attributes;
-using PowerLab.Core.Constants;
 using PowerLab.FishyTime.Models;
+using PowerLab.PluginContracts.Constants;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -14,6 +13,7 @@ namespace PowerLab.FishyTime.ViewModels
     public class FishyTimeHomeViewModel : BindableBase
     {
         #region private members
+        private readonly IPathProvider _pathProvider;
         private FishyTimeConfig _fishyTimeConfig;
         private const string FishyTimeConfigFileName = "FishyTimeConfig.json";
         private ObservableCollection<Win32Window> _win32Windows = [];
@@ -103,8 +103,8 @@ namespace PowerLab.FishyTime.ViewModels
             FishyTimeConfig = fishyTimeConfig;
         }
 
-        private static string FishyTimeConfigFilePath
-            => Path.Combine(ApplicationPaths.Data, "FishyTime", FishyTimeConfigFileName);
+        private string FishyTimeConfigFilePath
+            => Path.Combine(_pathProvider.DataRootPath, "FishyTime", FishyTimeConfigFileName);
 
         public DelegateCommand SaveDataCommand { get; }
         private void SaveData()
@@ -115,10 +115,10 @@ namespace PowerLab.FishyTime.ViewModels
             File.WriteAllText(FishyTimeConfigFilePath, configJson);
         }
 
-        [Logging]
-        public FishyTimeHomeViewModel()
+        public FishyTimeHomeViewModel(IPathProvider pathProvider)
         {
-            Win32Windows = new ObservableCollection<Win32Window>();
+            _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
+            Win32Windows = [];
             AddWin32WindowCommand = new DelegateCommand<nint?>(AddWin32Window);
             RemoveWin32WindowCommand = new DelegateCommand<Win32Window>(RemoveWin32Window);
 

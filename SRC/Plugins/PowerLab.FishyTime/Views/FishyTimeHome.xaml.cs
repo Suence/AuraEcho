@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using PowerLab.Core.Attributes;
 using PowerLab.FishyTime.Utils;
 using PowerLab.FishyTime.ViewModels;
 using WinForms = System.Windows.Forms;
@@ -20,7 +19,6 @@ namespace PowerLab.FishyTime.Views
         private readonly List<Window> _blackWindows = [];
         private Window _ownerWindow;
 
-        [Logging]
         public FishyTimeHome()
         {
             InitializeComponent();

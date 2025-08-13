@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,17 +7,16 @@ using System.Windows.Threading;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using PowerLab.Core.Attributes;
-using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Native.Win32;
+using PowerLab.Core.Services;
 using PowerLab.Core.Tools;
-using PowerLab.Host.Core.Services;
+using PowerLab.PluginContracts.Constants;
 using PowerLab.ViewModels;
 using PowerLab.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
-using Serilog.Core;
 
 namespace PowerLab
 {
@@ -38,6 +36,7 @@ namespace PowerLab
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+            containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
             containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
 
             containerRegistry.RegisterForNavigation<Homepage>();
