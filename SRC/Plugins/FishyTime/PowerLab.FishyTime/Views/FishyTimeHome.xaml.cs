@@ -79,7 +79,7 @@ namespace PowerLab.FishyTime.Views
             // 获取鼠标所在窗口句柄
             var hwnd = Win32Helper.GetTopLevelWindowUnderMouse();
             if (hwnd == IntPtr.Zero) return;
-
+            
             var ownerWindowHandle = new WindowInteropHelper(_ownerWindow).Handle;
             if (hwnd == ownerWindowHandle) return;
 

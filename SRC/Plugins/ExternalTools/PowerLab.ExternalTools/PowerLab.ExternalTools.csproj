@@ -14,7 +14,7 @@
 		<PackageReference Include="Prism.Wpf" Version="8.1.97" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
+	  <ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Resource Include="Assets\Images\command.png" />

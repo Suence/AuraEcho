@@ -23,9 +23,12 @@
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
   </Folder>
-  <Folder Name="/SRC/Plugins/">
-    <Project Path="SRC/Plugins/PowerLab.ExternalTools/PowerLab.ExternalTools.csproj" Id="78d9c381-8c4d-48c3-b13e-10ae131b694f" />
-    <Project Path="SRC/Plugins/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
+  <Folder Name="/SRC/Plugins/" />
+  <Folder Name="/SRC/Plugins/ExternalTools/">
+    <Project Path="SRC/Plugins/ExternalTools/PowerLab.ExternalTools/PowerLab.ExternalTools.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Plugins/FishyTime/">
+    <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
   <Folder Name="/SRC/Shared/">
     <Project Path="SRC/Shared/PowerLab.Controls/PowerLab.Controls.csproj" />
