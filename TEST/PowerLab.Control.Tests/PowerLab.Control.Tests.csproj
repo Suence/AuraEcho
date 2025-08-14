@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SRC\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
+    <ProjectReference Include="..\..\SRC\Host\PowerLab.Controls\PowerLab.Controls.csproj" />
   </ItemGroup>
 
 </Project>
