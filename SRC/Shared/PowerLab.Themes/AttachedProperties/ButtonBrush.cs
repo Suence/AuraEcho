@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace PowerLab.Controls.AttachedProperties
+namespace PowerLab.Themes.AttachedProperties
 {
     public class ButtonBrush
     {

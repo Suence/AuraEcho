@@ -19,8 +19,9 @@
     <PackageReference Include="System.Drawing.Common" Version="4.7.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
     <ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
-    <ProjectReference Include="..\PowerLab.Controls\PowerLab.Controls.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
     <ProjectReference Include="..\PowerLab.Core\PowerLab.Core.csproj" />
   </ItemGroup>
   <ItemGroup>

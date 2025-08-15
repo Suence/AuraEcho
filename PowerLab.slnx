@@ -8,7 +8,6 @@
   <Folder Name="/DOC/" />
   <Folder Name="/SRC/" />
   <Folder Name="/SRC/Host/">
-    <Project Path="SRC/Host/PowerLab.Controls/PowerLab.Controls.csproj" />
     <Project Path="SRC/Host/PowerLab.Core/PowerLab.Core.csproj" />
     <Project Path="SRC/Host/PowerLab/PowerLab.csproj" />
   </Folder>
@@ -32,7 +31,9 @@
     <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
   <Folder Name="/SRC/Shared/">
+    <Project Path="SRC/Shared/PowerLab.Controls/PowerLab.Controls.csproj" />
     <Project Path="SRC/Shared/PowerLab.PluginContracts/PowerLab.PluginContracts.csproj" Id="88f69dd3-259f-4c4d-b8e2-f23f4baa8823" />
+    <Project Path="SRC/Shared/PowerLab.Themes/PowerLab.Themes.csproj" />
   </Folder>
   <Folder Name="/SRC/Tools/">
     <Project Path="SRC/Tools/PluginInstaller/PluginInstaller.csproj" />

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace PowerLab.Controls
+namespace PowerLab.Themes
 {
     public partial class LightTheme : ResourceDictionary
     {
