@@ -5,32 +5,46 @@ namespace PowerLab.Themes.AttachedProperties
 {
     public class ButtonBrush
     {
-        public static readonly DependencyProperty ButtonPressBackgroundProperty =
+        public static readonly DependencyProperty BackgroundProperty =
             DependencyProperty.RegisterAttached(
-                "ButtonPressBackground",
+                "Background",
                 typeof(Brush),
                 typeof(ButtonBrush),
                 new PropertyMetadata(default(Brush)));
-        public static void SetButtonPressBackground(
+        public static void SetBackground(
             DependencyObject element,
             Brush value)
-            => element.SetValue(ButtonPressBackgroundProperty, value);
-        public static Brush GetButtonPressBackground(
+            => element.SetValue(BackgroundProperty, value);
+        public static Brush GetBackground(
             DependencyObject element)
-            => element.GetValue(ButtonPressBackgroundProperty) as Brush;
+            => element.GetValue(BackgroundProperty) as Brush;
 
-        public static readonly DependencyProperty ButtonMouseOverBackgroundProperty =
+        public static readonly DependencyProperty PressBackgroundProperty =
             DependencyProperty.RegisterAttached(
-                "ButtonMouseOverBackground",
+                "PressBackground",
                 typeof(Brush),
                 typeof(ButtonBrush),
                 new PropertyMetadata(default(Brush)));
-        public static void SetButtonMouseOverBackground(
+        public static void SetPressBackground(
             DependencyObject element,
             Brush value)
-            => element.SetValue(ButtonMouseOverBackgroundProperty, value);
-        public static Brush GetButtonMouseOverBackground(
+            => element.SetValue(PressBackgroundProperty, value);
+        public static Brush GetPressBackground(
             DependencyObject element)
-            => element.GetValue(ButtonMouseOverBackgroundProperty) as Brush;
+            => element.GetValue(PressBackgroundProperty) as Brush;
+
+        public static readonly DependencyProperty HoverBackgroundProperty =
+            DependencyProperty.RegisterAttached(
+                "HoverBackground",
+                typeof(Brush),
+                typeof(ButtonBrush),
+                new PropertyMetadata(default(Brush)));
+        public static void SetHoverBackground(
+            DependencyObject element,
+            Brush value)
+            => element.SetValue(HoverBackgroundProperty, value);
+        public static Brush GetHoverBackground(
+            DependencyObject element)
+            => element.GetValue(HoverBackgroundProperty) as Brush;
     }
 }

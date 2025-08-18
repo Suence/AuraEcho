@@ -9,5 +9,5 @@ using System.Windows.Markup;
                                                 //(used if a resource is not found in the page,
                                                 // app, or any theme specific resource dictionaries)
 )]
-[assembly: XmlnsDefinition("http://ui.powerlab.com/", "PowerLab.Themes")]
 [assembly: XmlnsDefinition("http://ui.powerlab.com/", "PowerLab.Themes.AttachedProperties")]
+[assembly: XmlnsDefinition("http://ui.powerlab.com/", "PowerLab.Themes")]

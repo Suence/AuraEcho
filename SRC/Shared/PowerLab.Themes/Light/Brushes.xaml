@@ -1,28 +1,56 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="App.Background" Color="#EFEFEF" />
-    <SolidColorBrush x:Key="App.Background2" Color="#FFF3F3F3" />
-    
-    <SolidColorBrush x:Key="App.Foreground" Color="#212121" />
-    <SolidColorBrush x:Key="App.Foreground2" Color="#FF7F7F83" />
+    <!--  Primary 系列  -->
+    <SolidColorBrush x:Key="Themes.Brushes.Primary">#FF6750A4</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnPrimary">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.PrimaryContainer">#FFEADDFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnPrimaryContainer">#FF21005D</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.PrimaryFixed">#FF6750A4</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnPrimaryFixed">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.PrimaryFixedDim">#FF5B4290</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnPrimaryFixedVariant">#FFEADDFF</SolidColorBrush>
 
-    <SolidColorBrush x:Key="AppTitleButton.Pressed.Background" Color="#60000000" />
-    
-    <DrawingBrush x:Key="Shader.Brush"
-                  TileMode="Tile"
-                  Viewport="0,0,20,20"
-                  ViewportUnits="Absolute">
-        <DrawingBrush.Drawing>
-            <DrawingGroup>
-                <DrawingGroup.Children>
-                    <!--<GeometryDrawing Brush="#FF111111">
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="0,0,1,1" />
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>-->
-                    <GeometryDrawing Brush="Gray" Geometry="M0,0 L10,0 10,0.1, 0,0.1Z" />
-                    <GeometryDrawing Brush="Gray" Geometry="M0,0 L0,10 0.1,10, 0.1,0Z" />
-                </DrawingGroup.Children>
-            </DrawingGroup>
-        </DrawingBrush.Drawing>
-    </DrawingBrush>
+    <!--  Secondary 系列  -->
+    <SolidColorBrush x:Key="Themes.Brushes.Secondary">#FF625B71</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnSecondary">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.SecondaryContainer">#FFE8DEF8</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnSecondaryContainer">#FF1E192B</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.SecondaryFixed">#FF625B71</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnSecondaryFixed">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.SecondaryFixedDim">#FF4F475C</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnSecondaryFixedVariant">#FFE8DEF8</SolidColorBrush>
+
+    <!--  Tertiary 系列  -->
+    <SolidColorBrush x:Key="Themes.Brushes.Tertiary">#FF7D5260</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnTertiary">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.TertiaryContainer">#FFFFD8E4</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnTertiaryContainer">#FF31111D</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.TertiaryFixed">#FF7D5260</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnTertiaryFixed">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.TertiaryFixedDim">#FF69414E</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnTertiaryFixedVariant">#FFFFD8E4</SolidColorBrush>
+
+    <!--  Error 系列  -->
+    <SolidColorBrush x:Key="Themes.Brushes.Error">#FFB3261E</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnError">#FFFFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.ErrorContainer">#FFF9DEDC</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnErrorContainer">#FF410E0B</SolidColorBrush>
+
+    <!--  Background / Surface  -->
+    <SolidColorBrush x:Key="Themes.Brushes.Background">#FFFFFBFE</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnBackground">#FF1C1B1F</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.Surface">#FFFFFBFE</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnSurface">#FF1C1B1F</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.SurfaceVariant">#FFE7E0EC</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OnSurfaceVariant">#FF49454F</SolidColorBrush>
+
+    <!--  Outline / Shadow  -->
+    <SolidColorBrush x:Key="Themes.Brushes.Outline">#FF79747E</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.OutlineVariant">#FFC4C7C5</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.Shadow">#FF000000</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.Scrim">#FF000000</SolidColorBrush>
+
+    <!--  Inverse Colors  -->
+    <SolidColorBrush x:Key="Themes.Brushes.InverseSurface">#FF313033</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.InverseOnSurface">#FFF4EFF4</SolidColorBrush>
+    <SolidColorBrush x:Key="Themes.Brushes.InversePrimary">#FFD0BCFF</SolidColorBrush>
 </ResourceDictionary>

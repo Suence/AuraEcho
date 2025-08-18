@@ -2,6 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:powerlab="http://ui.powerlab.com/">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/PowerLab.Themes;component/LightTheme.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/PowerLab.Themes;component/DarkTheme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

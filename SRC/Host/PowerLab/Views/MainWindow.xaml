@@ -13,14 +13,14 @@
         Height="350"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Background="{DynamicResource App.Background}"
+        Background="{DynamicResource Themes.Brushes.Background}"
         Closing="Window_Closing"
-        Foreground="{DynamicResource App.Foreground}"
+        Foreground="{DynamicResource Themes.Brushes.OnBackground}"
         Loaded="Window_Loaded"
-        ResizeMode="CanResizeWithGrip"
-        StateChanged="Window_StateChanged"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
+
+
     <Window.Resources>
         <Storyboard x:Key="ShowMask">
             <DoubleAnimation Storyboard.TargetName="AppContainer"
@@ -63,8 +63,10 @@
     </Window.InputBindings>
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0"
-                      GlassFrameThickness="1"
+        <WindowChrome CaptionHeight="36"
+                      CornerRadius="0"
+                      GlassFrameThickness="0,0,0,1"
+                      ResizeBorderThickness="8"
                       UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Grid x:Name="AppContainer">
@@ -75,20 +77,30 @@
                 </powerlab:TransitionRippleEffect.Texture2>
             </powerlab:TransitionRippleEffect>
         </Grid.Effect>
-        <Grid x:Name="ShaderBackground" Background="{DynamicResource Shader.Brush}" />
+        <i:Interaction.Triggers>
+            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="{x:Static WindowState.Maximized}">
+                <i:ChangePropertyAction PropertyName="Margin" Value="8" />
+            </i:DataTrigger>
+            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}"
+                           Comparison="NotEqual"
+                           Value="{x:Static WindowState.Maximized}">
+                <i:ChangePropertyAction PropertyName="Margin" Value="0" />
+            </i:DataTrigger>
+        </i:Interaction.Triggers>
+        <Grid x:Name="ShaderBackground" Background="{DynamicResource Themes.Brushes.Background}" />
         <Grid x:Name="HomeContainer" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <!-- 内容区域 -->
+            <!--  内容区域  -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
                             prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.MainRegion}" />
 
 
-            <!-- 提示消息区域 -->
+            <!--  提示消息区域  -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
                             prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.MessageRegion}" />
@@ -122,22 +134,19 @@
                 <TextBlock Margin="15,0"
                            VerticalAlignment="Center"
                            FontSize="12"
-                           Foreground="{DynamicResource App.Foreground2}"
+                           Foreground="{DynamicResource Themes.Brushes.OnSurface}"
                            Text="{Binding Title}" />
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal">
 
                 <Button Width="47"
-                        powerlab:ButtonBrush.ButtonMouseOverBackground="{DynamicResource App.Background2}"
-                        powerlab:ButtonBrush.ButtonPressBackground="{DynamicResource AppTitleButton.Pressed.Background}"
-                        BorderThickness="0"
-                        FontFamily="Segoe MDL2 Assets"
+                        powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
+                        powerlab:ButtonBrush.PressBackground="#14000000"
                         FontSize="15"
-                        FontWeight="Bold"
-                        Foreground="{DynamicResource App.Foreground}"
                         IsTabStop="False"
-                        Style="{DynamicResource AppTitleButtonStyle}"
-                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Minimize}">
+                        Style="{DynamicResource IconButtonStyle}"
+                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Minimize}"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <i:ChangePropertyAction PropertyName="WindowState"
@@ -145,25 +154,89 @@
                                                     Value="Minimized" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <Button.Content>
-                        <Viewbox Width="20" Height="20">
-                            <Canvas Width="24" Height="24">
-                                <Path Data="M19,13H5V11H19V13Z" Fill="{DynamicResource App.Foreground2}" />
+                    <Canvas Width="16" Height="16">
+                        <Rectangle Canvas.Left="2.0"
+                                   Canvas.Top="8.0"
+                                   Width="12.0"
+                                   Height="1.0"
+                                   Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}"
+                                   RadiusX="0.5"
+                                   RadiusY="0.5" />
+                    </Canvas>
+                </Button>
+                <Button Width="47"
+                        powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
+                        powerlab:ButtonBrush.PressBackground="#14000000"
+                        Click="MaxWin_MouseClick"
+                        FontSize="15"
+                        IsTabStop="False"
+                        Style="{DynamicResource IconButtonStyle}"
+                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Minimize}"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Grid>
+                        <i:Interaction.Triggers>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="{x:Static WindowState.Normal}">
+                                <i:ChangePropertyAction PropertyName="Visibility"
+                                                        TargetName="MaxWindowIcon"
+                                                        Value="{x:Static Visibility.Visible}" />
+                                <i:ChangePropertyAction PropertyName="Visibility"
+                                                        TargetName="RestoreWindowIcon"
+                                                        Value="{x:Static Visibility.Hidden}" />
+                            </i:DataTrigger>
+                            <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}"
+                                           Comparison="NotEqual"
+                                           Value="{x:Static WindowState.Normal}">
+                                <i:ChangePropertyAction PropertyName="Visibility"
+                                                        TargetName="MaxWindowIcon"
+                                                        Value="{x:Static Visibility.Hidden}" />
+                                <i:ChangePropertyAction PropertyName="Visibility"
+                                                        TargetName="RestoreWindowIcon"
+                                                        Value="{x:Static Visibility.Visible}" />
+                            </i:DataTrigger>
+                        </i:Interaction.Triggers>
+                        <Viewbox x:Name="MaxWindowIcon"
+                                 Width="10"
+                                 Height="10"
+                                 Visibility="Hidden">
+                            <Canvas Width="10" Height="10">
+                                <Path Data="M 10 1 C 10 0.45 9.55 0 9 0 H 1 C 0.45 0 0 0.45 0 1 V 9 C 0 9.55 0.45 10 1 10 H 9 C 9.55 10 10 9.55 10 9 V 1 Z M 1 1 H 9 V 9 H 1 V 1 Z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
                             </Canvas>
                         </Viewbox>
-                    </Button.Content>
+
+                        <Viewbox x:Name="RestoreWindowIcon"
+                                 Width="16"
+                                 Height="16">
+                            <Canvas Width="16.0" Height="16.0">
+                                <Rectangle Canvas.Left="2.5"
+                                           Canvas.Top="4.5"
+                                           Width="9.0"
+                                           Height="9.0"
+                                           RadiusX="0.5"
+                                           RadiusY="0.5"
+                                           Stroke="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}"
+                                           StrokeDashCap="Flat"
+                                           StrokeThickness="1.0" />
+                                <Path Stroke="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}"
+                                      StrokeDashCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeStartLineCap="Round"
+                                      StrokeThickness="1.0">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 5.5 4.48421 L 5.5 3 C 5.5 2.72386 5.72386 2.5 6 2.5 H 13 C 13.2761 2.5 13.5 2.72386 13.5 3 V 10 C 13.5 10.2761 13.2761 10.5 13 10.5 H 11.5102" FillRule="Nonzero" />
+                                    </Path.Data>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+                    </Grid>
                 </Button>
-                <Button x:Name="WindowRestoreButton"
+                <!--<Button x:Name="WindowRestoreButton"
                         Width="47"
-                        powerlab:ButtonBrush.ButtonMouseOverBackground="{DynamicResource App.Background2}"
-                        powerlab:ButtonBrush.ButtonPressBackground="{DynamicResource AppTitleButton.Pressed.Background}"
-                        BorderThickness="0"
-                        FontFamily="Segoe MDL2 Assets"
+                        powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
+                        powerlab:ButtonBrush.PressBackground="#14000000"
                         FontSize="15"
-                        FontWeight="Bold"
-                        Foreground="{DynamicResource App.Foreground}"
                         IsTabStop="False"
-                        Style="{DynamicResource AppTitleButtonStyle}"
+                        WindowChrome.IsHitTestVisibleInChrome="True"
+                        Style="{DynamicResource IconButtonStyle}"
                         ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Reduction}"
                         Visibility="Collapsed">
                     <i:Interaction.Triggers>
@@ -176,31 +249,25 @@
                     <Button.Content>
                         <Viewbox Width="20" Height="20">
                             <Canvas Width="24" Height="24">
-                                <Path Data="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" Fill="{DynamicResource App.Foreground2}" />
+                                <Path Data="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" Fill="{DynamicResource Themes.Brushes.OnSurface}" />
                             </Canvas>
                         </Viewbox>
                     </Button.Content>
-                </Button>
+                </Button>-->
                 <Button Width="47"
-                        powerlab:ButtonBrush.ButtonMouseOverBackground="{DynamicResource App.Background2}"
-                        powerlab:ButtonBrush.ButtonPressBackground="{DynamicResource AppTitleButton.Pressed.Background}"
+                        powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
+                        powerlab:ButtonBrush.PressBackground="#14000000"
                         BorderThickness="0"
                         Click="CloseWindowButton_Click"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="15"
                         IsTabStop="False"
-                        Style="{DynamicResource CloseWindowButtonStyle}"
-                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Close}">
-                    <Button.Content>
-                        <Viewbox Width="20" Height="20">
-                            <Canvas Width="24" Height="24">
-                                <Path Data="M22,4V2H2V4H11V18.17L5.5,12.67L4.08,14.08L12,22L19.92,14.08L18.5,12.67L13,18.17V4H22Z" Fill="{DynamicResource App.Foreground2}" />
-                            </Canvas>
-                        </Viewbox>
-                        <!--<Image Source="pack://application:,,,/OTLog;component/Assets/Images/向下2.png"
-                                   Width="20"
-                                   Height="20" />-->
-                    </Button.Content>
+                        Style="{DynamicResource IconButtonStyle}"
+                        ToolTip="{Binding Source={StaticResource R}, Path=Labels.Window_Close}"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Canvas Width="16" Height="16">
+                        <Path Data="M 3.14645 3.14645 C 3.34171 2.95118 3.65829 2.95118 3.85355 3.14645 L 8 7.293 L 12.1464 3.14645 C 12.32 2.97288 12.5894 2.9536 12.7843 3.08859 L 12.8536 3.14645 C 13.0488 3.34171 13.0488 3.65829 12.8536 3.85355 L 8.707 8 L 12.8536 12.1464 C 13.0271 12.32 13.0464 12.5894 12.9114 12.7843 L 12.8536 12.8536 C 12.6583 13.0488 12.3417 13.0488 12.1464 12.8536 L 8 8.707 L 3.85355 12.8536 C 3.67999 13.0271 3.41056 13.0464 3.21569 12.9114 L 3.14645 12.8536 C 2.95118 12.6583 2.95118 12.3417 3.14645 12.1464 L 7.293 8 L 3.14645 3.85355 C 2.97288 3.67999 2.9536 3.41056 3.08859 3.21569 L 3.14645 3.14645 Z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                    </Canvas>
                 </Button>
             </StackPanel>
         </Grid>

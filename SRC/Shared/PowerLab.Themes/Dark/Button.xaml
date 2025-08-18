@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:powerlab="http://ui.powerlab.com/"
                     xmlns:ui="clr-namespace:PowerLab.Themes.AttachedProperties"
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     mc:Ignorable="d">
     <d:ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/PowerLab.Themes;component/Light/Brushes.xaml"/>
+        <ResourceDictionary Source="/PowerLab.Themes;component/Light/Brushes.xaml" />
     </d:ResourceDictionary.MergedDictionaries>
     <!--  常规按钮模板  -->
     <ControlTemplate x:Key="RegularButtonTemplate" TargetType="{x:Type Button}">
@@ -40,14 +40,14 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="powerlab:ControlHelper.CornerRadius" Value="2"/>
-        <Setter Property="Foreground" Value="{DynamicResource Themes.Brushes.OnPrimary}" />
+        <Setter Property="powerlab:ControlHelper.CornerRadius" Value="2" />
+        <Setter Property="powerlab:ButtonBrush.HoverBackground" Value="{DynamicResource Themes.Brushes.PrimaryFixed}" />
+        <Setter Property="powerlab:ButtonBrush.PressBackground" Value="{DynamicResource Themes.Brushes.PrimaryFixedDim}" />
         <Setter Property="Background" Value="{DynamicResource Themes.Brushes.Primary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Themes.Brushes.OnPrimary}" />
         <Setter Property="Template" Value="{StaticResource RegularButtonTemplate}" />
     </Style>
-    
-    
-    <!-- 图标按钮样式 -->
+    <!--  图标按钮样式  -->
     <Style x:Key="IconButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Padding" Value="5" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -59,4 +59,17 @@
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 
+    <!--  默认按钮样式  -->
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="powerlab:ControlHelper.CornerRadius" Value="2" />
+        <Setter Property="powerlab:ButtonBrush.HoverBackground" Value="{DynamicResource Themes.Brushes.SecondaryFixed}" />
+        <Setter Property="powerlab:ButtonBrush.PressBackground" Value="{DynamicResource Themes.Brushes.SecondaryFixedDim}" />
+        <Setter Property="Background" Value="{DynamicResource Themes.Brushes.Secondary}" />
+        <Setter Property="Foreground" Value="{DynamicResource Themes.Brushes.OnSecondary}" />
+        <Setter Property="Template" Value="{StaticResource RegularButtonTemplate}" />
+    </Style>
 </ResourceDictionary>

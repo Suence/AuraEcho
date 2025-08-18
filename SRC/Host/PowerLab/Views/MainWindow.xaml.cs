@@ -47,20 +47,6 @@ namespace PowerLab.Views
             Hide();
         }
 
-        /// <summary>
-        /// 窗口尺寸变化事件处理程序
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowRestoreButton.Visibility = Visibility.Visible;
-                return;
-            }
-            WindowRestoreButton.Visibility = Visibility.Collapsed;
-        }
 
         /// <summary>
         /// 窗口加载完成事件处理程序
@@ -153,6 +139,21 @@ namespace PowerLab.Views
                 selectionBox.Items.Add(new ToastSelectionBoxItem("Item1", "Item A"));
                 selectionBox.Items.Add(new ToastSelectionBoxItem("Item2", "Item B"));
                 return selectionBox;
+            }
+        }
+
+        private void MaxWin_MouseClick(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+            {
+                WindowState = WindowState.Maximized;
+                return;
+            }
+
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                return;
             }
         }
     }
