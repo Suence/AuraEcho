@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -7,7 +6,6 @@ using System.Text.Json;
 using System.Windows;
 using PluginPacker.Models;
 using PowerLab.Core.Contracts;
-using PowerLab.Core.Extensions;
 using PowerLab.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -25,7 +23,8 @@ namespace PluginPacker.ViewModels
 
         private PluginFile _iconFile;
         private string _outputFolder;
-        private ObservableCollection<PluginFile> _pluginFiles;
+        private PluginFile _entryFile;
+        private PluginFolder _rootFolder;
         private PluginManifest _pluginManifest;
         private string _manifestFileContent = string.Empty;
         #endregion
@@ -57,13 +56,20 @@ namespace PluginPacker.ViewModels
             set => SetProperty(ref _outputFolder, value);
         }
 
-        /// <summary>
-        /// 模块文件列表
-        /// </summary>
-        public ObservableCollection<PluginFile> PluginFiles
+        public PluginFile EntryFile
         {
-            get => _pluginFiles;
-            set => SetProperty(ref _pluginFiles, value);
+            get => _entryFile;
+            set
+            {
+                SetProperty(ref _entryFile, value);
+                PluginManifest.EntryAssemblyName = value?.Name;
+            }
+        }
+
+        public PluginFolder RootFolder
+        {
+            get => _rootFolder;
+            set => SetProperty(ref _rootFolder, value);
         }
 
         /// <summary>
@@ -75,37 +81,62 @@ namespace PluginPacker.ViewModels
             set => SetProperty(ref _iconFile, value);
         }
 
-        public DelegateCommand<PluginFile> AddPluginFileCommand { get; }
+        public DelegateCommand<PluginFolder> DropFilesCommand { get; }
+        private void DropFiles(PluginFolder pluginFolder)
+        {
+
+        }
+
+        public DelegateCommand<PluginFile> RemoveFileCommand { get; }
+        private void RemoveFile(PluginFile pluginFile)
+        {
+            pluginFile.Parent.Children.Remove(pluginFile);
+
+            if (pluginFile != EntryFile) return;
+
+            EntryFile = null;
+        }
+
+        public DelegateCommand<PluginFolder> RemoveFolderCommand { get; }
+        private void RemoveFolder(PluginFolder pluginFolder)
+        {
+            pluginFolder.Parent.Children.Remove(pluginFolder);
+        }
+
+        public DelegateCommand<PluginFolder> AddPluginFileCommand { get; }
 
         /// <summary>
         /// 添加模块文件
         /// </summary>
         /// <param name="pluginFile"></param>
-        private void AddPluginFile(PluginFile pluginFile)
+        private void AddPluginFile(PluginFolder targetFolder)
         {
-            PluginFiles.Add(pluginFile);
+            var filePaths = _fileDialogService.OpenFiles("选择插件文件", "所有文件 (*.*)|*.*");
+
+            if (filePaths is null || !filePaths.Any()) return;
+
+            foreach (string filePath in filePaths)
+            {
+                string? fileName = Path.GetFileName(filePath);
+                if (!targetFolder.Children.OfType<PluginFile>().Select(pf => pf.Name).Contains(fileName))
+                {
+                    targetFolder.Add(new PluginFile(filePath, fileName, targetFolder));
+                }
+            }
         }
 
-        public DelegateCommand<DragEventArgs> DropPluginFilesCommand { get; }
-        /// <summary>
-        /// 拖放模块文件
-        /// </summary>
-        /// <param name="e"></param>
-        private void DropPluginFiles(DragEventArgs e)
+        public DelegateCommand<PluginFolder> AddPluginFolderCommand { get; }
+        private void AddPluginFolder(PluginFolder targetFolder)
         {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-                return;
+            string[]? folderPaths = _fileDialogService.SelectFolders("选择目录");
+            if (folderPaths is null || folderPaths.Length <= 0) return;
 
-            if (e.Data.GetData(DataFormats.FileDrop) is not string[] files)
-                return;
-
-            foreach (var file in files)
+            foreach (string folderPath in folderPaths)
             {
-                string fileName = Path.GetFileName(file);
-                if (File.Exists(file) && !PluginFiles.Select(pf => pf.FileName).Contains(fileName))
-                {
-                    AddPluginFile(new PluginFile(file, fileName));
-                }
+                if (targetFolder.Children.OfType<PluginFolder>().Select(folder => folder.FolderPath).Contains(folderPath))
+                    continue;
+
+                targetFolder.Add(new PluginFolder(folderPath, targetFolder));
             }
         }
 
@@ -126,37 +157,7 @@ namespace PluginPacker.ViewModels
         /// <param name="pluginFile"></param>
         private void SetEntryFile(PluginFile pluginFile)
         {
-            PluginFiles.ForEach(pf => pf.IsEntryFile = false);
-            pluginFile.IsEntryFile = true;
-
-            PluginManifest.EntryAssemblyName = pluginFile.FileName;
-        }
-
-        public DelegateCommand OpenFileCommand { get; }
-        /// <summary>
-        /// 通过文件夹对话框添加模块文件
-        /// </summary>
-        private void OpenFile()
-        {
-            var filePath = _fileDialogService.OpenFile("选择插件文件", "所有文件 (*.*)|*.*");
-
-            if (filePath is null) return;
-
-            string? fileName = Path.GetFileName(filePath);
-            if (!PluginFiles.Select(pf => pf.FileName).Contains(fileName))
-            {
-                AddPluginFile(new PluginFile(filePath, fileName));
-            }
-        }
-
-        public DelegateCommand<PluginFile> RemovePluginFileCommand { get; }
-        /// <summary>
-        /// 移除模块文件
-        /// </summary>
-        /// <param name="pluginFile"></param>
-        private void RemovePluginFile(PluginFile pluginFile)
-        {
-            PluginFiles.Remove(pluginFile);
+            EntryFile = pluginFile;
         }
 
         public DelegateCommand SetIconCmmand { get; }
@@ -170,8 +171,8 @@ namespace PluginPacker.ViewModels
             if (filePath is null) return;
 
             string? fileName = Path.GetFileName(filePath);
-            IconFile = new PluginFile(filePath, fileName);
-            PluginManifest.Icon = IconFile.FileName;
+            IconFile = new PluginFile(filePath, fileName, RootFolder);
+            PluginManifest.Icon = IconFile.Name;
         }
 
         public DelegateCommand SetOutputFolderCommand { get; }
@@ -213,34 +214,56 @@ namespace PluginPacker.ViewModels
 
             byte[] manifestContentBytes = Encoding.UTF8.GetBytes(ManifestFileContent);
 
-            // 创建或覆盖 zip 文件
             using (var zipStream = new FileStream(pluginPackageFilePath, FileMode.Create))
             using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
             {
-                var allPluginFiles = PluginFiles.Concat([IconFile]);
-                foreach (var file in allPluginFiles)
+                // 递归写入 RootPluginFolder
+                AddFolderToArchive(RootFolder, archive, "");
+
+                // 写入 IconFile（如果有单独的图标）
+                if (IconFile is not null && File.Exists(IconFile.FilePath))
                 {
-                    if (File.Exists(file.FilePath))
-                    {
-                        // 在压缩包中保留相对路径（可根据需要修改）
-                        archive.CreateEntryFromFile(file.FilePath, file.FileName);
-                    }
-                    else
-                    {
-                        _logger.Debug($"文件未找到: {file.FilePath}");
-                    }
+                    archive.CreateEntryFromFile(IconFile.FilePath, IconFile.Name);
                 }
 
-                // 创建一个新条目（即 zip 中的文件）
+                // 写入 manifest
                 var entry = archive.CreateEntry("plugin.manifest.json");
-
-                // 向 entry 写入内存数据
                 using var entryStream = entry.Open();
                 entryStream.Write(manifestContentBytes, 0, manifestContentBytes.Length);
             }
 
             _logger.Debug("打包完成");
             MessageBox.Show("插件打包完成！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        /// <summary>
+        /// 递归添加文件夹及其内容到压缩包
+        /// </summary>
+        private void AddFolderToArchive(PluginFolder folder, ZipArchive archive, string relativePath)
+        {
+            string currentPath = string.IsNullOrEmpty(relativePath)
+                ? string.Empty
+                : Path.Combine(relativePath, folder.Name);
+
+            // 添加文件
+            foreach (var file in folder.Children.OfType<PluginFile>())
+            {
+                if (File.Exists(file.FilePath))
+                {
+                    string entryName = Path.Combine(currentPath, file.Name);
+                    archive.CreateEntryFromFile(file.FilePath, entryName);
+                }
+                else
+                {
+                    _logger.Debug($"文件未找到: {file.FilePath}");
+                }
+            }
+
+            // 递归子文件夹
+            foreach (var subFolder in folder.Children.OfType<PluginFolder>())
+            {
+                AddFolderToArchive(subFolder, archive, Path.Combine(currentPath, subFolder.Name));
+            }
         }
 
         /// <summary>
@@ -254,7 +277,8 @@ namespace PluginPacker.ViewModels
             _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            PluginFiles = [];
+            _rootFolder = new(String.Empty, null) { Name = "插件文件" };
+
             PluginManifest = new()
             {
                 Author = "AUTHOR",
@@ -263,11 +287,13 @@ namespace PluginPacker.ViewModels
             };
             PluginManifest.PropertyChanged += PluginManifestChanged;
 
-            AddPluginFileCommand = new DelegateCommand<PluginFile>(AddPluginFile);
-            RemovePluginFileCommand = new DelegateCommand<PluginFile>(RemovePluginFile);
+            DropFilesCommand = new DelegateCommand<PluginFolder>(DropFiles);
+            AddPluginFileCommand = new DelegateCommand<PluginFolder>(AddPluginFile);
+            AddPluginFolderCommand = new DelegateCommand<PluginFolder>(AddPluginFolder);
+            RemoveFileCommand = new DelegateCommand<PluginFile>(RemoveFile);
+            RemoveFolderCommand = new DelegateCommand<PluginFolder>(RemoveFolder);
+
             PackPluginCommand = new DelegateCommand(PackPlugin, PackPluginCommandCanExecute);
-            DropPluginFilesCommand = new DelegateCommand<DragEventArgs>(DropPluginFiles);
-            OpenFileCommand = new DelegateCommand(OpenFile);
             SetEntryFileCommand = new DelegateCommand<PluginFile>(SetEntryFile);
             SetOutputFolderCommand = new DelegateCommand(SetOutputFolder);
             GenPluginIdCommand = new DelegateCommand(GenPluginId);

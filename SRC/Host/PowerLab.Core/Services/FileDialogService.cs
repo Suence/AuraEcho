@@ -25,6 +25,23 @@ namespace PowerLab.Core.Services
         }
 
         /// <summary>
+        /// 选择文件(多选)
+        /// </summary>
+        /// <param name="dialogTitle"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public string[] OpenFiles(string dialogTitle, string filter = "All Files|*.*")
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = dialogTitle,
+                Filter = filter,
+                Multiselect = true
+            };
+            return dialog.ShowDialog() == true ? dialog.FileNames : null;
+        }
+
+        /// <summary>
         /// 打开文件夹选择对话框
         /// </summary>
         /// <param name="dialogTitle"></param>
@@ -41,6 +58,24 @@ namespace PowerLab.Core.Services
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 return dialog.FileName;
+            }
+
+            return null;
+        }
+
+        public string[] SelectFolders(string dialogTitle)
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true,
+                Title = dialogTitle,
+                Multiselect = true,
+                InitialDirectory = "C:\\"
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                return [.. dialog.FileNames];
             }
 
             return null;

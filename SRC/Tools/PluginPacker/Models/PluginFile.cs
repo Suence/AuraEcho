@@ -1,13 +1,10 @@
-﻿using Prism.Mvvm;
-
-namespace PluginPacker.Models
+﻿namespace PluginPacker.Models
 {
-    public class PluginFile : BindableBase
+    public class PluginFile : PluginItem
     {
         private bool _isEntryFile;
 
         public string FilePath { get; }
-        public string FileName { get; }
 
         public bool IsEntryFile
         {
@@ -15,11 +12,14 @@ namespace PluginPacker.Models
             set => SetProperty(ref _isEntryFile, value);
         }
 
-        public PluginFile(string FilePath, string FileName, bool IsEntryFile = false)
+        public PluginFolder Parent { get; set; }
+
+        public PluginFile(string filePath, string fileName, PluginFolder folder) : base(fileName)
         {
-            this.FilePath = FilePath;
-            this.FileName = FileName;
-            this.IsEntryFile = IsEntryFile;
+            Type = PluginItemType.File;
+            FilePath = filePath;
+
+            Parent = folder;
         }
     }
 }

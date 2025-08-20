@@ -18,4 +18,8 @@
     <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
+
 </Project>
