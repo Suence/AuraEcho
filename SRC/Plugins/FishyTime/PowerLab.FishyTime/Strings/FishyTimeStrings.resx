@@ -117,28 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppName" xml:space="preserve">
-    <value>PowerLab</value>
-  </data>
-  <data name="AppLanguage_zh_CN" xml:space="preserve">
-    <value>简体中文</value>
-  </data>
-  <data name="AppLanguage_en_US" xml:space="preserve">
-    <value>英语</value>
-  </data>
-  <data name="Window_Close" xml:space="preserve">
-    <value>关闭</value>
-  </data>
-  <data name="Window_Maximize" xml:space="preserve">
-    <value>最大化</value>
-  </data>
-  <data name="Window_Minimize" xml:space="preserve">
-    <value>最小化</value>
-  </data>
-  <data name="Window_Reduction" xml:space="preserve">
-    <value>还原</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>设置</value>
+  <data name="PluginName" xml:space="preserve">
+    <value>摸鱼</value>
+    <comment>插件名称</comment>
   </data>
 </root>

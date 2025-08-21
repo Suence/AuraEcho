@@ -58,10 +58,16 @@ namespace PowerLab.ViewModels
         /// </summary>
         private void NavigationToDashboard()
         {
-            _regionManager.RequestNavigate(HostRegionNames.PluginContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
+            _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
             {
                 { "PluginRegistries", Plugins }
             });
+        }
+
+        public DelegateCommand NavigationToSettingsCommand { get; }
+        private void NavigationToSettings()
+        {
+            _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.Settings);
         }
 
         public DelegateCommand LoadPluginsCommand { get; }
@@ -222,7 +228,7 @@ namespace PowerLab.ViewModels
                 return;
 
             _regionManager.RequestNavigate(
-                HostRegionNames.PluginContentRegion,
+                HostRegionNames.HomeContentRegion,
                 pluginMetadata.DefaultView);
         }
 
@@ -243,6 +249,7 @@ namespace PowerLab.ViewModels
             _pluginRegistryPath = Path.Combine(ApplicationPaths.Data, "plugin.registry.json");
             LoadPluginsCommand = new DelegateCommand(LoadPlugins);
             SwitchPluginCommand = new DelegateCommand<PluginRegistry>(SwitchPlugin);
+            NavigationToSettingsCommand = new DelegateCommand(NavigationToSettings);
             NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         }
 

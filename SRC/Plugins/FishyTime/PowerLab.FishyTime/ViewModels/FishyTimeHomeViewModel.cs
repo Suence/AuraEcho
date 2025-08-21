@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using PowerLab.FishyTime.Models;
+using PowerLab.FishyTime.Utils;
 using PowerLab.PluginContracts.Constants;
+using PowerLab.PluginContracts.Events;
+using PowerLab.PluginContracts.Models;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 
 namespace PowerLab.FishyTime.ViewModels
@@ -14,6 +19,7 @@ namespace PowerLab.FishyTime.ViewModels
     {
         #region private members
         private readonly IPathProvider _pathProvider;
+        private readonly IEventAggregator _eventAggregator;
         private FishyTimeConfig _fishyTimeConfig;
         private const string FishyTimeConfigFileName = "FishyTimeConfig.json";
         private ObservableCollection<Win32Window> _win32Windows = [];
@@ -53,7 +59,7 @@ namespace PowerLab.FishyTime.ViewModels
 
             var win32Window = await Win32Window.AttachAsync(handle.Value);
             win32Window.Closed += Win32WindowClosed;
-            
+
             Win32Windows.Add(win32Window);
         }
 
@@ -115,9 +121,12 @@ namespace PowerLab.FishyTime.ViewModels
             File.WriteAllText(FishyTimeConfigFilePath, configJson);
         }
 
-        public FishyTimeHomeViewModel(IPathProvider pathProvider)
+        public FishyTimeHomeViewModel(IPathProvider pathProvider, IEventAggregator eventAggregator)
         {
             _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
+            _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
+            _eventAggregator.GetEvent<AppLanguageChangedEvent>().Subscribe(AppLanguageChanged);
+
             Win32Windows = [];
             AddWin32WindowCommand = new DelegateCommand<nint?>(AddWin32Window);
             RemoveWin32WindowCommand = new DelegateCommand<Win32Window>(RemoveWin32Window);
@@ -126,5 +135,16 @@ namespace PowerLab.FishyTime.ViewModels
             SaveDataCommand = new DelegateCommand(SaveData);
         }
 
+        private void AppLanguageChanged(AppLanguage language)
+        {
+            var targetCultureInfo = language switch
+            {
+                AppLanguage.ChineseSimplified => new CultureInfo("zh-CN"),
+                AppLanguage.English => new CultureInfo("en-US"),
+                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+            };
+
+            FishyTimeResources.ChangeCulture(targetCultureInfo);
+        }
     }
 }

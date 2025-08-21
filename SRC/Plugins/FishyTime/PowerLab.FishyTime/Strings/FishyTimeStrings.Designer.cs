@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PowerLab.Core.Strings {
+namespace PowerLab.FishyTime.Strings {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PowerLab.Core.Strings {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Labels {
+    public class FishyTimeStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Labels() {
+        internal FishyTimeStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PowerLab.Core.Strings {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PowerLab.Core.Strings.Labels", typeof(Labels).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PowerLab.FishyTime.Strings.FishyTimeStrings", typeof(FishyTimeStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,74 +61,11 @@ namespace PowerLab.Core.Strings {
         }
         
         /// <summary>
-        ///   查找类似 英语 的本地化字符串。
+        ///   查找类似 摸鱼 的本地化字符串。
         /// </summary>
-        public static string AppLanguage_en_US {
+        public static string PluginName {
             get {
-                return ResourceManager.GetString("AppLanguage_en_US", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 简体中文 的本地化字符串。
-        /// </summary>
-        public static string AppLanguage_zh_CN {
-            get {
-                return ResourceManager.GetString("AppLanguage_zh_CN", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 PowerLab 的本地化字符串。
-        /// </summary>
-        public static string AppName {
-            get {
-                return ResourceManager.GetString("AppName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 设置 的本地化字符串。
-        /// </summary>
-        public static string Settings {
-            get {
-                return ResourceManager.GetString("Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 关闭 的本地化字符串。
-        /// </summary>
-        public static string Window_Close {
-            get {
-                return ResourceManager.GetString("Window_Close", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 最大化 的本地化字符串。
-        /// </summary>
-        public static string Window_Maximize {
-            get {
-                return ResourceManager.GetString("Window_Maximize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 最小化 的本地化字符串。
-        /// </summary>
-        public static string Window_Minimize {
-            get {
-                return ResourceManager.GetString("Window_Minimize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 还原 的本地化字符串。
-        /// </summary>
-        public static string Window_Reduction {
-            get {
-                return ResourceManager.GetString("Window_Reduction", resourceCulture);
+                return ResourceManager.GetString("PluginName", resourceCulture);
             }
         }
     }

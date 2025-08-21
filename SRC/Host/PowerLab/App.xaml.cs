@@ -41,6 +41,7 @@ namespace PowerLab
 
             containerRegistry.RegisterForNavigation<Homepage>();
             containerRegistry.RegisterForNavigation<PluginsDashboard>();
+            containerRegistry.RegisterForNavigation<Settings>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

@@ -18,4 +18,17 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Strings\FishyTimeStrings.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FishyTimeStrings.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Update="Strings\FishyTimeStrings.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>FishyTimeStrings.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
 </Project>

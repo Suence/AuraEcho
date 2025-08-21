@@ -47,25 +47,35 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0"
-                    Width="141"
-                    Background="#33000000">
-            <Button Height="30"
+        <Grid Grid.Column="0" Width="141" Background="#33000000">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Button Height="30"
                     Margin="0,36,0,16"
                     BorderThickness="0"
                     Command="{Binding NavigationToDashboardCommand}"
                     Content="DASHBOARD" />
 
-            <ItemsControl ItemTemplate="{StaticResource PluginTemplate}" ItemsSource="{Binding Source={StaticResource EnabledPluginsView}}">
-                <d:ItemsControl.ItemsSource>
-                    <x:Array Type="{x:Type cm:PluginRegistry}">
-                        <cm:PluginRegistry />
-                        <cm:PluginRegistry />
-                        <cm:PluginRegistry />
-                    </x:Array>
-                </d:ItemsControl.ItemsSource>
-            </ItemsControl>
-        </StackPanel>
-        <ContentControl Grid.Column="1" prism:RegionManager.RegionName="{x:Static cc:HostRegionNames.PluginContentRegion}" />
+                <ItemsControl ItemTemplate="{StaticResource PluginTemplate}" ItemsSource="{Binding Source={StaticResource EnabledPluginsView}}">
+                    <d:ItemsControl.ItemsSource>
+                        <x:Array Type="{x:Type cm:PluginRegistry}">
+                            <cm:PluginRegistry />
+                            <cm:PluginRegistry />
+                            <cm:PluginRegistry />
+                        </x:Array>
+                    </d:ItemsControl.ItemsSource>
+                </ItemsControl>
+            </StackPanel>
+
+            <Button Height="30"
+                    Grid.Row="1"
+                    BorderThickness="0"
+                    Command="{Binding NavigationToSettingsCommand}"
+                    Content="{Binding Source={StaticResource R}, Path=Labels.Settings}" />
+        </Grid>
+        <ContentControl Grid.Column="1" prism:RegionManager.RegionName="{x:Static cc:HostRegionNames.HomeContentRegion}" />
     </Grid>
 </UserControl>
