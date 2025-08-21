@@ -241,16 +241,12 @@ namespace PluginPacker.ViewModels
         /// </summary>
         private void AddFolderToArchive(PluginFolder folder, ZipArchive archive, string relativePath)
         {
-            string currentPath = string.IsNullOrEmpty(relativePath)
-                ? string.Empty
-                : Path.Combine(relativePath, folder.Name);
-
             // 添加文件
             foreach (var file in folder.Children.OfType<PluginFile>())
             {
                 if (File.Exists(file.FilePath))
                 {
-                    string entryName = Path.Combine(currentPath, file.Name);
+                    string entryName = Path.Combine(relativePath, file.Name);
                     archive.CreateEntryFromFile(file.FilePath, entryName);
                 }
                 else
@@ -262,7 +258,7 @@ namespace PluginPacker.ViewModels
             // 递归子文件夹
             foreach (var subFolder in folder.Children.OfType<PluginFolder>())
             {
-                AddFolderToArchive(subFolder, archive, Path.Combine(currentPath, subFolder.Name));
+                AddFolderToArchive(subFolder, archive, Path.Combine(relativePath, subFolder.Name));
             }
         }
 
