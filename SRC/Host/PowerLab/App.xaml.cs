@@ -11,7 +11,9 @@ using PowerLab.Core.Contracts;
 using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Services;
 using PowerLab.Core.Tools;
+using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
+using PowerLab.Services;
 using PowerLab.ViewModels;
 using PowerLab.Views;
 using Prism.Ioc;
@@ -38,6 +40,7 @@ namespace PowerLab
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
             containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
             containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
+            containerRegistry.RegisterSingleton<IPluginManager, PluginManager>();
 
             containerRegistry.RegisterForNavigation<Homepage>();
             containerRegistry.RegisterForNavigation<PluginsDashboard>();

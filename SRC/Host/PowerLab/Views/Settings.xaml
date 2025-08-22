@@ -22,14 +22,14 @@
                        Text="LANGUAGES" />
             <Border Height="40"
                     Margin="0,0,0,8"
-                    Padding="8, 0"
+                    Padding="8,0"
                     BorderBrush="#333333"
                     BorderThickness="1">
                 <DockPanel LastChildFill="True">
                     <ComboBox x:Name="LanguagesComboBox"
                               Width="150"
-                              VerticalAlignment="Center"
                               Margin="4"
+                              VerticalAlignment="Center"
                               DockPanel.Dock="Right"
                               SelectedIndex="0"
                               SelectedItem="{Binding AppLanguage}">
