@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +15,7 @@ using PowerLab.Core.Services;
 using PowerLab.Core.Tools;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
+using PowerLab.PluginContracts.Models;
 using PowerLab.Services;
 using PowerLab.ViewModels;
 using PowerLab.Views;
@@ -41,6 +44,7 @@ namespace PowerLab
             containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
             containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
             containerRegistry.RegisterSingleton<IPluginManager, PluginManager>();
+            containerRegistry.RegisterSingleton<IThemeManager, ThemeManager>();
 
             containerRegistry.RegisterForNavigation<Homepage>();
             containerRegistry.RegisterForNavigation<PluginsDashboard>();
@@ -64,6 +68,7 @@ namespace PowerLab
         {
             base.OnStartup(e);
 
+            Container.Resolve<IThemeManager>().CurrentTheme = AppTheme.FollowSystem;
             RegisterEvents();
 
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");

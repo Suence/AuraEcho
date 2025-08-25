@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Attributes;
+using PowerLab.PluginContracts.Interfaces;
+using PowerLab.PluginContracts.Models;
 using PowerLab.Tools;
 using Prism.Modularity;
 
@@ -22,6 +26,7 @@ namespace PowerLab.Services
         private readonly IModuleManager _moduleManager;
         private readonly IModuleCatalog _moduleCatalog;
         private readonly ILogger _logger;
+        private List<PluginLoadContext> _pluginLoadContexts = [];
 
         private List<PluginRegistry> _plugins;
         public List<PluginRegistry> Plugins
@@ -96,6 +101,7 @@ namespace PowerLab.Services
                 }
 
                 var alc = new PluginLoadContext(entryAssemblyPath);
+                _pluginLoadContexts.Add(alc);
                 Assembly pluginAssembly;
                 try
                 {
@@ -126,7 +132,8 @@ namespace PowerLab.Services
                     pluginRegistries.Add(pluginRegistry);
                 }
 
-                LoadPluginByAssembly(pluginAssembly);
+                IPlugin pluginContext = LoadPluginByAssembly(pluginAssembly);
+                pluginRegistry.PluginContext = pluginContext;
             }
 
             SavePluginRegistry(pluginRegistries);
@@ -136,7 +143,6 @@ namespace PowerLab.Services
             _isInitialized = true;
             return pluginRegistries;
         }
-
         public Task<List<PluginRegistry>> LoadPluginsAsync()
         {
             return Task.Run(LoadPlugins);
@@ -190,17 +196,19 @@ namespace PowerLab.Services
             return manifests;
         }
 
-        private void LoadPluginByAssembly(Assembly pluginAssembly)
+        private IPlugin LoadPluginByAssembly(Assembly pluginAssembly)
         {
-            var moduleType = pluginAssembly.GetExportedTypes()
-                .Where(t => typeof(IModule).IsAssignableFrom(t))
-                .Where(t => t != typeof(IModule))
+            var pluginType = pluginAssembly.GetExportedTypes()
+                .Where(t => typeof(IPlugin).IsAssignableFrom(t))
+                .Where(t => t != typeof(IPlugin))
                 .Where(t => !t.IsAbstract)
                 .SingleOrDefault();
 
-            ModuleInfo moduleInfo = CreateModuleInfo(moduleType);
+            ModuleInfo moduleInfo = CreateModuleInfo(pluginType);
             _moduleCatalog.AddModule(moduleInfo);
             _moduleManager.LoadModule(moduleInfo.ModuleName);
+
+            return (IPlugin)Activator.CreateInstance(pluginType);
         }
 
         private static ModuleInfo CreateModuleInfo(Type type)

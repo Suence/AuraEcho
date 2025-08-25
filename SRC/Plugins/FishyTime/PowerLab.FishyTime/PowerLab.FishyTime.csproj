@@ -17,6 +17,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
+	  <ProjectReference Include="..\PowerLab.FishyTime.Themes\PowerLab.FishyTime.Themes.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Strings\FishyTimeStrings.Designer.cs">

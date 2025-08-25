@@ -28,6 +28,7 @@
     <Project Path="SRC/Plugins/ExternalTools/PowerLab.ExternalTools/PowerLab.ExternalTools.csproj" />
   </Folder>
   <Folder Name="/SRC/Plugins/FishyTime/">
+    <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime.Themes/PowerLab.FishyTime.Themes.csproj" Id="3ea07b88-81a0-4819-95ad-55220defbf59" />
     <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
   <Folder Name="/SRC/Shared/">

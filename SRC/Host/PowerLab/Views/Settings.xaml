@@ -45,6 +45,36 @@
                                Text="CHOOSE THE LANGUAGE USED BY POWERLAB" />
                 </DockPanel>
             </Border>
+            <TextBlock Margin="0,0,0,8"
+                       FontSize="16"
+                       Text="THEMES" />
+            <Border Height="40"
+                    Margin="0,0,0,8"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <ComboBox x:Name="ThemesComboBox"
+                              Width="150"
+                              Margin="4"
+                              VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              SelectedIndex="0"
+                              SelectedItem="{Binding AppTheme}">
+                        <ComboBox.ItemsSource>
+                            <x:Array Type="{x:Type pm:AppTheme}">
+                                <x:Static Member="pm:AppTheme.Light" />
+                                <x:Static Member="pm:AppTheme.Dark" />
+                                <x:Static Member="pm:AppTheme.FollowSystem" />
+                            </x:Array>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="CHOOSE THE THEME USED BY POWERLAB" />
+                </DockPanel>
+            </Border>
+
         </StackPanel>
     </Grid>
 </UserControl>

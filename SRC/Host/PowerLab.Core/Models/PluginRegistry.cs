@@ -1,4 +1,6 @@
-﻿using Prism.Mvvm;
+﻿using System.Text.Json.Serialization;
+using PowerLab.PluginContracts.Interfaces;
+using Prism.Mvvm;
 
 namespace PowerLab.Core.Models
 {
@@ -51,5 +53,8 @@ namespace PowerLab.Core.Models
         /// 模块所在目录路径
         /// </summary>
         public string PluginFolder { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public IPlugin PluginContext { get; set; }
     }
 }

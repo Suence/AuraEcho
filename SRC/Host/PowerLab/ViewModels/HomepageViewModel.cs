@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using PowerLab.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Extensions;
@@ -15,6 +16,7 @@ namespace PowerLab.ViewModels
     {
         private string _title = "PowerLab";
         private readonly IRegionManager _regionManager;
+        private readonly IThemeManager _themeManager;
         private readonly ILogger _logger;
         private ObservableCollection<PluginRegistry> _plugins;
 
@@ -54,6 +56,11 @@ namespace PowerLab.ViewModels
         {
             var pluginRegistries = await _pluginManager.LoadPluginsAsync();
             Plugins = pluginRegistries.ToObservableCollection();
+            
+            _themeManager.AttachPluginThemes(
+                pluginRegistries.Select(p => p.PluginContext)
+                                .Where(p => p is not null));
+
             NavigationToDashboard();
         }
 
@@ -67,9 +74,10 @@ namespace PowerLab.ViewModels
                 pluginMetadata.DefaultView);
         }
 
-        public HomepageViewModel(IRegionManager regionManager, IPluginManager pluginManager, ILogger logger)
+        public HomepageViewModel(IRegionManager regionManager, IPluginManager pluginManager, IThemeManager themeManager, ILogger logger)
         {
             _regionManager = regionManager;
+            _themeManager = themeManager;
             _logger = logger;
             _pluginManager = pluginManager;
 

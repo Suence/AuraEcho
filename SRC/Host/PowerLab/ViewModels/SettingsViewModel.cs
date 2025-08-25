@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using PowerLab.Core.Tools;
+using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Events;
 using PowerLab.PluginContracts.Models;
 using Prism.Events;
@@ -12,7 +13,9 @@ namespace PowerLab.ViewModels
     {
         #region private members
         private readonly IEventAggregator _eventAggregator;
+        private readonly IThemeManager _themeManager;
         private AppLanguage _appLanguage;
+        private AppTheme _appTheme;
         #endregion
 
         public AppLanguage AppLanguage
@@ -41,9 +44,28 @@ namespace PowerLab.ViewModels
             _eventAggregator.GetEvent<AppLanguageChangedEvent>().Publish(language);
         }
 
-        public SettingsViewModel(IEventAggregator eventAggregator)
+        public AppTheme AppTheme
+        {
+            get => _appTheme;
+            set
+            {
+                bool isUpadted = SetProperty(ref _appTheme, value);
+                if (isUpadted)
+                {
+                    ApplyTheme();
+                }
+            }
+        }
+
+        private void ApplyTheme()
+        {
+            _themeManager.CurrentTheme = AppTheme;
+        }
+
+        public SettingsViewModel(IEventAggregator eventAggregator, IThemeManager themeManager)
         {
             _eventAggregator = eventAggregator;
+            _themeManager = themeManager;
         }
     }
 }

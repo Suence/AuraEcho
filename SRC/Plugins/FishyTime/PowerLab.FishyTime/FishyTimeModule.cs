@@ -1,11 +1,28 @@
-﻿using PowerLab.FishyTime.Views;
+﻿using System;
+using System.Windows;
+using PowerLab.FishyTime.Themes;
+using PowerLab.FishyTime.Views;
+using PowerLab.PluginContracts.Interfaces;
+using PowerLab.PluginContracts.Models;
 using Prism.Ioc;
 using Prism.Modularity;
 
 namespace PowerLab.FishyTime
 {
-    public class FishyTimeModule : IModule
+    public class FishyTimeModule : IPlugin
     {
+        private readonly ResourceDictionary _lightTheme = new FishyTimeLightTheme();
+        private readonly ResourceDictionary _darkTheme = new FishyTimeDarkTheme();
+        public ResourceDictionary GetThemeResource(AppTheme theme)
+        {
+            return theme switch
+            {
+                AppTheme.Light => _lightTheme,
+                AppTheme.Dark => _darkTheme,
+                _ => null
+            };
+        }
+
         public void OnInitialized(IContainerProvider containerProvider)
         {
         }
