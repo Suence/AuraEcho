@@ -10,15 +10,37 @@
 		<None Remove="Assets\Images\web.png" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-		<PackageReference Include="Prism.Wpf" Version="8.1.97" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="Prism.Wpf" Version="8.1.97">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
+		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<Private>false</Private>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\PowerLab.ExternalTools.Themes\PowerLab.ExternalTools.Themes.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Resource Include="Assets\Images\command.png" />
 		<Resource Include="Assets\Images\external_tool.png" />
 		<Resource Include="Assets\Images\web.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Strings\ExternalToolsStrings.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ExternalToolsStrings.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Update="Strings\ExternalToolsStrings.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>ExternalToolsStrings.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 </Project>

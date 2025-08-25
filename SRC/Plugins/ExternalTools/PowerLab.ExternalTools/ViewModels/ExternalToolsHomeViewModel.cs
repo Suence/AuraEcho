@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using PowerLab.ExternalTools.Constants;
 using PowerLab.ExternalTools.Events;
 using PowerLab.ExternalTools.Models;
+using PowerLab.ExternalTools.Utils;
+using PowerLab.PluginContracts.Events;
+using PowerLab.PluginContracts.Models;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -82,12 +86,25 @@ namespace PowerLab.ExternalTools.ViewModels
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ExternalToolAddedEvent>().Subscribe(ExternalToolAdded);
             _eventAggregator.GetEvent<ExternalToolUpdatedEvent>().Subscribe(ExternalToolUpdated);
+            _eventAggregator.GetEvent<AppLanguageChangedEvent>().Subscribe(AppLanguageChanged);
 
             LoadDataCommand = new DelegateCommand(LoadData);
             AddExternalToolCommand = new DelegateCommand(AddExternalTool);
             RemoveExternalToolCommand = new DelegateCommand<ExternalTool>(RemoveExternalTool);
             EditExternalToolCommand = new DelegateCommand<ExternalTool>(EditExternalTool);
             LunchExternalToolCommand = new DelegateCommand<ExternalTool>(LunchExternalTool);
+        }
+
+        private void AppLanguageChanged(AppLanguage language)
+        {
+            var targetCultureInfo = language switch
+            {
+                AppLanguage.ChineseSimplified => new CultureInfo("zh-CN"),
+                AppLanguage.English => new CultureInfo("en-US"),
+                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+            };
+
+            ExternalToolsResources.ChangeCulture(targetCultureInfo);
         }
 
         private void ExternalToolUpdated(ExternalTool tool)

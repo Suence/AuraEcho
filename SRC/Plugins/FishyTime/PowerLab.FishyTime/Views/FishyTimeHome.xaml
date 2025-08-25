@@ -9,7 +9,6 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:utils="clr-namespace:PowerLab.FishyTime.Utils"
              xmlns:viewmodels="clr-namespace:PowerLab.FishyTime.ViewModels"
-             av:Background="#EFEFEF"
              av:DataContext="{av:DesignInstance Type=viewmodels:FishyTimeHomeViewModel}"
              av:DesignHeight="610"
              av:DesignWidth="495"
@@ -192,7 +191,7 @@
                 </StackPanel>
             </Border>
         </DataTemplate>
-    </UserControl.Resources>
+    </UserControl.Resources>s
 
     <ScrollViewer Margin="0,24,0,0" VerticalScrollBarVisibility="Auto">
         <Grid Margin="24,0,24,24">
@@ -200,6 +199,7 @@
                 <TextBlock Margin="0,0,0,12"
                            HorizontalAlignment="Left"
                            FontSize="24"
+                           Foreground="{DynamicResource FishyTime.Brand}"
                            Text="{Binding Source={x:Static utils:FishyTimeResources.Current}, Path=Strings.PluginName}" />
                 <Line Margin="0,0,0,12"
                       Stretch="Fill"

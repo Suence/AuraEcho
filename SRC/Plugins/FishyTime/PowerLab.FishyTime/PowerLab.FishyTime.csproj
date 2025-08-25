@@ -8,15 +8,23 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-		<PackageReference Include="Prism.Wpf" Version="8.1.97" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" >
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="Prism.Wpf" Version="8.1.97" >
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
 		<PackageReference Include="System.Management" Version="9.0.6" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Events\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
+		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" >
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<Private>false</Private>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</ProjectReference>
 	  <ProjectReference Include="..\PowerLab.FishyTime.Themes\PowerLab.FishyTime.Themes.csproj" />
 	</ItemGroup>
 	<ItemGroup>
