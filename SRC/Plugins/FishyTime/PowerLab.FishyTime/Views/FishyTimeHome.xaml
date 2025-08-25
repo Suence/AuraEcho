@@ -191,7 +191,7 @@
                 </StackPanel>
             </Border>
         </DataTemplate>
-    </UserControl.Resources>s
+    </UserControl.Resources>
 
     <ScrollViewer Margin="0,24,0,0" VerticalScrollBarVisibility="Auto">
         <Grid Margin="24,0,24,24">

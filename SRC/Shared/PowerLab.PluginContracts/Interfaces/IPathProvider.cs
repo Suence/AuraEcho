@@ -1,4 +1,4 @@
-﻿namespace PowerLab.PluginContracts.Constants
+﻿namespace PowerLab.PluginContracts.Interfaces
 {
     public interface IPathProvider
     {

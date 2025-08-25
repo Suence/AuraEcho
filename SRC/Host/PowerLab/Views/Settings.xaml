@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:pm="clr-namespace:PowerLab.PluginContracts.Models;assembly=PowerLab.PluginContracts"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
@@ -11,6 +12,11 @@
              d:DesignWidth="495"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadSettingsCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid Margin="0,36,0,0">
         <StackPanel Margin="24,0,24,24">
             <TextBlock Margin="0,0,0,24"

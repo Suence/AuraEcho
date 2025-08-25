@@ -20,6 +20,7 @@ namespace PowerLab.Services
         private readonly IPluginManager _pluginManager;
         private AppTheme _currentTheme;
         private readonly List<ResourceDictionary> _themeResources = [];
+        private bool _isInitialized;
 
         public AppTheme CurrentTheme
         {
@@ -28,10 +29,11 @@ namespace PowerLab.Services
             {
                 bool isUpdated = SetProperty(ref _currentTheme, value);
 
-                if (isUpdated)
+                if (isUpdated || !_isInitialized)
                 {
                     ApplyTheme(value);
                 }
+                _isInitialized = true;
             }
         }
 

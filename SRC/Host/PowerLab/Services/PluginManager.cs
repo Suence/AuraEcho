@@ -26,12 +26,12 @@ namespace PowerLab.Services
         private readonly IModuleManager _moduleManager;
         private readonly IModuleCatalog _moduleCatalog;
         private readonly ILogger _logger;
-        private List<PluginLoadContext> _pluginLoadContexts = [];
+        private readonly List<PluginLoadContext> _pluginLoadContexts = [];
 
         private List<PluginRegistry> _plugins;
         public List<PluginRegistry> Plugins
         {
-            get => _isInitialized ? _plugins : throw new InvalidOperationException($"插件管理器尚未初始化。请先调用 {nameof(LoadPlugins)} 方法。");
+            get => _isInitialized ? _plugins : [];
         }
 
         public PluginManager(IModuleManager moduleManager, IModuleCatalog moduleCatalog, ILogger logger)

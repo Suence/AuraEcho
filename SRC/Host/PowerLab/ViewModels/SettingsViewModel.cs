@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Globalization;
+using PowerLab.Core.Contracts;
+using PowerLab.Core.Models;
 using PowerLab.Core.Tools;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Events;
 using PowerLab.PluginContracts.Models;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 
@@ -14,6 +17,7 @@ namespace PowerLab.ViewModels
         #region private members
         private readonly IEventAggregator _eventAggregator;
         private readonly IThemeManager _themeManager;
+        private readonly IHostSettingsProvider _hostSettingsProvider;
         private AppLanguage _appLanguage;
         private AppTheme _appTheme;
         #endregion
@@ -26,6 +30,7 @@ namespace PowerLab.ViewModels
                 if (SetProperty(ref _appLanguage, value))
                 {
                     LanguageChanged(value);
+                    SaveSettings();
                 }
             }
         }
@@ -53,6 +58,7 @@ namespace PowerLab.ViewModels
                 if (isUpadted)
                 {
                     ApplyTheme();
+                    SaveSettings();
                 }
             }
         }
@@ -62,10 +68,31 @@ namespace PowerLab.ViewModels
             _themeManager.CurrentTheme = AppTheme;
         }
 
-        public SettingsViewModel(IEventAggregator eventAggregator, IThemeManager themeManager)
+        public DelegateCommand LoadSettingsCommand { get; }
+        private void LoadSettings()
         {
+            var settings = _hostSettingsProvider.LoadHostSettings();
+            AppLanguage = settings.AppLanguage;
+            AppTheme = settings.AppTheme;
+        }
+        private void SaveSettings()
+        {
+            var settings = new HostSettings
+            {
+                AppLanguage = AppLanguage,
+                AppTheme = AppTheme
+            };
+            _hostSettingsProvider.SaveHostSettings(settings);
+        }
+
+
+        public SettingsViewModel(IEventAggregator eventAggregator, IThemeManager themeManager, IHostSettingsProvider hostSettingsProvider)
+        {
+            _hostSettingsProvider = hostSettingsProvider;
             _eventAggregator = eventAggregator;
             _themeManager = themeManager;
+
+            LoadSettingsCommand = new DelegateCommand(LoadSettings);
         }
     }
 }

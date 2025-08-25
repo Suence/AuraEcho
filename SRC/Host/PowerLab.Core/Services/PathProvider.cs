@@ -1,5 +1,5 @@
 ﻿using PowerLab.Core.Constants;
-using PowerLab.PluginContracts.Constants;
+using PowerLab.PluginContracts.Interfaces;
 
 namespace PowerLab.Core.Services
 {

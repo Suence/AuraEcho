@@ -15,6 +15,7 @@ namespace PowerLab.Core.Constants
         public static string Logs => Path.Combine(BasePath, "logs");
         public static string Temp => Path.Combine(BasePath, "temp");
         public static string Data => Path.Combine(BasePath, "data");
+        public static string HostSettings => Path.Combine(Data, "settings.json");
 
         static ApplicationPaths()
         {
