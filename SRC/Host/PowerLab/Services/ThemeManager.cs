@@ -127,7 +127,8 @@ namespace PowerLab.Services
 
         public void AttachPluginTheme(IPlugin plugin)
         {
-            var pluginThemeResource = plugin.GetThemeResource(CurrentTheme);
+            AppTheme realTheme = CurrentTheme == AppTheme.FollowSystem ? GetSystemTheme() : CurrentTheme;
+            var pluginThemeResource = plugin.GetThemeResource(realTheme);
             Application.Current.Resources.MergedDictionaries.Add(pluginThemeResource);
         }
 
