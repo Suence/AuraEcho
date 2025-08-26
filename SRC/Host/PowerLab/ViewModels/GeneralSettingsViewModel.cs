@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Interop;
+using System.Windows.Media;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Tools;
@@ -22,6 +24,7 @@ namespace PowerLab.ViewModels
         private readonly IHostSettingsProvider _hostSettingsProvider;
         private AppLanguage _appLanguage;
         private AppTheme _appTheme;
+        private bool _hardwareAcceleration;
         #endregion
 
         public AppLanguage AppLanguage
@@ -70,19 +73,39 @@ namespace PowerLab.ViewModels
             _themeManager.CurrentTheme = AppTheme;
         }
 
+        public bool HardwareAcceleration
+        {
+            get => _hardwareAcceleration;
+            set
+            {
+                if (SetProperty(ref _hardwareAcceleration, value))
+                {
+                    HardwareAccelerationChanged(value);
+                    SaveSettings();
+                }
+            }
+        }
+
+        private void HardwareAccelerationChanged(bool isEnabled)
+        {
+            RenderOptions.ProcessRenderMode = isEnabled ? RenderMode.Default : RenderMode.SoftwareOnly;
+        }
+
         public DelegateCommand LoadSettingsCommand { get; }
         private void LoadSettings()
         {
             var settings = _hostSettingsProvider.LoadHostSettings();
             AppLanguage = settings.AppLanguage;
             AppTheme = settings.AppTheme;
+            HardwareAcceleration = settings.HardwareAcceleration;
         }
         private void SaveSettings()
         {
             var settings = new HostSettings
             {
                 AppLanguage = AppLanguage,
-                AppTheme = AppTheme
+                AppTheme = AppTheme,
+                HardwareAcceleration = HardwareAcceleration
             };
             _hostSettingsProvider.SaveHostSettings(settings);
         }

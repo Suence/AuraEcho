@@ -6,11 +6,12 @@ namespace PowerLab.Core.Models
     {
         public AppTheme AppTheme { get; set; }
         public AppLanguage AppLanguage { get; set; }
-
+        public bool HardwareAcceleration { get; set; }
         public static HostSettings Default => new()
         {
             AppTheme = AppTheme.FollowSystem,
-            AppLanguage = AppLanguage.ChineseSimplified
+            AppLanguage = AppLanguage.ChineseSimplified,
+            HardwareAcceleration = true
         };
     }
 }

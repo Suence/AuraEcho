@@ -6,7 +6,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pm="clr-namespace:PowerLab.PluginContracts.Models;assembly=PowerLab.PluginContracts"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:viewmodels="clr-namespace:PowerLab.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:GeneralSettingsViewModel}"
+             xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:GeneralSettingsViewModel}"
              d:DesignHeight="425"
              d:DesignWidth="495"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -80,6 +81,21 @@
                 </DockPanel>
             </Border>
 
+            <TextBlock Margin="0,0,0,8"
+                       FontSize="16"
+                       Text="HARDWARE ACCELERATION" />
+            <Border Height="40"
+                    Margin="0,0,0,8"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <CheckBox VerticalAlignment="Center" DockPanel.Dock="Right" IsChecked="{Binding HardwareAcceleration}" />
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="BETTER USER EXPERIENCE, MAY USE MORE MEMORY." />
+                </DockPanel>
+            </Border>
         </StackPanel>
     </Grid>
 </UserControl>

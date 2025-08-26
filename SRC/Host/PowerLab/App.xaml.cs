@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Threading;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -23,6 +26,7 @@ using PowerLab.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Windows.Globalization;
 
 namespace PowerLab
 {
@@ -56,7 +60,7 @@ namespace PowerLab
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            
+
         }
 
         protected override void OnInitialized()
@@ -71,15 +75,33 @@ namespace PowerLab
         {
             base.OnStartup(e);
 
-            var hostSettingsProvider = Container.Resolve<IHostSettingsProvider>();
-            var hostSettings = hostSettingsProvider.LoadHostSettings();
-            Container.Resolve<IThemeManager>().CurrentTheme = hostSettings.AppTheme;
-
             RegisterEvents();
+            LoadConfig();
 
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
         }
+
+        private void LoadConfig()
+        {
+            var hostSettingsProvider = Container.Resolve<IHostSettingsProvider>();
+            var hostSettings = hostSettingsProvider.LoadHostSettings();
+
+            Container.Resolve<IThemeManager>().CurrentTheme = hostSettings.AppTheme;
+            var targetCultureInfo = hostSettings.AppLanguage switch
+            {
+                AppLanguage.ChineseSimplified => new CultureInfo("zh-CN"),
+                AppLanguage.English => new CultureInfo("en-US"),
+                _ => CultureInfo.CurrentCulture
+            };
+            ApplicationResources.ChangeCulture(targetCultureInfo);
+
+            RenderOptions.ProcessRenderMode = 
+                hostSettings.HardwareAcceleration 
+                ? RenderMode.Default 
+                : RenderMode.SoftwareOnly;
+        }
+
 
         /// <summary>
         /// 程序入口函数
