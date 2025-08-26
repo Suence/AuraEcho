@@ -15,5 +15,9 @@
         /// 设置
         /// </summary>
         public const string Settings = nameof(Views.Settings);
+        /// <summary>
+        /// 常规设置
+        /// </summary>
+        public const string GeneralSettings = nameof(Views.GeneralSettings);
     }
 }

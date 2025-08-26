@@ -11,6 +11,16 @@ namespace PowerLab.ExternalTools
     {
         private readonly ResourceDictionary _lightTheme = new ExternalToolsLightTheme();
         private readonly ResourceDictionary _darkTheme = new ExternalToolsDarkTheme();
+
+        public AppSettingsItem GetSettings()
+        {
+            return new()
+            {
+                Name = "EXTERNAL TOOLS",
+                ViewName = nameof(ExternalToolsSettings),
+            };
+        }
+
         public ResourceDictionary GetThemeResource(AppTheme theme)
         {
             return theme switch
@@ -31,6 +41,7 @@ namespace PowerLab.ExternalTools
             containerRegistry.RegisterForNavigation<ExternalToolsHome>();
             containerRegistry.RegisterForNavigation<AddExternalTool>();
             containerRegistry.RegisterForNavigation<EditExternalTool>();
+            containerRegistry.RegisterForNavigation<ExternalToolsSettings>();
         }
     }
 }

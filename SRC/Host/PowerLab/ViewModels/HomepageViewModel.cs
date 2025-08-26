@@ -49,7 +49,7 @@ namespace PowerLab.ViewModels
 
         private void NavigationToSettings()
         {
-            _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.Settings);
+            _regionManager.RequestNavigate(HostRegionNames.DialogRegion, ViewNames.Settings);
         }
 
         private async void LoadPlugins()

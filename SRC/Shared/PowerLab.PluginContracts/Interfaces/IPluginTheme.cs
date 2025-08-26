@@ -3,7 +3,7 @@ using PowerLab.PluginContracts.Models;
 
 namespace PowerLab.PluginContracts.Interfaces
 {
-    public interface IPluginThemeProvider
+    public interface IPluginTheme
     {
         ResourceDictionary GetThemeResource(AppTheme theme);
     }

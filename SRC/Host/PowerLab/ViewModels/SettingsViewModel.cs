@@ -1,98 +1,75 @@
 ﻿using System;
-using System.Globalization;
-using PowerLab.Core.Contracts;
-using PowerLab.Core.Models;
-using PowerLab.Core.Tools;
+using System.Collections.ObjectModel;
+using PowerLab.Constants;
 using PowerLab.Interfaces;
-using PowerLab.PluginContracts.Events;
+using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Models;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace PowerLab.ViewModels
 {
     public class SettingsViewModel : BindableBase
     {
         #region private members
-        private readonly IEventAggregator _eventAggregator;
-        private readonly IThemeManager _themeManager;
-        private readonly IHostSettingsProvider _hostSettingsProvider;
-        private AppLanguage _appLanguage;
-        private AppTheme _appTheme;
+        private readonly IRegionManager _regionManager;
+        private readonly IPluginManager _pluginManager;
+        private ObservableCollection<AppSettingsItem> _settingsItems;
         #endregion
 
-        public AppLanguage AppLanguage
+        public ObservableCollection<AppSettingsItem> SettingsItems
         {
-            get => _appLanguage;
-            set
-            {
-                if (SetProperty(ref _appLanguage, value))
-                {
-                    LanguageChanged(value);
-                    SaveSettings();
-                }
-            }
-        }
-
-        private void LanguageChanged(AppLanguage language)
-        {
-            var targetCultureInfo = language switch
-            {
-                AppLanguage.ChineseSimplified => new CultureInfo("zh-CN"),
-                AppLanguage.English => new CultureInfo("en-US"),
-                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
-            };
-
-            ApplicationResources.ChangeCulture(targetCultureInfo);
-
-            _eventAggregator.GetEvent<AppLanguageChangedEvent>().Publish(language);
-        }
-
-        public AppTheme AppTheme
-        {
-            get => _appTheme;
-            set
-            {
-                bool isUpadted = SetProperty(ref _appTheme, value);
-                if (isUpadted)
-                {
-                    ApplyTheme();
-                    SaveSettings();
-                }
-            }
-        }
-
-        private void ApplyTheme()
-        {
-            _themeManager.CurrentTheme = AppTheme;
+            get => _settingsItems;
+            set => SetProperty(ref _settingsItems, value);
         }
 
         public DelegateCommand LoadSettingsCommand { get; }
         private void LoadSettings()
         {
-            var settings = _hostSettingsProvider.LoadHostSettings();
-            AppLanguage = settings.AppLanguage;
-            AppTheme = settings.AppTheme;
-        }
-        private void SaveSettings()
-        {
-            var settings = new HostSettings
+            SettingsItems =
+            [
+                new() 
+                {
+                    Name = "General",
+                    ViewName = ViewNames.GeneralSettings
+                }
+            ];
+
+            if (_pluginManager.Plugins.Count <= 0) return;
+            foreach (var plugin in _pluginManager.Plugins)
             {
-                AppLanguage = AppLanguage,
-                AppTheme = AppTheme
-            };
-            _hostSettingsProvider.SaveHostSettings(settings);
+                var pluginSettingsItem = plugin.PluginContext.GetSettings();
+                if (SettingsItems.Contains(pluginSettingsItem)) continue;
+
+                SettingsItems.Add(pluginSettingsItem);
+            }
+
+            NavigationToSettingsItem(ViewNames.GeneralSettings);
         }
 
-
-        public SettingsViewModel(IEventAggregator eventAggregator, IThemeManager themeManager, IHostSettingsProvider hostSettingsProvider)
+        public DelegateCommand CloseSettingsCommand { get; }
+        private void CloseSettings()
         {
-            _hostSettingsProvider = hostSettingsProvider;
-            _eventAggregator = eventAggregator;
-            _themeManager = themeManager;
+            _regionManager.Regions[HostRegionNames.DialogRegion].RemoveAll();
+        }
 
+        public DelegateCommand<string> NavigationToSettingsItemCommand { get; }
+        private void NavigationToSettingsItem(string viewName)
+        {
+            if (string.IsNullOrWhiteSpace(viewName)) return;
+
+            _regionManager.RequestNavigate(HostRegionNames.SettingsContentRegion, viewName);
+        }
+
+        public SettingsViewModel(IRegionManager regionManager, IPluginManager pluginManager)
+        {
+            _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
+            _pluginManager = pluginManager ?? throw new ArgumentNullException(nameof(pluginManager));
+
+            NavigationToSettingsItemCommand = new DelegateCommand<string>(NavigationToSettingsItem);
             LoadSettingsCommand = new DelegateCommand(LoadSettings);
+            CloseSettingsCommand = new DelegateCommand(CloseSettings);
         }
     }
 }

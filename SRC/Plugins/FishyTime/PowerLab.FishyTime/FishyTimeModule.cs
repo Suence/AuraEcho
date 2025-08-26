@@ -13,6 +13,16 @@ namespace PowerLab.FishyTime
     {
         private readonly ResourceDictionary _lightTheme = new FishyTimeLightTheme();
         private readonly ResourceDictionary _darkTheme = new FishyTimeDarkTheme();
+
+        public AppSettingsItem GetSettings()
+        {
+            return new AppSettingsItem
+            {
+                Name = "FISHYTIME",
+                ViewName = nameof(FishyTimeSettings)
+            };
+        }
+
         public ResourceDictionary GetThemeResource(AppTheme theme)
         {
             return theme switch
@@ -30,6 +40,7 @@ namespace PowerLab.FishyTime
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<FishyTimeHome>();
+            containerRegistry.RegisterForNavigation<FishyTimeSettings>();
         }
     }
 }
