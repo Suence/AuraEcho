@@ -147,6 +147,5 @@
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
         </StackPanel>
-        <ContentControl d:Visibility="Collapsed" prism:RegionManager.RegionName="{x:Static constants:ExternalToolsRegionNames.DialogRegion}" />
     </Grid>
 </UserControl>

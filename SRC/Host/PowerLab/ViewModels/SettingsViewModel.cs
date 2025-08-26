@@ -51,7 +51,7 @@ namespace PowerLab.ViewModels
         public DelegateCommand CloseSettingsCommand { get; }
         private void CloseSettings()
         {
-            _regionManager.Regions[HostRegionNames.DialogRegion].RemoveAll();
+            _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
         }
 
         public DelegateCommand<string> NavigationToSettingsItemCommand { get; }

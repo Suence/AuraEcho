@@ -8,7 +8,7 @@
         public const string MainRegion = nameof(MainRegion);
         public const string HomeContentRegion = nameof(HomeContentRegion);
         public const string SettingsContentRegion = nameof(SettingsContentRegion);
-        public const string DialogRegion = nameof(DialogRegion);
+        public const string ContentDialogRegion = nameof(ContentDialogRegion);
         public const string ErrorRegion = nameof(ErrorRegion);
     }
 }

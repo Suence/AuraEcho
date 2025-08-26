@@ -237,7 +237,7 @@
             <!-- 提示消息区域 -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
-                            prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.DialogRegion}" />
+                            prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.ContentDialogRegion}" />
 
             <!--#region 错误消息区域-->
             <ContentControl Grid.Row="0"
