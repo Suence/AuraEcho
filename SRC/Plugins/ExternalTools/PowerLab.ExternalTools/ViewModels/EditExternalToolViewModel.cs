@@ -5,6 +5,7 @@ using PowerLab.ExternalTools.Constants;
 using PowerLab.ExternalTools.Events;
 using PowerLab.ExternalTools.Models;
 using PowerLab.ExternalTools.Utils;
+using PowerLab.PluginContracts.Constants;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -53,7 +54,7 @@ namespace PowerLab.ExternalTools.ViewModels
 
 
             _eventAggregator.GetEvent<ExternalToolUpdatedEvent>().Publish(newExternalTool);
-            _regionManager.Regions[ExternalToolsRegionNames.DialogRegion].RemoveAll();
+            _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
         }
 
         private string FixCommand(string command)
@@ -70,7 +71,7 @@ namespace PowerLab.ExternalTools.ViewModels
         public DelegateCommand CancelCommand { get; }
         private void Cancel()
         {
-            _regionManager.Regions[ExternalToolsRegionNames.DialogRegion].RemoveAll();
+            _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)

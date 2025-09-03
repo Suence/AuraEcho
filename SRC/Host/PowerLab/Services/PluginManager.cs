@@ -25,6 +25,7 @@ namespace PowerLab.Services
         private readonly string _pluginRegistryPath;
         private readonly IModuleManager _moduleManager;
         private readonly IModuleCatalog _moduleCatalog;
+        private readonly IPluginRepository _pluginRepository;
         private readonly ILogger _logger;
         private readonly List<PluginLoadContext> _pluginLoadContexts = [];
 
@@ -34,10 +35,11 @@ namespace PowerLab.Services
             get => _isInitialized ? _plugins : [];
         }
 
-        public PluginManager(IModuleManager moduleManager, IModuleCatalog moduleCatalog, ILogger logger)
+        public PluginManager(IModuleManager moduleManager, IModuleCatalog moduleCatalog, IPluginRepository pluginRepository, ILogger logger)
         {
             _moduleManager = moduleManager;
             _moduleCatalog = moduleCatalog;
+            _pluginRepository = pluginRepository;
             _logger = logger;
 
             _pluginRegistryPath = Path.Combine(ApplicationPaths.Data, "plugin.registry.json");
@@ -57,46 +59,40 @@ namespace PowerLab.Services
                 return _plugins;
             }
 
-            List<(PluginManifest Manifest, string PluginFolder)> pluginManifests = LoadPluginManifest();
-            List<PluginRegistry> pluginRegistries = LoadPluginRegistry();
+            List<PluginRegistry> pluginRegistries = _pluginRepository.GetPluginRegistries().ToList();
 
-            foreach (var (manifest, pluginFolder) in pluginManifests)
+            foreach (var pluginRegistry in pluginRegistries)
             {
-                var pluginRegistry = pluginRegistries.FirstOrDefault(pr => pr.Manifest.Id == manifest.Id);
-
-                if (pluginRegistry != null)
+                if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
                 {
-                    if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
+                    if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
                     {
-                        if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
-                        {
-                            Directory.Delete(pluginRegistry.PluginFolder, true);
-                            pluginRegistries.Remove(pluginRegistry);
-                            _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
-                            continue;
-                        }
-
-                        pluginRegistry.Status = pluginRegistry.PlanStatus switch
-                        {
-                            PluginPlanStatus.EnablePending => PluginStatus.Enabled,
-                            PluginPlanStatus.DisablePending => PluginStatus.Disabled,
-                            _ => pluginRegistry.Status
-                        };
-                        pluginRegistry.PlanStatus = PluginPlanStatus.None;
-                    }
-
-                    if (pluginRegistry.Status == PluginStatus.Disabled)
-                    {
-                        _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被禁用，跳过加载。");
+                        Directory.Delete(pluginRegistry.PluginFolder, true);
+                        pluginRegistries.Remove(pluginRegistry);
+                        _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
                         continue;
                     }
+
+                    pluginRegistry.Status = pluginRegistry.PlanStatus switch
+                    {
+                        PluginPlanStatus.EnablePending => PluginStatus.Enabled,
+                        PluginPlanStatus.DisablePending => PluginStatus.Disabled,
+                        _ => pluginRegistry.Status
+                    };
+                    pluginRegistry.PlanStatus = PluginPlanStatus.None;
                 }
 
-                string entryAssemblyPath = Path.Combine(pluginFolder, manifest.EntryAssemblyName);
+                if (pluginRegistry.Status == PluginStatus.Disabled)
+                {
+                    _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被禁用，跳过加载。");
+                    continue;
+                }
+
+                string entryAssemblyPath = Path.Combine(ApplicationPaths.GetPluginPath(pluginRegistry.Manifest.Id), pluginRegistry.Manifest.EntryAssemblyName);
 
                 if (!File.Exists(entryAssemblyPath))
                 {
-                    _logger.Error($"插件 {manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
+                    _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
                     continue;
                 }
 
@@ -109,27 +105,15 @@ namespace PowerLab.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"加载插件程序集失败：{manifest.PluginName}，异常：{ex.Message}");
+                    _logger.Error($"加载插件程序集失败：{pluginRegistry.Manifest.PluginName}，异常：{ex.Message}");
                     continue;
                 }
 
                 PluginDefaultViewAttribute defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
                 if (defaultView is null)
                 {
-                    _logger.Error($"插件 {manifest.PluginName} 没有指定默认视图。");
+                    _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 没有指定默认视图。");
                     continue;
-                }
-
-                if (pluginRegistry == null)
-                {
-                    pluginRegistry = new PluginRegistry
-                    {
-                        Manifest = manifest,
-                        DefaultView = defaultView.ViewName,
-                        Status = PluginStatus.Enabled,
-                        PluginFolder = pluginFolder
-                    };
-                    pluginRegistries.Add(pluginRegistry);
                 }
 
                 IPlugin pluginContext = LoadPluginByAssembly(pluginAssembly);
@@ -170,30 +154,33 @@ namespace PowerLab.Services
             return pluginRegistries;
         }
 
-        private List<(PluginManifest Manifest, string PluginFolder)> LoadPluginManifest()
+        private List<PluginManifest> LoadPluginManifest()
         {
-            string[] pluginFolders = Directory.GetDirectories(ApplicationPaths.Plugins);
-            List<(PluginManifest, string)> manifests = new();
+            List<PluginManifest> manifestList =
+                Directory.GetDirectories(ApplicationPaths.Plugins)
+                         .Select(pluginFolder =>
+                         {
+                             var manifestPath = Path.Combine(pluginFolder, "plugin.manifest.json");
+                             if (!File.Exists(manifestPath))
+                             {
+                                 _logger.Error("插件缺少 manifest 文件。");
+                                 return null;
+                             }
+                         
+                             string manifestJson = File.ReadAllText(manifestPath);
+                             var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
+                         
+                             if (manifest == null)
+                             {
+                                 _logger.Error($"无法解析插件 {pluginFolder} 的 manifest 文件。");
+                                 return null;
+                             }
+                             return manifest;
+                         })
+                         .Where(manifest => manifest != null)
+                         .ToList();
 
-            foreach (var pluginFolder in pluginFolders)
-            {
-                string manifestPath = Path.Combine(pluginFolder, "plugin.manifest.json");
-                if (!File.Exists(manifestPath))
-                    throw new FileNotFoundException("插件缺少 manifest 文件。");
-
-                string manifestJson = File.ReadAllText(manifestPath);
-                var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
-
-                if (manifest == null)
-                {
-                    _logger.Error($"无法解析插件 {pluginFolder} 的 manifest 文件。");
-                    continue;
-                }
-
-                manifests.Add((manifest, pluginFolder));
-            }
-
-            return manifests;
+            return manifestList;
         }
 
         private IPlugin LoadPluginByAssembly(Assembly pluginAssembly)

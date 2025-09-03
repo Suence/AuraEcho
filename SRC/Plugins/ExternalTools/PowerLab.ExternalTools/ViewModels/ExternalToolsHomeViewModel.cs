@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using PowerLab.ExternalTools.Constants;
+using PowerLab.ExternalTools.Contracts;
 using PowerLab.ExternalTools.Events;
 using PowerLab.ExternalTools.Models;
 using PowerLab.ExternalTools.Utils;
+using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Events;
 using PowerLab.PluginContracts.Models;
 using Prism.Commands;
@@ -19,6 +21,7 @@ namespace PowerLab.ExternalTools.ViewModels
     public class ExternalToolsHomeViewModel : BindableBase
     {
         #region private members
+        private readonly IExternalToolsRepository _repository;
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
         private ObservableCollection<ExternalTool> _externalTools;
@@ -33,11 +36,7 @@ namespace PowerLab.ExternalTools.ViewModels
         public DelegateCommand LoadDataCommand { get; }
         private void LoadData()
         {
-            ExternalTools =
-            [
-                new() { Id = Guid.NewGuid().ToString(), Name = "Tool 1", Command = "https://www.lenovo.com", Type = ExternalToolType.Website },
-                new() { Id = Guid.NewGuid().ToString(), Name = "Tool 2", Command = "path/to/tool2", Arguments = "--option2" }
-            ];
+            ExternalTools = [.. _repository.GetExternalTools() ];
         }
 
         public DelegateCommand<ExternalTool> LunchExternalToolCommand { get; }
@@ -56,7 +55,7 @@ namespace PowerLab.ExternalTools.ViewModels
         public DelegateCommand AddExternalToolCommand { get; }
         private void AddExternalTool()
         {
-            _regionManager.RequestNavigate(ExternalToolsRegionNames.DialogRegion, ExternalToolsViewNames.AddExternalTool);
+            _regionManager.RequestNavigate(HostRegionNames.ContentDialogRegion, ExternalToolsViewNames.AddExternalTool);
         }
 
         public DelegateCommand<ExternalTool> RemoveExternalToolCommand { get; }
@@ -66,13 +65,14 @@ namespace PowerLab.ExternalTools.ViewModels
             if (!ExternalTools.Contains(tool)) return;
 
             ExternalTools.Remove(tool);
+            _repository.DeleteExternalTool(tool.Id);
         }
 
         public DelegateCommand<ExternalTool> EditExternalToolCommand { get; }
         private void EditExternalTool(ExternalTool tool)
         {
             _regionManager.RequestNavigate(
-                ExternalToolsRegionNames.DialogRegion,
+                HostRegionNames.ContentDialogRegion,
                 ExternalToolsViewNames.EditExternalTool,
                 new NavigationParameters
                 {
@@ -80,9 +80,10 @@ namespace PowerLab.ExternalTools.ViewModels
                 });
         }
 
-        public ExternalToolsHomeViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        public ExternalToolsHomeViewModel(IRegionManager regionManager, IEventAggregator eventAggregator, IExternalToolsRepository repository)
         {
             _regionManager = regionManager;
+            _repository = repository;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<ExternalToolAddedEvent>().Subscribe(ExternalToolAdded);
             _eventAggregator.GetEvent<ExternalToolUpdatedEvent>().Subscribe(ExternalToolUpdated);
@@ -117,6 +118,7 @@ namespace PowerLab.ExternalTools.ViewModels
             existingTool.Command = tool.Command;
             existingTool.Arguments = tool.Arguments;
             existingTool.Type = tool.Type;
+            _repository.UpdateExternalTool(existingTool);
         }
 
         private void ExternalToolAdded(ExternalTool tool)
@@ -124,6 +126,7 @@ namespace PowerLab.ExternalTools.ViewModels
             if (tool is null) return;
 
             ExternalTools.Add(tool);
+            _repository.AddExternalTool(tool);
         }
     }
 }

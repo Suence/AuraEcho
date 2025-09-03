@@ -1,9 +1,12 @@
 ﻿using System.IO;
+using System.Reflection;
+using System.Runtime.Loader;
 using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.PluginContracts.Attributes;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -17,6 +20,7 @@ namespace PluginInstaller.ViewModels
     {
         #region private members
         private readonly IRegionManager _regionManager;
+        private readonly IPluginRepository _pluginRepository;
         private readonly ILogger _logger;
 
         private string _pluginTempDir;
@@ -45,9 +49,36 @@ namespace PluginInstaller.ViewModels
 
             DirectoryUtils.SafeMoveDirectory(_pluginTempDir, finalPath);
 
+            var existingPlugin = _pluginRepository.GetPluginRegistries().FirstOrDefault(pr => pr.Manifest.Id == PluginManifest.Id);
+            if (existingPlugin is not null)
+            {
+                _pluginRepository.RemovePluginRegistry(existingPlugin.Id);
+            }
+
+            var entryAssemblyPath = Path.Combine(finalPath, PluginManifest.EntryAssemblyName);
+            Assembly entryAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(entryAssemblyPath);
+            string defaultView = GetPluginDefaultView(entryAssembly);
+
+            _pluginRepository.AddPluginRegistry(new PluginRegistry
+            {
+                Id = Guid.NewGuid().ToString(),
+                PlanStatus = PluginPlanStatus.None,
+                Manifest = PluginManifest,
+                PluginFolder = ApplicationPaths.GetPluginPath(PluginManifest.Id),
+                Status = PluginStatus.Enabled,
+                DefaultView = defaultView
+            });
             _regionManager.RequestNavigate(
                 RegionNames.MainRegion,
                 ViewNames.InstallCompleted);
+        }
+
+        private string GetPluginDefaultView(Assembly pluginAssembly)
+        {
+            var targetAttribute = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
+            if (targetAttribute is null) throw new Exception("插件程序集没有指定 DefaultView");
+
+            return targetAttribute.ViewName;
         }
 
         /// <summary>
@@ -56,9 +87,10 @@ namespace PluginInstaller.ViewModels
         /// <param name="regionManager"></param>
         /// <param name="logger"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public InstallingViewModel(IRegionManager regionManager, ILogger logger)
+        public InstallingViewModel(IRegionManager regionManager, IPluginRepository pluginRepository, ILogger logger)
         {
             _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
+            _pluginRepository = pluginRepository ?? throw new ArgumentNullException(nameof(pluginRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             InstallPluginCommand = new DelegateCommand(InstallPlugin);

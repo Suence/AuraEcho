@@ -1,11 +1,16 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using DryIoc;
+using Microsoft.EntityFrameworkCore;
 using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PluginInstaller.Views;
 using PowerLab.Core.Attributes;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Data;
 using PowerLab.Core.Native.Win32;
+using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
 using Prism.DryIoc;
 using Prism.Ioc;
@@ -31,6 +36,15 @@ namespace PluginInstaller
             containerRegistry.RegisterForNavigation<InstallPreparation>();
             containerRegistry.RegisterForNavigation<Installing>();
             containerRegistry.RegisterForNavigation<InstallCompleted>();
+            //containerRegistry.Register<PluginDbContext>(provider =>
+            //{
+            //    var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
+            //    var options = new DbContextOptionsBuilder<PluginDbContext>()
+            //        .UseSqlite($"Data Source={dbPath}")
+            //        .Options;
+            //    return new PluginDbContext(options);
+            //});
+            containerRegistry.Register<IPluginRepository, PluginRepository>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -50,6 +64,9 @@ namespace PluginInstaller
             base.OnStartup(e);
 
             GlobalObjectHolder.StartupArgs = e.Args;
+
+            using var pluginDbContext = Container.Resolve<PluginDbContext>();
+            pluginDbContext.Database.Migrate();
         }
 
         /// <summary>

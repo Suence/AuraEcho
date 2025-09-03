@@ -11,9 +11,12 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.EntityFrameworkCore;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Data;
 using PowerLab.Core.Native.Win32;
+using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
 using PowerLab.Core.Tools;
 using PowerLab.Interfaces;
@@ -51,6 +54,7 @@ namespace PowerLab
             containerRegistry.RegisterSingleton<IPluginManager, PluginManager>();
             containerRegistry.RegisterSingleton<IThemeManager, ThemeManager>();
             containerRegistry.RegisterSingleton<IHostSettingsProvider, HostSettingsProvider>();
+            containerRegistry.RegisterSingleton<IPluginRepository, PluginRepository>();
 
             containerRegistry.RegisterForNavigation<Homepage>();
             containerRegistry.RegisterForNavigation<PluginsDashboard>();
@@ -80,6 +84,13 @@ namespace PowerLab
 
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
+
+            using var pluginDbContext = Container.Resolve<PluginDbContext>();
+
+            var logger = Container.Resolve<ILogger>();
+            logger.Information("Begin Migrate");
+            pluginDbContext.Database.Migrate();
+            logger.Information("End Migrate");
         }
 
         private void LoadConfig()

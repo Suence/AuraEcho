@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Mvvm;
 
@@ -9,6 +10,8 @@ namespace PowerLab.Core.Models
     /// </summary>
     public class PluginRegistry : BindableBase
     {
+        public string Id { get; set; }
+
         private PluginStatus _status;
         /// <summary>
         /// 当前状态
@@ -55,6 +58,7 @@ namespace PowerLab.Core.Models
         public string PluginFolder { get; set; } = string.Empty;
 
         [JsonIgnore]
+        [NotMapped]
         public IPlugin PluginContext { get; set; }
     }
 }

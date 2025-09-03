@@ -2,6 +2,5 @@
 {
     public class ExternalToolsRegionNames
     {
-        public const string DialogRegion = nameof(DialogRegion);
     }
 }

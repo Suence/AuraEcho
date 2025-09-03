@@ -17,6 +17,8 @@ namespace PowerLab.Core.Constants
         public static string Data => Path.Combine(BasePath, "data");
         public static string HostSettings => Path.Combine(Data, "settings.json");
 
+        public static string GetPluginPath(string pluginId) => Path.Combine(Plugins, pluginId);
+
         static ApplicationPaths()
         {
             Directory.CreateDirectory(Plugins);

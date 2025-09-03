@@ -1,4 +1,8 @@
 ﻿using System.Windows;
+using Microsoft.EntityFrameworkCore;
+using PowerLab.ExternalTools.Contracts;
+using PowerLab.ExternalTools.Data;
+using PowerLab.ExternalTools.Repositories;
 using PowerLab.ExternalTools.Themes;
 using PowerLab.ExternalTools.Views;
 using PowerLab.PluginContracts.Interfaces;
@@ -33,7 +37,8 @@ namespace PowerLab.ExternalTools
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
-
+            using var dbContext = containerProvider.Resolve<ExternalToolsDbContext>();
+            dbContext.Database.Migrate();
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
@@ -42,6 +47,8 @@ namespace PowerLab.ExternalTools
             containerRegistry.RegisterForNavigation<AddExternalTool>();
             containerRegistry.RegisterForNavigation<EditExternalTool>();
             containerRegistry.RegisterForNavigation<ExternalToolsSettings>();
+
+            containerRegistry.Register<IExternalToolsRepository, ExternalToolsRepository>();
         }
     }
 }
