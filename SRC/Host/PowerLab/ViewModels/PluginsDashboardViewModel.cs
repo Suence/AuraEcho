@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using PowerLab.Core.Constants;
+using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.Tools;
@@ -17,6 +18,7 @@ namespace PowerLab.ViewModels
     public class PluginsDashboardViewModel : BindableBase, INavigationAware
     {
         #region private members
+        private readonly IPluginRepository _pluginRepository;
         private ObservableCollection<PluginRegistry> _pluginRegistries = [];
         #endregion
 
@@ -51,16 +53,7 @@ namespace PowerLab.ViewModels
                 ? PluginPlanStatus.None
                 : PluginPlanStatus.EnablePending;
 
-            SaveData();
-        }
-
-        /// <summary>
-        /// 保存模块配置
-        /// </summary>
-        private void SaveData()
-        {
-            string pluginRegistriesJson = JsonSerializer.Serialize(PluginRegistries, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(Path.Combine(ApplicationPaths.Data, "plugin.registry.json"), pluginRegistriesJson);
+            _pluginRepository.UpdatePluginRegistry(pluginRegistry);
         }
 
         public DelegateCommand<PluginRegistry> PlanDisablePluginCommand { get; }
@@ -78,7 +71,7 @@ namespace PowerLab.ViewModels
                 ? PluginPlanStatus.None
                 : PluginPlanStatus.DisablePending;
 
-            SaveData();
+            _pluginRepository.UpdatePluginRegistry(pluginRegistry);
         }
 
 
@@ -94,7 +87,7 @@ namespace PowerLab.ViewModels
 
             pluginRegistry.PlanStatus = PluginPlanStatus.UninstallPending;
 
-            SaveData();
+            _pluginRepository.UpdatePluginRegistry(pluginRegistry);
         }
 
         public DelegateCommand<PluginRegistry> CancelUninstallPluginCommand { get; }
@@ -108,14 +101,16 @@ namespace PowerLab.ViewModels
             if (pluginRegistry == null) return;
 
             pluginRegistry.PlanStatus = PluginPlanStatus.None;
-            SaveData();
+            _pluginRepository.UpdatePluginRegistry(pluginRegistry);
         }
 
         /// <summary>
         /// 构造函数
         /// </summary>
-        public PluginsDashboardViewModel()
+        public PluginsDashboardViewModel(IPluginRepository pluginRepository)
         {
+            _pluginRepository = pluginRepository;
+
             PlanEnablePluginCommand = new DelegateCommand<PluginRegistry>(PlanEnablePlugin);
             PlanDisablePluginCommand = new DelegateCommand<PluginRegistry>(PlanDisablePlugin);
             PlanUninstallPluginCommand = new DelegateCommand<PluginRegistry>(PlanUninstallPlugin);

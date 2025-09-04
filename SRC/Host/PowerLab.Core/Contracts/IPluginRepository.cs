@@ -21,5 +21,11 @@ namespace PowerLab.Core.Contracts
         /// </summary>
         /// <param name="pluginRegistryId"></param>
         void RemovePluginRegistry(string pluginRegistryId);
+
+        /// <summary>
+        /// 更新插件信息
+        /// </summary>
+        /// <param name="pluginRegistry"></param>
+        void UpdatePluginRegistry(PluginRegistry pluginRegistry);
     }
 }

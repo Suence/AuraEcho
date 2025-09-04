@@ -32,5 +32,11 @@ namespace PowerLab.Core.Repositories
                 _dbContext.SaveChanges();
             }
         }
+
+        public void UpdatePluginRegistry(PluginRegistry pluginRegistry)
+        {
+            _dbContext.PluginRegistries.Update(pluginRegistry);
+            _dbContext.SaveChanges();
+        }
     }
 }

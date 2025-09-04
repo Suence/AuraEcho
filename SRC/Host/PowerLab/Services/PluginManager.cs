@@ -61,13 +61,16 @@ namespace PowerLab.Services
 
             List<PluginRegistry> pluginRegistries = _pluginRepository.GetPluginRegistries().ToList();
 
-            foreach (var pluginRegistry in pluginRegistries)
+            foreach (var pluginRegistry in pluginRegistries.ToList())
             {
                 if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
                 {
                     if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
                     {
-                        Directory.Delete(pluginRegistry.PluginFolder, true);
+                        if (Directory.Exists(pluginRegistry.PluginFolder))
+                        {
+                            Directory.Delete(pluginRegistry.PluginFolder, true);
+                        }
                         pluginRegistries.Remove(pluginRegistry);
                         _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
                         continue;
@@ -166,10 +169,10 @@ namespace PowerLab.Services
                                  _logger.Error("插件缺少 manifest 文件。");
                                  return null;
                              }
-                         
+
                              string manifestJson = File.ReadAllText(manifestPath);
                              var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
-                         
+
                              if (manifest == null)
                              {
                                  _logger.Error($"无法解析插件 {pluginFolder} 的 manifest 文件。");
