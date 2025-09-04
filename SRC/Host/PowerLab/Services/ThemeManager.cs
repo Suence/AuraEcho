@@ -60,17 +60,18 @@ namespace PowerLab.Services
             AppTheme realTheme = appTheme == AppTheme.FollowSystem ? GetSystemTheme() : appTheme;
             try
             {
+                ClearTheme();
+
                 ResourceDictionary hostThemeResources = GetHostThemeResource(realTheme);
                 List<ResourceDictionary> pluginThemeResources = GetPluginThemeResources(realTheme);
 
                 _themeResources.Add(hostThemeResources);
                 _themeResources.AddRange(pluginThemeResources);
 
-                ClearTheme();
                 Application.Current.Resources.MergedDictionaries.Add(hostThemeResources);
                 pluginThemeResources.ForEach(Application.Current.Resources.MergedDictionaries.Add);
 
-                _logger.Debug($"主题切换成功：{realTheme} (Host + {_themeResources.Count} 插件资源)");
+                _logger.Debug($"主题切换成功：{realTheme} (Host + {pluginThemeResources.Count} 插件资源)");
             }
             catch (Exception ex)
             {
@@ -132,6 +133,7 @@ namespace PowerLab.Services
             AppTheme realTheme = CurrentTheme == AppTheme.FollowSystem ? GetSystemTheme() : CurrentTheme;
             var pluginThemeResource = plugin.GetThemeResource(realTheme);
             Application.Current.Resources.MergedDictionaries.Add(pluginThemeResource);
+            _themeResources.Add(pluginThemeResource);
         }
 
         public void AttachPluginThemes(IEnumerable<IPlugin> plugins)
