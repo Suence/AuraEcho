@@ -96,7 +96,9 @@
                         <i:DataTrigger Binding="{Binding Source={StaticResource BindingProxy}, Path=Data.EntryFile}" Value="{Binding}">
                             <i:ChangePropertyAction PropertyName="Foreground" Value="OrangeRed" />
                         </i:DataTrigger>
-                        <i:DataTrigger Binding="{Binding Source={StaticResource BindingProxy}, Path=Data.EntryFile}" Value="{Binding}" Comparison="NotEqual">
+                        <i:DataTrigger Binding="{Binding Source={StaticResource BindingProxy}, Path=Data.EntryFile}"
+                                       Comparison="NotEqual"
+                                       Value="{Binding}">
                             <i:ChangePropertyAction PropertyName="Foreground" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TreeViewItem}, Path=Foreground}" />
                         </i:DataTrigger>
                     </i:Interaction.Triggers>
@@ -110,9 +112,12 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="10*" MinWidth="200" />
         </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0">
-
-            <StackPanel Grid.Column="0">
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
                 <TextBlock Margin="0,8"
                            FontSize="20"
                            Text="BASE" />
@@ -221,33 +226,38 @@
                         </Button>
                     </StackPanel>
                 </Grid>
-                
-                <TreeView Padding="0"
-                          HorizontalContentAlignment="Stretch"
-                          av:ItemsSource="{av:SampleData ItemCount=3}"
-                          BorderThickness="0"
-                          FontSize="14"
-                          ItemsSource="{Binding RootFolder.Children}">
-                    <i:Interaction.Behaviors>
-                        <b:IgnoreMouseWheelBehavior />
-                    </i:Interaction.Behaviors>
-                    <TreeView.ItemTemplateSelector>
-                        <selector:PluginItemDataTemplateSelector FileDataTemplate="{StaticResource PluginFileTemplate}" FolderDataTemplate="{StaticResource PluginFolderTemplate}" />
-                    </TreeView.ItemTemplateSelector>
-                    <TreeView.ItemContainerStyle>
-                        <Style TargetType="TreeViewItem">
-                            <Setter Property="Padding" Value="4,2" />
-                            <Setter Property="BorderThickness" Value="0" />
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                </TreeView>
+
             </StackPanel>
-        </ScrollViewer>
+            <TreeView Grid.Row="1"
+                      Padding="0"
+                      HorizontalContentAlignment="Stretch"
+                      av:ItemsSource="{av:SampleData ItemCount=3}"
+                      AllowDrop="True"
+                      BorderThickness="0"
+                      Background="Transparent"
+                      Drop="PluginFilesTreeView_Drop"
+                      FontSize="14"
+                      ItemsSource="{Binding RootFolder.Children}">
+                <i:Interaction.Behaviors>
+                    <b:IgnoreMouseWheelBehavior />
+                </i:Interaction.Behaviors>
+                <TreeView.ItemTemplateSelector>
+                    <selector:PluginItemDataTemplateSelector FileDataTemplate="{StaticResource PluginFileTemplate}" FolderDataTemplate="{StaticResource PluginFolderTemplate}" />
+                </TreeView.ItemTemplateSelector>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="Padding" Value="4,2" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Foreground" Value="#EFEFEF" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
+        </Grid>
         <GridSplitter Grid.Column="1"
                       Width="3"
                       Margin="24,0"
-                      ResizeBehavior="PreviousAndNext"
-                      Background="Gray" />
+                      Background="Gray"
+                      ResizeBehavior="PreviousAndNext" />
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition />

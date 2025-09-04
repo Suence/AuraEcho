@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using PluginPacker.Models;
+using PluginPacker.ViewModels;
 
 namespace PluginPacker.Views
 {
@@ -53,6 +54,27 @@ namespace PluginPacker.Views
             }
 
             e.Effects = DragDropEffects.None;
+        }
+
+        private void PluginFilesTreeView_Drop(object sender, DragEventArgs e)
+        {
+            if (DataContext is not HomepageViewModel hvm) return;
+
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var file in files)
+            {
+                if (Directory.Exists(file))
+                {
+                    var newFolder = new PluginFolder(file, hvm.RootFolder);
+                    hvm.RootFolder.Children.Add(newFolder);
+                    continue;
+                }
+
+                // 在目标目录下添加文件
+                var newFileNode = new PluginFile(file, Path.GetFileName(file), hvm.RootFolder);  // 使用文件名创建新节点
+                hvm.RootFolder.Children.Add(newFileNode);
+            }
         }
     }
 }
