@@ -11,6 +11,7 @@
     <PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
     <ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
     <ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
   </ItemGroup>
