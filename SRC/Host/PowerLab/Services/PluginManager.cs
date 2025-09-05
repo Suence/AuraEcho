@@ -140,52 +140,6 @@ namespace PowerLab.Services
             File.WriteAllText(_pluginRegistryPath, pluginRegistriesJson);
         }
 
-        private List<PluginRegistry> LoadPluginRegistry()
-        {
-            if (!File.Exists(_pluginRegistryPath))
-                return [];
-
-            string registryJson = File.ReadAllText(_pluginRegistryPath);
-            var pluginRegistries = JsonSerializer.Deserialize<List<PluginRegistry>>(registryJson);
-
-            if (pluginRegistries == null)
-            {
-                _logger.Error("无法解析插件注册表。");
-                return [];
-            }
-
-            return pluginRegistries;
-        }
-
-        private List<PluginManifest> LoadPluginManifest()
-        {
-            List<PluginManifest> manifestList =
-                Directory.GetDirectories(ApplicationPaths.Plugins)
-                         .Select(pluginFolder =>
-                         {
-                             var manifestPath = Path.Combine(pluginFolder, "plugin.manifest.json");
-                             if (!File.Exists(manifestPath))
-                             {
-                                 _logger.Error("插件缺少 manifest 文件。");
-                                 return null;
-                             }
-
-                             string manifestJson = File.ReadAllText(manifestPath);
-                             var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
-
-                             if (manifest == null)
-                             {
-                                 _logger.Error($"无法解析插件 {pluginFolder} 的 manifest 文件。");
-                                 return null;
-                             }
-                             return manifest;
-                         })
-                         .Where(manifest => manifest != null)
-                         .ToList();
-
-            return manifestList;
-        }
-
         private IPlugin LoadPluginByAssembly(Assembly pluginAssembly)
         {
             var pluginType = pluginAssembly.GetExportedTypes()

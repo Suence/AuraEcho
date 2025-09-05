@@ -33,9 +33,11 @@ namespace PluginInstaller
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+            containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
             containerRegistry.RegisterForNavigation<InstallPreparation>();
             containerRegistry.RegisterForNavigation<Installing>();
             containerRegistry.RegisterForNavigation<InstallCompleted>();
+            containerRegistry.RegisterForNavigation<PickPluginInstallFile>();
             //containerRegistry.Register<PluginDbContext>(provider =>
             //{
             //    var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
@@ -54,16 +56,12 @@ namespace PluginInstaller
         protected override void OnInitialized()
         {
             base.OnInitialized();
-
-            var regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RequestNavigate(RegionNames.MainRegion, nameof(InstallPreparation));
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-
             GlobalObjectHolder.StartupArgs = e.Args;
+            base.OnStartup(e);
 
             using var pluginDbContext = Container.Resolve<PluginDbContext>();
             pluginDbContext.Database.Migrate();

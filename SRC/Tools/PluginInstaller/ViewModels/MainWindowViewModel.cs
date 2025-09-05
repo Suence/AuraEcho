@@ -1,4 +1,10 @@
-﻿using Prism.Mvvm;
+﻿using System.IO;
+using PluginInstaller.Constants;
+using PluginInstaller.Tools;
+using PluginInstaller.Views;
+using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Regions;
 
 namespace PluginInstaller.ViewModels
 {
@@ -6,6 +12,7 @@ namespace PluginInstaller.ViewModels
     {
         #region private members
         private string _title = "PlixInstaller";
+        private readonly IRegionManager _regionManager;
         #endregion
 
         /// <summary>
@@ -17,8 +24,30 @@ namespace PluginInstaller.ViewModels
             set => SetProperty(ref _title, value);
         }
 
-        public MainWindowViewModel()
+        public DelegateCommand NavigationToInitPageCommand { get; }
+        private void NavigationToInitPage()
         {
+            string? filePath = GlobalObjectHolder.StartupArgs?.FirstOrDefault();
+            if (filePath is null || !File.Exists(filePath))
+            {
+                _regionManager.RequestNavigate(RegionNames.MainRegion, ViewNames.PickPluginInstallFile);
+                return;
+            }
+
+            _regionManager.RequestNavigate(
+                RegionNames.MainRegion,
+                ViewNames.InstallPreparation,
+                new NavigationParameters
+                {
+                    { "PluginInstallFilePath", filePath }
+                });
+        }
+
+        public MainWindowViewModel(IRegionManager regionManager)
+        {
+            _regionManager = regionManager;
+
+            NavigationToInitPageCommand = new DelegateCommand(NavigationToInitPage);
         }
     }
 }

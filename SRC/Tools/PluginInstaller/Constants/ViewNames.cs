@@ -19,5 +19,10 @@
         /// 安装准备
         /// </summary>
         public const string InstallPreparation = nameof(InstallPreparation);
+
+        /// <summary>
+        /// 选择插件安装文件
+        /// </summary>
+        public const string PickPluginInstallFile = nameof(Views.PickPluginInstallFile);
     }
 }
