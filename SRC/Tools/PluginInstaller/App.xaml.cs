@@ -12,6 +12,7 @@ using PowerLab.Core.Data;
 using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -33,6 +34,7 @@ namespace PluginInstaller
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+            containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
             containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
             containerRegistry.RegisterForNavigation<InstallPreparation>();
             containerRegistry.RegisterForNavigation<Installing>();

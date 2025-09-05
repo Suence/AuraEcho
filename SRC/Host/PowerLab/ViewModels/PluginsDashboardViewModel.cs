@@ -8,7 +8,6 @@ using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.PluginContracts.Constants;
-using PowerLab.Tools;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;

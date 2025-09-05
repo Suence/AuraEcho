@@ -6,8 +6,12 @@ using PluginInstaller.Tools;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.Core.Tools;
 using PowerLab.PluginContracts.Attributes;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
+using Prism.Ioc;
+using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -22,6 +26,7 @@ namespace PluginInstaller.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IPluginRepository _pluginRepository;
         private readonly ILogger _logger;
+        private readonly IContainerProvider _containerProvider;
 
         private string _pluginTempDir;
         private PluginManifest _pluginManifest;
@@ -56,9 +61,23 @@ namespace PluginInstaller.ViewModels
             }
 
             var entryAssemblyPath = Path.Combine(finalPath, PluginManifest.EntryAssemblyName);
-            Assembly entryAssembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(entryAssemblyPath);
-            string defaultView = GetPluginDefaultView(entryAssembly);
+            var alc = new PluginLoadContext(entryAssemblyPath);
+            Assembly pluginAssembly = null;
+            try
+            {
+                pluginAssembly = alc.LoadFromAssemblyPath(entryAssemblyPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"加载插件程序集失败：{PluginManifest.PluginName}，异常：{ex.Message}");
+            }
+            string defaultView = GetPluginDefaultView(pluginAssembly);
 
+            IPluginSetup pluginDatabaseInitializer = GetPluginDatabaseInitializer(pluginAssembly);
+            if (pluginDatabaseInitializer is not null)
+            {
+                pluginDatabaseInitializer.Setup(_containerProvider);
+            }
             _pluginRepository.AddPluginRegistry(new PluginRegistry
             {
                 Id = Guid.NewGuid().ToString(),
@@ -68,9 +87,21 @@ namespace PluginInstaller.ViewModels
                 Status = PluginStatus.Enabled,
                 DefaultView = defaultView
             });
+
             _regionManager.RequestNavigate(
                 RegionNames.MainRegion,
                 ViewNames.InstallCompleted);
+        }
+
+        private IPluginSetup GetPluginDatabaseInitializer(Assembly pluginAssembly)
+        {
+            Type? pluginDatabaseInitializerType =
+                pluginAssembly.GetExportedTypes()
+                              .Where(t => typeof(IPluginSetup).IsAssignableFrom(t))
+                              .Where(t => t != typeof(IPluginSetup))
+                              .Where(t => !t.IsAbstract)
+                              .SingleOrDefault();
+            return _containerProvider.Resolve(pluginDatabaseInitializerType) as IPluginSetup;
         }
 
         private string GetPluginDefaultView(Assembly pluginAssembly)
@@ -87,10 +118,12 @@ namespace PluginInstaller.ViewModels
         /// <param name="regionManager"></param>
         /// <param name="logger"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public InstallingViewModel(IRegionManager regionManager, IPluginRepository pluginRepository, ILogger logger)
+        public InstallingViewModel(IRegionManager regionManager, IContainerProvider containerProvider, IPluginRepository pluginRepository, ILogger logger)
         {
             _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
             _pluginRepository = pluginRepository ?? throw new ArgumentNullException(nameof(pluginRepository));
+            _containerProvider = containerProvider ?? throw new ArgumentNullException(nameof(containerProvider));
+
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             InstallPluginCommand = new DelegateCommand(InstallPlugin);

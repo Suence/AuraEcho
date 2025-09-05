@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace PowerLab.Tools
+namespace PowerLab.Core.Tools
 {
     /// <summary>
     /// 自定义程序集加载上下文，用于加载插件程序集

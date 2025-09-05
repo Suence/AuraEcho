@@ -36,11 +36,14 @@ namespace PowerLab.FishyTime
         public void OnInitialized(IContainerProvider containerProvider)
         {
         }
-
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<FishyTimeHome>();
             containerRegistry.RegisterForNavigation<FishyTimeSettings>();
+        }
+
+        public void Setup(IContainerProvider containerProvider)
+        {
         }
     }
 }

@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.Core.Tools;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Attributes;
 using PowerLab.PluginContracts.Interfaces;
-using PowerLab.PluginContracts.Models;
-using PowerLab.Tools;
 using Prism.Modularity;
 
 namespace PowerLab.Services
