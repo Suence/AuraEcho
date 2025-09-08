@@ -1,9 +1,6 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using PowerLab.Installer.Bootstrapper.Views;
-using Prism.DryIoc;
 using Prism.Ioc;
 using WixToolset.BootstrapperApplicationApi;
 
@@ -21,13 +18,20 @@ namespace PowerLab.Installer.Bootstrapper
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterSingleton<PowerLabBootstrapper>(() => PowerLabBootstrapper.Instance);
+
+            containerRegistry.RegisterForNavigation<InstallPreparation>();
+            containerRegistry.RegisterForNavigation<Installing>();
+            containerRegistry.RegisterForNavigation<InstallFinish>();
+            containerRegistry.RegisterForNavigation<UninstallPreparation>();
+            containerRegistry.RegisterForNavigation<Uninstalling>();
+            containerRegistry.RegisterForNavigation<UninstallFinish>();
         }
 
         static void Main()
         {
             Debugger.Launch();
-            var bootstrapper = new PowerLabBootstrapper();
-            ManagedBootstrapperApplication.Run(bootstrapper);
+            ManagedBootstrapperApplication.Run(PowerLabBootstrapper.Instance);
         }
     }
 }

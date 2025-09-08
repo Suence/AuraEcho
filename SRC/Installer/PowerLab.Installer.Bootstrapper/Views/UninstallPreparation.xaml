@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="PowerLab.Installer.Bootstrapper.Views.UninstallPreparation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:UninstallPreparationViewModel}"
+             d:DesignHeight="420"
+             d:DesignWidth="750"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d">
+    <Grid Background="Black">
+        <StackPanel Height="120"
+                    VerticalAlignment="Bottom"
+                    Background="#90000000">
+            <Button Width="150"
+                    Height="36"
+                    Margin="0,20,0,15"
+                    Command="{Binding NavigationToUninstallCommand}"
+                    Content="立即卸载"
+                    Style="{DynamicResource PrimaryButtonStyle}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

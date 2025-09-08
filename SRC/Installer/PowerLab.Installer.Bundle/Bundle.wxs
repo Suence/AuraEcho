@@ -21,6 +21,8 @@
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.DryIoc.Wpf.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.Wpf.dll" />
+			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Controls.dll" />
+			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Themes.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)WixToolset.BootstrapperApplicationApi.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.runtimeconfig.json" />
 		</BootstrapperApplication>
@@ -32,7 +34,7 @@
 			Platform="x64"
 			Variable="DOTNETDESKTOPVERSION" />
 
-		<Chain DisableSystemRestore="yes" >
+		<Chain DisableSystemRestore="yes">
 
 			<!-- Permanent: 永久(卸载时保留) or 指定卸载参数 UninstallArguments="/uninstall /quiet /norestart" -->
 			<ExePackage Id="DotNetDesktop"
@@ -50,12 +52,18 @@
 						Visible="no"
 						Compressed="yes"
 						EnableFeatureSelection="yes"
-						SourceFile="PowerLab.Installer.MSI.msi"/>
+						SourceFile="PowerLab.Installer.MSI.msi">
+				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
+				<MsiProperty Name="UNINSTALLER_PATH" Value="[UNINSTALLER_PATH]"/>
+			</MsiPackage>
+
 			<MsiPackage Id="PluginInstallerMSI"
 						Visible="no"
 						Compressed="yes"
 						EnableFeatureSelection="yes"
-						SourceFile="PowerLab.PluginInstaller.MSI.msi"/>
+						SourceFile="PowerLab.PluginInstaller.MSI.msi">
+				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
+			</MsiPackage>
 		</Chain>
 
 	</Bundle>

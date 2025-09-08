@@ -5,6 +5,8 @@ namespace PowerLab.Installer.Bootstrapper
 {
     public sealed class PowerLabBootstrapper : BootstrapperApplication
     {
+        private PowerLabBootstrapper() { }
+        public static PowerLabBootstrapper Instance { get; } = new PowerLabBootstrapper();
         public IEngine Engine { get; private set; }
         public IBootstrapperCommand Command { get; private set; }
 

@@ -1,0 +1,36 @@
+﻿using System.Windows;
+using System.Windows.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
+
+namespace PowerLab.Installer.Bootstrapper.Views
+{
+    /// <summary>
+    /// Interaction logic for InstallPreparation
+    /// </summary>
+    public partial class InstallPreparation : UserControl
+    {
+        public InstallPreparation()
+        {
+            InitializeComponent();
+        }
+
+        private void SelectFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog
+            {
+                Title = "请选择 Wix3Demo 的安装位置",
+                IsFolderPicker = true
+            };
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                TargetInstallFolderTextBlock.Text = dialog.FileName;
+            }
+        }
+
+        private void CustomInstallationHyperLink_Click(object sender, RoutedEventArgs e)
+        {
+            CustomInstallationLayout.Visibility = CustomInstallationLayout.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            CustomInstallationRun.Text = CustomInstallationRun.Text == "快速安装" ? "自定义安装" : "快速安装";
+        }
+    }
+}

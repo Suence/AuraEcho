@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="PowerLab.Installer.Bootstrapper.Views.Installing"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:InstallingViewModel}"
+             d:DesignHeight="676"
+             d:DesignWidth="1200"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="#F9FAFC"
+             Loaded="UserControl_Loaded"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Storyboard x:Key="ProgressStorybard">
+            <DoubleAnimation Storyboard.TargetName="InstallProgressBar"
+                             Storyboard.TargetProperty="Value"
+                             Duration="0:0:2" />
+        </Storyboard>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding InstallCommand}" />
+        </i:EventTrigger>
+        <i:PropertyChangedTrigger Binding="{Binding Progress}">
+            <i:CallMethodAction MethodName="BeginProgressStoryboard" TargetObject="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        </i:PropertyChangedTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" />
+        <StackPanel Grid.Row="1" Margin="24">
+            <DockPanel Margin="0,0,0,16" LastChildFill="False">
+                <TextBlock DockPanel.Dock="Left"
+                           FontSize="14"
+                           Foreground="#202532"
+                           Text="正在安装，请稍等..." />
+                <TextBlock d:Text="10%"
+                           DockPanel.Dock="Right"
+                           Foreground="#202532"
+                           Text="{Binding ElementName=InstallProgressBar, Path=Value, StringFormat={}{0:N0}%}" />
+            </DockPanel>
+            <ProgressBar x:Name="InstallProgressBar"
+                         Height="16 "
+                         Margin="0,0,0,24"
+                         d:Value="10"
+                         Maximum="100"
+                         Minimum="0"
+                         Style="{DynamicResource SimpleProgressBar}" />
+            <Button Width="75"
+                    Height="36"
+                    HorizontalAlignment="Right"
+                    BorderThickness="1"
+                    Content="取消"
+                    FontSize="14"
+                    Style="{DynamicResource SecondryButtonStyle}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

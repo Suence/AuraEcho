@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Images\powerlab.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
@@ -21,6 +25,15 @@
 
   <ItemGroup>
     <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\powerlab.png" />
   </ItemGroup>
 
 </Project>

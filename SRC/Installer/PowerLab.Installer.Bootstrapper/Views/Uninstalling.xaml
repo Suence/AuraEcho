@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="PowerLab.Installer.Bootstrapper.Views.Uninstalling"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:UninstallingViewModel}"
+             d:DesignHeight="235"
+             d:DesignWidth="495"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding UninstallCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid Background="#202020">
+        <TextBlock HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="25"
+                   Foreground="#DFDFDF"
+                   Text="正在卸载..." />
+        <StackPanel VerticalAlignment="Bottom">
+            <TextBlock Margin="0,0,0,4"
+                       HorizontalAlignment="Center"
+                       d:Text="message"
+                       Foreground="#DFDFDF"
+                       Text="{Binding Message}" />
+            <ProgressBar Height="12"
+                         VerticalAlignment="Bottom"
+                         d:Value="30"
+                         Maximum="100"
+                         Value="{Binding Progress}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
