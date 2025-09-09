@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using PowerLab.Installer.Bootstrapper.Views;
+using PowerLab.Installer.Bootstrapper.WixToolset;
 using Prism.Ioc;
 using WixToolset.BootstrapperApplicationApi;
 

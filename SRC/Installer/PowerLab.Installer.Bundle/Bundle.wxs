@@ -3,15 +3,14 @@
 	 xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
 	<Bundle Name="PowerLab.Installer.Bundle"
 			Manufacturer="Suencesoft"
-			Version="1.0.0.0"
+			Version="1.1.0.0"
 			IconSourceFile="Assets/Icons/PowerLab.ico"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
 		<!--<BootstrapperApplication>
 			<bal:WixStandardBootstrapperApplication LicenseUrl="https://www.example.com/license" Theme="hyperlinkLicense" />
 		</BootstrapperApplication>-->
 
-		<BootstrapperApplication SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.exe">
-			<bal:WixPrerequisiteBootstrapperApplication Theme="standard" />
+		<BootstrapperApplication Secondary="true" SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.exe">
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)runtimes/win-x64/native/mbanative.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)DryIoc.dll" />
@@ -25,6 +24,8 @@
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Themes.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)WixToolset.BootstrapperApplicationApi.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.runtimeconfig.json" />
+
+			<bal:WixPrerequisiteBootstrapperApplication Theme="standard" LogoFile="Assets/Icons/PowerLab.ico" LocalizationFile="Strings/zh-cn.wxl"/>
 		</BootstrapperApplication>
 
 		<!-- 自动检测 .NET 8 Desktop Runtime -->

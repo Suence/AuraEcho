@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using PowerLab.Installer.Bootstrapper.WixToolset;
 using Prism.Commands;
 using Prism.Mvvm;
 

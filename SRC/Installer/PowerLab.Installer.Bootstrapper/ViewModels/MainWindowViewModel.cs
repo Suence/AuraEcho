@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using PowerLab.Installer.Bootstrapper.Constants;
 using PowerLab.Installer.Bootstrapper.Extensions;
+using PowerLab.Installer.Bootstrapper.WixToolset;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
