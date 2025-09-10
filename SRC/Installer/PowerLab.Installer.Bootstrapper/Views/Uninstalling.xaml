@@ -7,14 +7,24 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:UninstallingViewModel}"
-             d:DesignHeight="235"
-             d:DesignWidth="495"
+             d:DesignHeight="625"
+             d:DesignWidth="1030"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <Storyboard x:Key="ProgressStorybard">
+            <DoubleAnimation Storyboard.TargetName="UninstallProgressBar"
+                             Storyboard.TargetProperty="Value"
+                             Duration="0:0:2" />
+        </Storyboard>
+    </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding UninstallCommand}" />
         </i:EventTrigger>
+        <i:PropertyChangedTrigger Binding="{Binding Progress}">
+            <i:CallMethodAction MethodName="BeginProgressStoryboard" TargetObject="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        </i:PropertyChangedTrigger>
     </i:Interaction.Triggers>
     <Grid Background="#202020">
         <TextBlock HorizontalAlignment="Center"
@@ -22,17 +32,32 @@
                    FontSize="25"
                    Foreground="#DFDFDF"
                    Text="正在卸载..." />
-        <StackPanel VerticalAlignment="Bottom">
-            <TextBlock Margin="0,0,0,4"
-                       HorizontalAlignment="Center"
-                       d:Text="message"
-                       Foreground="#DFDFDF"
-                       Text="{Binding Message}" />
-            <ProgressBar Height="12"
-                         VerticalAlignment="Bottom"
-                         d:Value="30"
+        <StackPanel Grid.Row="1"
+                    Margin="24"
+                    VerticalAlignment="Bottom">
+            <DockPanel Margin="0,0,0,16" LastChildFill="False">
+                <TextBlock d:Text="正在安装，请稍后..."
+                           DockPanel.Dock="Left"
+                           FontSize="14"
+                           Foreground="#EFEFEF"
+                           Text="{Binding Message}" />
+                <TextBlock d:Text="10%"
+                           DockPanel.Dock="Right"
+                           Foreground="#EFEFEF"
+                           Text="{Binding ElementName=UninstallProgressBar, Path=Value, StringFormat={}{0:N0}%}" />
+            </DockPanel>
+            <ProgressBar x:Name="UninstallProgressBar"
+                         Height="16 "
+                         Margin="0,0,0,24"
+                         d:Value="10"
                          Maximum="100"
-                         Value="{Binding Progress}" />
+                         Minimum="0" />
+            <Button Width="75"
+                    Height="36"
+                    HorizontalAlignment="Right"
+                    BorderThickness="1"
+                    Content="取消"
+                    FontSize="14" />
         </StackPanel>
     </Grid>
 </UserControl>

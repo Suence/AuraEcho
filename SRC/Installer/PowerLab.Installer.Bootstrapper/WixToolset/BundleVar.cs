@@ -19,6 +19,7 @@
         /// </summary>
         public const string Version = "WixBundleVersion";
 
+        public const string WixBundleOriginalSource = "WixBundleOriginalSource";
         /// <summary>
         /// Gets the variable name for the bundle display name.
         /// </summary>

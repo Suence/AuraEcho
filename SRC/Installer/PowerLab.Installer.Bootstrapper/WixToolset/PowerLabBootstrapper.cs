@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using MS.WindowsAPICodePack.Internal;
 using WixToolset.BootstrapperApplicationApi;
 
 namespace PowerLab.Installer.Bootstrapper.WixToolset
@@ -12,8 +11,9 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         private PowerLabBootstrapper() { }
         public static PowerLabBootstrapper Instance { get; } = new PowerLabBootstrapper();
 
+        private Dispatcher _dispatcher;
         private const string PowerLabPackageId = "PowerLabInstallerMSI";
-
+        private bool _isAutoPlan;
         public IEngine Engine { get; private set; }
         public IBootstrapperCommand Command { get; private set; }
         private readonly object _syncRoot = new();
@@ -30,7 +30,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         private WixBooleanVariable _createShortcutVar;
         private WixBooleanVariable _launchOnStartupVar;
         private WixStringVariable _versionVar;
-
+        private WixStringVariable _bundleOriginalSource;
 
         /// <inheritdoc/>
         public event EventHandler? OnActionRequested;
@@ -42,6 +42,8 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         public event EventHandler<int>? OnProgress;
 
         public event EventHandler<PlanMsiFeatureEventArgs> OnPlanMsiFeature;
+
+        public event EventHandler<string>? OnExecuteMsiMessage;
 
         /// <inheritdoc/>
         public event EventHandler? OnCanceled;
@@ -71,6 +73,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         }
 
         public string Version => _versionVar.Get();
+        public string BundleOriginalSource => _bundleOriginalSource.Get();
         public bool Canceled { get; private set; }
         protected override void OnCreate(CreateEventArgs args)
         {
@@ -78,13 +81,32 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             Engine = args.Engine;
             Command = args.Command;
 
+            Engine.Log(LogLevel.Standard, $"Command: {Command.Action} | Display: {Command.Display}");
+
             _installDirVar = new(Engine, BundleVar.InstallDirectory);
             _createShortcutVar = new(Engine, BundleVar.CreateDesktopShortcut);
             _launchOnStartupVar = new(Engine, BundleVar.LaunchOnStartup);
             _uninstallerPath = new(Engine, BundleVar.UninstallerPath);
             _versionVar = new(Engine, BundleVar.Version);
-
+            _bundleOriginalSource = new(Engine, BundleVar.WixBundleOriginalSource);
+            InitVariables();
             WireEvents();
+        }
+
+        private void InitVariables()
+        {
+            _installDirVar.Set(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "PowerLab"));
+            _createShortcutVar.Set(true);
+            _launchOnStartupVar.Set(true);
+
+            var bundleOriginFileName = System.IO.Path.GetFileName(BundleOriginalSource);
+            var uninstallPath =
+                System.IO.Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                    "Package Cache",
+                    Engine.GetVariableString("WixBundleProviderKey"),
+                    bundleOriginFileName);
+            _uninstallerPath.Set(uninstallPath);
         }
 
         protected override void Run()
@@ -96,7 +118,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             Engine.Log(LogLevel.Standard, "Running the PowerLab.InstallerUI.");
             try
             {
-                LaunchUI();
+                LaunchApp();
                 Engine.Log(LogLevel.Standard, "Exiting the PowerLab.InstallerUI.");
                 Engine.Quit(0);
             }
@@ -111,12 +133,21 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             }
         }
 
-        private void LaunchUI()
+        private void LaunchApp()
         {
-            var app = new App();
-            app.InitializeComponent();
+            _dispatcher = Dispatcher.CurrentDispatcher;
+            if (Command.Display is Display.Passive or Display.Full)
+            {
+                var app = new App();
+                app.InitializeComponent();
+                Engine.Detect();
+                app.Run();
+                return;
+            }
+
+            _isAutoPlan = true;
             Engine.Detect();
-            app.Run();
+            Dispatcher.Run();
         }
 
         public void Install()
@@ -168,6 +199,12 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             base.CacheVerifyProgress += CacheVerifyProgress;
             base.CacheComplete += CacheComplete;
             base.PlanMsiFeature += PlanMsiFeature;
+            base.ExecuteMsiMessage += ExecuteMsiMessage;
+        }
+
+        private void ExecuteMsiMessage(object? sender, ExecuteMsiMessageEventArgs e)
+        {
+            OnExecuteMsiMessage?.Invoke(this, e.Message);
         }
 
         private void PlanMsiFeature(object? sender, PlanMsiFeatureEventArgs e)
@@ -252,7 +289,21 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         /// <param name="e">Event arguments containing status and resume type.</param>
         private void DetectComplete(object? sender, DetectCompleteEventArgs e)
         {
+            if (!_isAutoPlan) return;
 
+            if (Command.Action == LaunchAction.Install)
+            {
+                Install();
+                return;
+            }
+
+            if (Command.Action == LaunchAction.Uninstall)
+            {
+                Uninstall();
+                return;
+            }
+
+            Engine.Log(LogLevel.Error, $"意外的自动计划：{Command.Action}");
         }
 
         /// <summary>
@@ -312,7 +363,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         /// <param name="args">Event arguments containing plan status.</param>
         private void PlanComplete(object? sender, PlanCompleteEventArgs args)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            _dispatcher.Invoke(() =>
             {
                 var mainWindow = Application.Current?.MainWindow ?? new Window();
                 var hwnd = new WindowInteropHelper(mainWindow).EnsureHandle();
@@ -348,6 +399,12 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         private void ApplyComplete(object? sender, ApplyCompleteEventArgs e)
         {
             OnActionCompleted?.Invoke(this, EventArgs.Empty);
+
+            if (_isAutoPlan)
+            {
+                _dispatcher.InvokeShutdown();
+                return;
+            }
         }
 
         /// <summary>

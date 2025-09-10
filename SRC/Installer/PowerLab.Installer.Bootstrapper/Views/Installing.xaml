@@ -36,10 +36,11 @@
         <Grid Grid.Row="0" />
         <StackPanel Grid.Row="1" Margin="24">
             <DockPanel Margin="0,0,0,16" LastChildFill="False">
-                <TextBlock DockPanel.Dock="Left"
+                <TextBlock d:Text="正在安装，请稍后"
+                           DockPanel.Dock="Left"
                            FontSize="14"
                            Foreground="#202532"
-                           Text="正在安装，请稍等..." />
+                           Text="{Binding Message}" />
                 <TextBlock d:Text="10%"
                            DockPanel.Dock="Right"
                            Foreground="#202532"
@@ -50,15 +51,13 @@
                          Margin="0,0,0,24"
                          d:Value="10"
                          Maximum="100"
-                         Minimum="0"
-                         Style="{DynamicResource SimpleProgressBar}" />
+                         Minimum="0" />
             <Button Width="75"
                     Height="36"
                     HorizontalAlignment="Right"
                     BorderThickness="1"
                     Content="取消"
-                    FontSize="14"
-                    Style="{DynamicResource SecondryButtonStyle}" />
+                    FontSize="14" />
         </StackPanel>
     </Grid>
 </UserControl>

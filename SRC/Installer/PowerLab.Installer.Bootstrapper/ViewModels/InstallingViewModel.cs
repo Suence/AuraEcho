@@ -73,8 +73,15 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
         {
             _ba.OnActionCompleted += InstallCompleted;
             _ba.OnPlanMsiFeature += PlanMsiFeature;
+            _ba.OnExecuteMsiMessage += ExecuteMsiMessage;
             _ba.OnProgress += UpdateProgress;
         }
+
+        private void ExecuteMsiMessage(object? sender, string e)
+        {
+            Message = e;
+        }
+
 
         private void UpdateProgress(object? sender, int e)
         {
@@ -90,6 +97,7 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
         {
             _ba.OnActionCompleted -= InstallCompleted;
             _ba.OnPlanMsiFeature -= PlanMsiFeature;
+            _ba.OnExecuteMsiMessage -= ExecuteMsiMessage;
             _ba.OnProgress -= UpdateProgress;
         }
 

@@ -76,7 +76,13 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
         private void SubscriptionInstallEvents()
         {
             _ba.OnActionCompleted += UninstallCompleted;
+            _ba.OnExecuteMsiMessage += ExecuteMsiMessage;
             _ba.OnProgress += UpdateProgress;
+        }
+
+        private void ExecuteMsiMessage(object? sender, string e)
+        {
+            Message = e;
         }
 
         private void UpdateProgress(object? sender, int e)

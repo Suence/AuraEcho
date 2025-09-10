@@ -18,7 +18,6 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
     {
         private readonly PowerLabBootstrapper _ba;
         private readonly IRegionManager _regionManager;
-        private readonly IEventAggregator _eventAggregator;
         private bool _agreeAgreement;
         private bool _isCreateDesktopFolderShortcut;
         private bool _isRunAtBoot;
@@ -79,6 +78,8 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
             set => SetProperty(ref _agreeAgreement, value);
         }
 
+        public string Version => _ba.Version;
+
         public string TargetInstallFolder
         {
             get
@@ -107,41 +108,16 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
         /// <param name="model"></param>
         public InstallPreparationViewModel(
             PowerLabBootstrapper ba,
-            IRegionManager regionManager,
-            IEventAggregator eventAggregator)
+            IRegionManager regionManager)
         {
             _ba = ba;
-            var a = ba.Engine.GetVariableString("WixBundleProviderKey");
-            _regionManager = regionManager;
-            _eventAggregator = eventAggregator;
-
-            _ba.InstallDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "PowerLab");
+            _regionManager = regionManager; 
 
             IsCreateDesktopFolderShortcut = true;
             IsRunAtBoot = true;
 
             InstallCommand = new DelegateCommand(Install, CanInstall).ObservesProperty(() => AgreeAgreement);
             OpenCloudServiceAgreementCommand = new DelegateCommand(OpenCloudServiceAgreement);
-
-            InitUninstallShortcutPath();
-        }
-
-        private void InitUninstallShortcutPath()
-        {
-            string registryKeyPath = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{_ba.Engine.GetVariableString("WixBundleProviderKey")}";
-
-            using RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKeyPath, false);
-            if (key != null)
-            {
-                string uninstallPath = key.GetValue("BundleCachePath") as string;
-                //_ba.Engine.SetVariableString("UNINSTALLER_PATH", uninstallPath, false);
-                _ba.UninstallerPath = uninstallPath;
-                return;
-            }
-            _ba.UninstallerPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\{"Package Cache"}\{_ba.Engine.GetVariableString("WixBundleProviderKey")}\PowerLab_Setup.exe";
-            //_ba.Engine.SetVariableString(
-            //    "UNINSTALLER_PATH",
-            //    $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\{"Package Cache"}\{_ba.Engine.GetVariableString("WixBundleProviderKey")}\PowerLab_Setup.exe", false); // 此处为 Bundle 的 exe 文件名称
         }
         #endregion
     }

@@ -1,9 +1,9 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 	 xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
 	 xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
-	<Bundle Name="PowerLab.Installer.Bundle"
+	<Bundle Name="PowerLab"
 			Manufacturer="Suencesoft"
-			Version="1.1.0.0"
+			Version="1.1.10.0"
 			IconSourceFile="Assets/Icons/PowerLab.ico"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
 		<!--<BootstrapperApplication>
@@ -42,6 +42,8 @@
 						DetectCondition="DOTNETDESKTOPVERSION &gt;= &quot;8.0.1&quot;"
 						Permanent="yes"
 						Vital="no"
+						RepairCondition="DOTNETDESKTOPVERSION &lt; &quot;8.0.1&quot;"
+						bal:PrereqLicenseUrl="https://dotnet.microsoft.com"
 						bal:PrereqPackage="yes"
 						InstallArguments="windowsdesktop-runtime-8.0.18-win-x64.exe /install /quiet /norestart"
 						RepairArguments="windowsdesktop-runtime-8.0.18-win-x64.exe /repair /quiet /norestart"
@@ -66,6 +68,5 @@
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 		</Chain>
-
 	</Bundle>
 </Wix>
