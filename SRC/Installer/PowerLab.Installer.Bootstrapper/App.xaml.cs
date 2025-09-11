@@ -27,6 +27,8 @@ namespace PowerLab.Installer.Bootstrapper
             containerRegistry.RegisterForNavigation<UninstallPreparation>();
             containerRegistry.RegisterForNavigation<Uninstalling>();
             containerRegistry.RegisterForNavigation<UninstallFinish>();
+            containerRegistry.RegisterForNavigation<ActionCancelled>();
+            containerRegistry.RegisterForNavigation<DowngradeDetected>();
         }
 
         static void Main()

@@ -14,7 +14,7 @@
         d:DesignHeight="432"
         d:DesignWidth="738"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Background="#F9FAFC"
+        Background="Black"
         Foreground="#646464"
         Loaded="Window_Loaded"
         ResizeMode="NoResize"
@@ -30,11 +30,6 @@
                       GlassFrameThickness="1"
                       UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding DetectPackageCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <Grid>
         <ContentControl prism:RegionManager.RegionName="{x:Static constants:InstallerRegionNames.MainRegion}" />
         <ContentControl prism:RegionManager.RegionName="{x:Static constants:InstallerRegionNames.MessageRegion}" />

@@ -4,7 +4,7 @@
 			 Codepage="65001"
 			 UpgradeCode="F2F37407-114F-4E5E-8B26-5872152FD721"
 			 Version="1.0.0.0">
-		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+		<MajorUpgrade DowngradeErrorMessage="不允许降级安装" />
 		<Launch Condition="MsiNTProductType = 1" Message="TODO Wrong OS type! TODO" />
 		<MediaTemplate EmbedCab="yes"/>
 		

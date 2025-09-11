@@ -57,6 +57,7 @@
                     HorizontalAlignment="Right"
                     BorderThickness="1"
                     Content="取消"
+                    Command="{Binding CancelCommand}"
                     FontSize="14" />
         </StackPanel>
     </Grid>

@@ -14,13 +14,14 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly PowerLabBootstrapper _ba;
 
-        public DelegateCommand DetectPackageCommand { get; }
-        private void DetectPackage()
+        private void DetectCompleted(object? sender, EventArgs e)
         {
-            string targetView =
-                _ba.Command.Action == LaunchAction.Uninstall
-                ? InstallerViewNames.UninstallPreparation
-                : InstallerViewNames.InstallPreparation;
+            var targetView = _ba.Downgrade switch
+            {
+                true => InstallerViewNames.DowngradeDetected,
+                false when _ba.Command.Action == LaunchAction.Uninstall => InstallerViewNames.UninstallPreparation,
+                _ => InstallerViewNames.InstallPreparation
+            };
 
             _regionManager.RequestNavigateOnUIThread(InstallerRegionNames.MainRegion, targetView);
         }
@@ -39,8 +40,10 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
         {
             _ba = ba;
             _regionManager = regionManager;
-            DetectPackageCommand = new DelegateCommand(DetectPackage);
             ExitCommand = new DelegateCommand(Exit);
+
+            _ba.OnActionRequested += DetectCompleted;
+            _ba.Engine.Detect();
         }
     }
 }

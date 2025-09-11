@@ -3,7 +3,7 @@
 	 xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
 	<Bundle Name="PowerLab"
 			Manufacturer="Suencesoft"
-			Version="1.1.10.0"
+			Version="1.1.13.0"
 			IconSourceFile="Assets/Icons/PowerLab.ico"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
 		<!--<BootstrapperApplication>

@@ -2,6 +2,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <SuppressSpecificWarnings>
     </SuppressSpecificWarnings>
+    <Cultures>zh-CN;</Cultures>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\PowerLab.ico" />

@@ -14,6 +14,8 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         private Dispatcher _dispatcher;
         private const string PowerLabPackageId = "PowerLabInstallerMSI";
         private bool _isAutoPlan;
+
+        public bool Downgrade { get; private set; }
         public IEngine Engine { get; private set; }
         public IBootstrapperCommand Command { get; private set; }
         private readonly object _syncRoot = new();
@@ -74,7 +76,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
 
         public string Version => _versionVar.Get();
         public string BundleOriginalSource => _bundleOriginalSource.Get();
-        public bool Canceled { get; private set; }
+        public bool CancelRequested { get; private set; }
         protected override void OnCreate(CreateEventArgs args)
         {
             base.OnCreate(args);
@@ -140,7 +142,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             {
                 var app = new App();
                 app.InitializeComponent();
-                Engine.Detect();
+                //Engine.Detect();
                 app.Run();
                 return;
             }
@@ -170,10 +172,10 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         }
 
         /// <inheritdoc/>
-        public void Cancel(bool autoClose = false)
+        public void Cancel()
         {
-            Canceled = true;
-            OnCanceled?.Invoke(this, EventArgs.Empty);
+            CancelRequested = true;
+
         }
 
         /// <summary>
@@ -258,6 +260,9 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         private void ReportProgress()
         {
             var pct = GetProgress();
+
+            if (CancelRequested) return;
+
             OnProgress?.Invoke(this, pct);
         }
 
@@ -289,6 +294,13 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         /// <param name="e">Event arguments containing status and resume type.</param>
         private void DetectComplete(object? sender, DetectCompleteEventArgs e)
         {
+            if (Command.Action is not LaunchAction.Uninstall)
+            {
+                Downgrade = UpgradeDetectState == UpgradeDetectionState.Newer;
+            }
+
+            OnActionRequested?.Invoke(this, EventArgs.Empty);
+
             if (!_isAutoPlan) return;
 
             if (Command.Action == LaunchAction.Install)
@@ -388,7 +400,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         /// <param name="e">Event arguments containing progress percentage.</param>
         private void Progress(object? sender, ProgressEventArgs e)
         {
-            e.Cancel = Canceled;
+            e.Cancel = CancelRequested;
         }
 
         /// <summary>
@@ -434,7 +446,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
                 if (Command.Display is Display.Embedded)
                     Engine.SendEmbeddedProgress(e.ProgressPercentage, progress);
 
-                e.Cancel = Canceled;
+                e.Cancel = CancelRequested;
             }
         }
 
@@ -459,7 +471,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             {
                 _cacheProgress = e.OverallPercentage;
                 ReportProgress();
-                e.Cancel = Canceled;
+                e.Cancel = CancelRequested;
             }
         }
 
@@ -473,7 +485,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             {
                 _cacheProgress = e.OverallPercentage;
                 ReportProgress();
-                e.Cancel = Canceled;
+                e.Cancel = CancelRequested;
             }
         }
 
@@ -488,7 +500,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             {
                 _cacheProgress = e.OverallPercentage;
                 ReportProgress();
-                e.Cancel = Canceled;
+                e.Cancel = CancelRequested;
             }
         }
 
@@ -503,7 +515,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             {
                 _cacheProgress = e.OverallPercentage;
                 ReportProgress();
-                e.Cancel = Canceled;
+                e.Cancel = CancelRequested;
             }
         }
 

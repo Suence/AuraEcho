@@ -28,6 +28,12 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
             _ba.Install();
         }
 
+        public DelegateCommand CancelCommand { get; }
+        private void Cancel()
+        {
+            _ba.Cancel();
+        }
+
         #endregion
 
         #region 属性
@@ -60,6 +66,7 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
             _regionManager = regionManager;
 
             InstallCommand = new DelegateCommand(Install);
+            CancelCommand = new DelegateCommand(Cancel);
             SubscriptionInstallEvents();
         }
 
@@ -90,6 +97,12 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
 
         private void InstallCompleted(object? sender, EventArgs e)
         {
+            if (_ba.CancelRequested)
+            {
+                _regionManager.RequestNavigateOnUIThread(InstallerRegionNames.MainRegion, InstallerViewNames.ActionCancelled);
+                return;
+            }
+
             _regionManager.RequestNavigateOnUIThread(InstallerRegionNames.MainRegion, InstallerViewNames.InstallFinish);
         }
 
