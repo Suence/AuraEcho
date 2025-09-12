@@ -13,6 +13,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
 
         private Dispatcher _dispatcher;
         private const string PowerLabPackageId = "PowerLabInstallerMSI";
+        private const string POWERLAB_BUNDLE_FILENAME = "PowerLab_Setup.exe";
         private bool _isAutoPlan;
 
         public bool Downgrade { get; private set; }
@@ -32,7 +33,6 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         private WixBooleanVariable _createShortcutVar;
         private WixBooleanVariable _launchOnStartupVar;
         private WixStringVariable _versionVar;
-        private WixStringVariable _bundleOriginalSource;
 
         /// <inheritdoc/>
         public event EventHandler? OnActionRequested;
@@ -75,7 +75,6 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
         }
 
         public string Version => _versionVar.Get();
-        public string BundleOriginalSource => _bundleOriginalSource.Get();
         public bool CancelRequested { get; private set; }
         protected override void OnCreate(CreateEventArgs args)
         {
@@ -90,7 +89,6 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             _launchOnStartupVar = new(Engine, BundleVar.LaunchOnStartup);
             _uninstallerPath = new(Engine, BundleVar.UninstallerPath);
             _versionVar = new(Engine, BundleVar.Version);
-            _bundleOriginalSource = new(Engine, BundleVar.WixBundleOriginalSource);
             InitVariables();
             WireEvents();
         }
@@ -101,13 +99,12 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
             _createShortcutVar.Set(true);
             _launchOnStartupVar.Set(true);
 
-            var bundleOriginFileName = System.IO.Path.GetFileName(BundleOriginalSource);
             var uninstallPath =
                 System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                     "Package Cache",
                     Engine.GetVariableString("WixBundleProviderKey"),
-                    bundleOriginFileName);
+                    POWERLAB_BUNDLE_FILENAME);
             _uninstallerPath.Set(uninstallPath);
         }
 
