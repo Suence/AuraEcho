@@ -12,6 +12,7 @@ namespace PowerLab.Installer.Bootstrapper
     /// </summary>
     public partial class App
     {
+        private readonly Mutex _mutex = new(false, "17FA29D6-F4BC-4720-A55C-27042D247E35");
         protected override Window CreateShell()
         {
             return Container.Resolve<MainWindow>();
@@ -29,6 +30,22 @@ namespace PowerLab.Installer.Bootstrapper
             containerRegistry.RegisterForNavigation<UninstallFinish>();
             containerRegistry.RegisterForNavigation<ActionCancelled>();
             containerRegistry.RegisterForNavigation<DowngradeDetected>();
+        }
+
+        protected override void OnStartup(System.Windows.StartupEventArgs e)
+        {
+            try
+            {
+                if (!_mutex.WaitOne(TimeSpan.Zero, true))
+                {
+                    new InstallerAlreadyRunningDialog().ShowDialog();
+                    Shutdown();
+                    return;
+                }
+            }
+            catch(AbandonedMutexException) { }
+
+            base.OnStartup(e);
         }
 
         static void Main()
