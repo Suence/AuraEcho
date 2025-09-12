@@ -6,8 +6,8 @@ namespace PowerLab.Core.Repositories
 {
     public class PluginRepository : IPluginRepository
     {
-        private readonly PluginDbContext _dbContext;
-        public PluginRepository(PluginDbContext dbContext) 
+        private readonly PowerLabDbContext _dbContext;
+        public PluginRepository(PowerLabDbContext dbContext) 
         { 
             _dbContext = dbContext;
         }

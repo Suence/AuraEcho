@@ -85,7 +85,7 @@ namespace PowerLab
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
 
-            using var pluginDbContext = Container.Resolve<PluginDbContext>();
+            using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
 
             var logger = Container.Resolve<ILogger>();
             logger.Information("Begin Migrate");

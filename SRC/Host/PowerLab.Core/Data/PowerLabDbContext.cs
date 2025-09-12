@@ -4,7 +4,7 @@ using PowerLab.Core.Constants;
 using PowerLab.Core.Models;
 namespace PowerLab.Core.Data
 {
-    public class PluginDbContext : DbContext
+    public class PowerLabDbContext : DbContext
     {
         public DbSet<PluginRegistry> PluginRegistries { get; set; }
 
@@ -12,9 +12,10 @@ namespace PowerLab.Core.Data
         //{
         //}
 
-        public PluginDbContext()
+        public PowerLabDbContext()
         {
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

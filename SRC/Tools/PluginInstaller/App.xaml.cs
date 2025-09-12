@@ -65,7 +65,7 @@ namespace PluginInstaller
             GlobalObjectHolder.StartupArgs = e.Args;
             base.OnStartup(e);
 
-            using var pluginDbContext = Container.Resolve<PluginDbContext>();
+            using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
             pluginDbContext.Database.Migrate();
         }
 

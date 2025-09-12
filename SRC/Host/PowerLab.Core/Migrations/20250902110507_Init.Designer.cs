@@ -9,7 +9,7 @@ using PowerLab.Core.Data;
 
 namespace PowerLab.Core.Migrations
 {
-    [DbContext(typeof(PluginDbContext))]
+    [DbContext(typeof(PowerLabDbContext))]
     [Migration("20250902110507_Init")]
     partial class Init
     {

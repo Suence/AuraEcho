@@ -8,7 +8,7 @@ using PowerLab.Core.Data;
 
 namespace PowerLab.Core.Migrations
 {
-    [DbContext(typeof(PluginDbContext))]
+    [DbContext(typeof(PowerLabDbContext))]
     partial class PluginDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
