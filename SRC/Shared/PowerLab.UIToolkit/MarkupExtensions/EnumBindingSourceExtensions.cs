@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace PowerLab.Core.MarkupExtensions
+namespace PowerLab.UIToolkit.MarkupExtensions
 {
     public class EnumBindingSourceExtension : MarkupExtension
     {

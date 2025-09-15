@@ -24,7 +24,7 @@ namespace PowerLab.Core.Converters.TypeConverters
 #if DEBUG
                         var appName = Labels.ResourceManager.GetString(nameof(Labels.AppName), Labels.Culture);
 #endif
-                        return attributes.Length > 0 && !String.IsNullOrEmpty(attributes[0].Description) 
+                        return attributes.Length > 0 && !String.IsNullOrEmpty(attributes[0].Description)
                                ? Labels.ResourceManager.GetString(attributes[0].Description)
                                : value.ToString();
                     }

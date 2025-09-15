@@ -36,6 +36,7 @@
     <Project Path="SRC/Shared/PowerLab.Controls/PowerLab.Controls.csproj" />
     <Project Path="SRC/Shared/PowerLab.PluginContracts/PowerLab.PluginContracts.csproj" Id="88f69dd3-259f-4c4d-b8e2-f23f4baa8823" />
     <Project Path="SRC/Shared/PowerLab.Themes/PowerLab.Themes.csproj" />
+    <Project Path="SRC/Shared/PowerLab.UIToolkit/PowerLab.UIToolkit.csproj" Id="ca0e586d-0fd5-4f8d-8bbe-f9b45765068c" />
   </Folder>
   <Folder Name="/SRC/Tools/">
     <Project Path="SRC/Tools/PluginInstaller/PluginInstaller.csproj" />

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace PowerLab.Core.Tools
+namespace PowerLab.UIToolkit.Tools
 {
     public class BindingProxy : Freezable
     {

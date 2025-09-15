@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace PowerLab.Core.Behaviors
+namespace PowerLab.UIToolkit.Behaviors
 {
     /// <summary>
     /// 点击空白处清除焦点的行为

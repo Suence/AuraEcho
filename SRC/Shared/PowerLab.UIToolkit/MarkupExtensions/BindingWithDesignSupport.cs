@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace PowerLab.Core.MarkupExtensions
+namespace PowerLab.UIToolkit.MarkupExtensions
 {
     public class BindingWithDesignSupport : MarkupExtension
     {

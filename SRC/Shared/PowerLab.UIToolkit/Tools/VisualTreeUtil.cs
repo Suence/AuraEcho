@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace PowerLab.Core.Tools
+namespace PowerLab.UIToolkit.Tools
 {
     public static class VisualTreeUtil
     {

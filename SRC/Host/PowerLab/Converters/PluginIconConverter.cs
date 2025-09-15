@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using PowerLab.Core.Converters;
 using PowerLab.Core.Models;
+using PowerLab.UIToolkit.Converters;
 
 namespace PowerLab.Converters
 {

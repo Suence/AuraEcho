@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.Core.Tools
+namespace PowerLab.UIToolkit.Tools
 {
     public static class ComboBoxHelper
     {

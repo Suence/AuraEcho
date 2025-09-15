@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace PowerLab.Core.Converters
+namespace PowerLab.UIToolkit.Converters
 {
     [ValueConversion(typeof(string), typeof(Enum))]
     public class StringToEnumConverter : IValueConverter

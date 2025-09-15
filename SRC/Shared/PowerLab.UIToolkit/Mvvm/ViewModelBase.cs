@@ -1,7 +1,7 @@
 ﻿using Prism.Mvvm;
 using Prism.Navigation;
 
-namespace PowerLab.Core.Mvvm
+namespace PowerLab.UIToolkit.Mvvm
 {
     public abstract class ViewModelBase : BindableBase, IDestructible
     {

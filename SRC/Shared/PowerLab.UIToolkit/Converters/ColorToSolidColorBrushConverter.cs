@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace PowerLab.Core.Converters
+namespace PowerLab.UIToolkit.Converters
 {
     /// <summary>
     /// <see cref="Color"/> 转换为 <see cref="SolidColorBrush"/> 的转换器"/>

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Microsoft.Xaml.Behaviors;
 
-namespace PowerLab.Core.Behaviors
+namespace PowerLab.UIToolkit.Behaviors
 {
     /// <summary>
     /// 关闭窗口行为
@@ -23,9 +23,9 @@ namespace PowerLab.Core.Behaviors
 
         private static void OnCloseTriggerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is CloseWindowBehavior)) return;
+            if (d is not CloseWindowBehavior cwb) return;
 
-            (d as CloseWindowBehavior).OnCloseTriggerChanged();
+            cwb.OnCloseTriggerChanged();
         }
 
         private void OnCloseTriggerChanged()

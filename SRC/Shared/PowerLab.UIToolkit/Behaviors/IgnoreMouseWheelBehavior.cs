@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace PowerLab.Core.Behaviors
+namespace PowerLab.UIToolkit.Behaviors
 {
     /// <summary>
     /// 忽略鼠标滚轮事件的行为

@@ -1,4 +1,4 @@
-﻿namespace PowerLab.Core.Converters
+﻿namespace PowerLab.UIToolkit.Converters
 {
     using System;
     using System.Globalization;

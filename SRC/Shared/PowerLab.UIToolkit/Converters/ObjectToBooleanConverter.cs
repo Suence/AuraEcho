@@ -3,18 +3,19 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PowerLab.Core.Converters
+namespace PowerLab.UIToolkit.Converters
 {
-    public class BooleanToObjectConverter : DependencyObject, IValueConverter
+    [ValueConversion(typeof(object), typeof(bool))]
+    public class ObjectToBooleanConverter : DependencyObject, IValueConverter
     {
         /// <summary>
         /// 标识 TrueValue 依赖属性。
         /// </summary>
         public static readonly DependencyProperty TrueValueProperty =
             DependencyProperty.Register(
-                nameof(TrueValue), 
-                typeof(object), 
-                typeof(BooleanToObjectConverter), 
+                nameof(TrueValue),
+                typeof(object),
+                typeof(ObjectToBooleanConverter),
                 new PropertyMetadata());
 
         /// <summary>
@@ -22,9 +23,9 @@ namespace PowerLab.Core.Converters
         /// </summary>
         public static readonly DependencyProperty FalseValueProperty =
             DependencyProperty.Register(
-                nameof(FalseValue), 
-                typeof(object), 
-                typeof(BooleanToObjectConverter), 
+                nameof(FalseValue),
+                typeof(object),
+                typeof(ObjectToBooleanConverter),
                 new PropertyMetadata());
 
         /// <summary>
@@ -45,14 +46,14 @@ namespace PowerLab.Core.Converters
             set => SetValue(FalseValueProperty, value);
         }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
+            => value.Equals(TrueValue);
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool boolValue = value is bool b && b;
 
             return boolValue ? TrueValue : FalseValue;
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => value.Equals(TrueValue);
     }
 }

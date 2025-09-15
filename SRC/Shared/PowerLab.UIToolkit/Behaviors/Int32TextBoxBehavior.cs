@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace PowerLab.Core.Behaviors
+namespace PowerLab.UIToolkit.Behaviors
 {
     /// <summary>
     /// 数字输入框行为，限制输入为整数

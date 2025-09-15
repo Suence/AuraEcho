@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
     <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PowerLab.Core.Converters
+namespace PowerLab.UIToolkit.Converters
 {
     public class AlternationEqualityConverter : DependencyObject, IMultiValueConverter
     {

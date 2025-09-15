@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" />
     <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
     <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icons\PowerLab.ico" />

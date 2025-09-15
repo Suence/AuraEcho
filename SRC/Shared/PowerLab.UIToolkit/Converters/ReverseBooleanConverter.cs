@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace PowerLab.Core.Converters
+namespace PowerLab.UIToolkit.Converters
 {
     /// <summary>
     /// 反转 Boolean 值
