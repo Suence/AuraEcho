@@ -5,6 +5,12 @@
 		<UseWPF>true</UseWPF>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Entities\**" />
+	  <EmbeddedResource Remove="Entities\**" />
+	  <None Remove="Entities\**" />
+	  <Page Remove="Entities\**" />
+	</ItemGroup>
   <ItemGroup>
     <Compile Update="Strings\Labels.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -19,7 +25,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\" />
+    <Folder Include="Data\Entities\" />
     <Folder Include="Native\Externals\" />
   </ItemGroup>
   <ItemGroup>
