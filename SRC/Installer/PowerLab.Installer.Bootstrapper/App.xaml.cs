@@ -2,6 +2,8 @@
 using System.Windows;
 using PowerLab.Installer.Bootstrapper.Views;
 using PowerLab.Installer.Bootstrapper.WixToolset;
+using PowerLab.PluginContracts.Interfaces;
+using PowerLab.UIToolkit.ContentDialog;
 using Prism.Ioc;
 using WixToolset.BootstrapperApplicationApi;
 
@@ -21,6 +23,9 @@ namespace PowerLab.Installer.Bootstrapper
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<PowerLabBootstrapper>(() => PowerLabBootstrapper.Instance);
+
+            containerRegistry.Register<IRegionDialogService, RegionDialogService>();
+            containerRegistry.RegisterForNavigation<ConfirmDialog>();
 
             containerRegistry.RegisterForNavigation<InstallPreparation>();
             containerRegistry.RegisterForNavigation<Installing>();

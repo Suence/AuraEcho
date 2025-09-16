@@ -13,6 +13,7 @@ using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.EntityFrameworkCore;
 using PowerLab.Core.Attributes;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Data;
 using PowerLab.Core.Native.Win32;
@@ -41,7 +42,6 @@ namespace PowerLab
     public partial class App
     {
         private TaskbarIcon _notifyIcon;
-
         protected override Window CreateShell()
         {
             LoggingAttribute.Logger = Container.Resolve<ILogger>();
@@ -117,7 +117,6 @@ namespace PowerLab
                 : RenderMode.SoftwareOnly;
         }
 
-
         /// <summary>
         /// 程序入口函数
         /// </summary>
@@ -125,10 +124,15 @@ namespace PowerLab
         static void Main()
         {
             var logger = new SerilogService();
-
             logger.Debug("程序已启动");
+            
+            if (Mutex.TryOpenExisting(MutexNames.INSTALLER_MUTEX_ID, out var _))
+            {
+                logger.Debug("检测到安装程序正在运行，正在退出程序。");
+                return;
+            }
 
-            using var mutex = new Mutex(true, "E2A4C483-C59D-4856-BE14-F9B4AF07042C");
+            using var mutex = new Mutex(true, MutexNames.POWERLAB_MUTEX_ID);
             if (!mutex.WaitOne(TimeSpan.Zero, true))
             {
                 IntPtr mainWindowHandle = Win32Helper.FindWindow(null, ApplicationResources.GetString("AppName"));

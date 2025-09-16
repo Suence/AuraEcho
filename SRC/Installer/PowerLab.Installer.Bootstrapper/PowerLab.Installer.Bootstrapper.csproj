@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\PowerLab.Controls\PowerLab.Controls.csproj" />
     <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
+    <ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

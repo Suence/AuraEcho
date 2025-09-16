@@ -22,6 +22,8 @@
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.Wpf.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Controls.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Themes.dll" />
+			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.PluginContracts.dll" />
+			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.UIToolkit.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)WixToolset.BootstrapperApplicationApi.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.runtimeconfig.json" />
 

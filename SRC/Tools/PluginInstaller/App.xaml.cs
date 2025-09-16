@@ -80,10 +80,15 @@ namespace PluginInstaller
         static void Main()
         {
             var logger = new SerilogService();
-
             logger.Debug("程序已启动");
 
-            using var mutex = new Mutex(true, "7DE0BAA8-9D9A-46E1-82C1-947DBAABEE78");
+            if (Mutex.TryOpenExisting(MutexNames.INSTALLER_MUTEX_ID, out var _))
+            {
+                logger.Debug("检测到安装程序正在运行，正在退出程序。");
+                return;
+            }
+
+            using var mutex = new Mutex(true, MutexNames.PLUGIN_INSTALLER_MUTEX_ID);
             if (!mutex.WaitOne(TimeSpan.Zero, true))
             {
                 IntPtr mainWindowHandle = Win32Helper.FindWindow(null, "PlixInstaller");

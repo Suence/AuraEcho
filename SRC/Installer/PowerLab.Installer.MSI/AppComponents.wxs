@@ -38,7 +38,12 @@
 
 			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolder"/>
 			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>
-			<RegistryValue Root="HKCU" Key="Software\Suencesoft\PowerLab" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			<RegistryValue Root="HKCU" 
+						   Key="Software\Suencesoft\PowerLab" 
+						   Name="InstallPath"
+						   Type="string"
+						   Value="[INSTALLFOLDER]PowerLab.exe"  
+						   KeyPath="yes"/>
 		</Component>
 	</Fragment>
 </Wix>
