@@ -56,7 +56,7 @@ namespace PowerLab.ViewModels
         {
             var pluginRegistries = await _pluginManager.LoadPluginsAsync();
             Plugins = pluginRegistries.ToObservableCollection();
-            
+
             _themeManager.AttachPluginThemes(
                 pluginRegistries.Select(p => p.PluginContext)
                                 .Where(p => p is not null));

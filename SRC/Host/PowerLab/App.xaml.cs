@@ -24,11 +24,13 @@ using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
 using PowerLab.PluginContracts.Models;
 using PowerLab.Services;
+using PowerLab.UIToolkit.ContentDialog;
 using PowerLab.ViewModels;
 using PowerLab.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using Windows.Globalization;
 
 namespace PowerLab
@@ -55,11 +57,13 @@ namespace PowerLab
             containerRegistry.RegisterSingleton<IThemeManager, ThemeManager>();
             containerRegistry.RegisterSingleton<IHostSettingsProvider, HostSettingsProvider>();
             containerRegistry.RegisterSingleton<IPluginRepository, PluginRepository>();
+            containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
 
             containerRegistry.RegisterForNavigation<Homepage>();
             containerRegistry.RegisterForNavigation<PluginsDashboard>();
             containerRegistry.RegisterForNavigation<Settings>();
             containerRegistry.RegisterForNavigation<GeneralSettings>();
+            containerRegistry.RegisterForNavigation<ConfirmDialog>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

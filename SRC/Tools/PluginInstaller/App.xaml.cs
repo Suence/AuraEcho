@@ -13,6 +13,7 @@ using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
 using PowerLab.PluginContracts.Interfaces;
+using PowerLab.UIToolkit.ContentDialog;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -36,10 +37,13 @@ namespace PluginInstaller
             containerRegistry.RegisterSingleton<ILogger, SerilogService>();
             containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
             containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
+            containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
+
             containerRegistry.RegisterForNavigation<InstallPreparation>();
             containerRegistry.RegisterForNavigation<Installing>();
             containerRegistry.RegisterForNavigation<InstallCompleted>();
             containerRegistry.RegisterForNavigation<PickPluginInstallFile>();
+            containerRegistry.RegisterForNavigation<ConfirmDialog>();
             //containerRegistry.Register<PluginDbContext>(provider =>
             //{
             //    var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
