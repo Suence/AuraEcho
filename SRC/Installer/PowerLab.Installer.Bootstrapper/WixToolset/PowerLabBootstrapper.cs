@@ -13,7 +13,7 @@ namespace PowerLab.Installer.Bootstrapper.WixToolset
 
         private Dispatcher _dispatcher;
         private const string PowerLabPackageId = "PowerLabInstallerMSI";
-        private const string POWERLAB_BUNDLE_FILENAME = "PowerLab_Setup.exe";
+        private const string POWERLAB_BUNDLE_FILENAME = "PowerLabSetup.exe";
         private bool _isAutoPlan;
 
         public bool Downgrade { get; private set; }
