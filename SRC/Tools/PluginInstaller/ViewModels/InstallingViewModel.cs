@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Reflection;
-using System.Runtime.Loader;
 using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PowerLab.Core.Constants;
@@ -11,7 +10,6 @@ using PowerLab.PluginContracts.Attributes;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Ioc;
-using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 

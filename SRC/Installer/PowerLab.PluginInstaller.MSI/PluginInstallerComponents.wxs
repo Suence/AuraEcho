@@ -1,16 +1,18 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
-		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
 		<ComponentGroup Id="FileComponents" Directory="INSTALLFOLDER">
 			<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
 				<File Id="PluginInstaller.exe" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.exe" />
+				<File Id="PluginInstaller.dll" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.dll" />
+				<File Id="PluginInstaller.runtimeconfig.json" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.runtimeconfig.json" />
+				<File Id="PluginInstaller.deps.json" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.deps.json" />
 				<File Id="PowerLabIcon" Source="Assets/Icons/PowerLab.ico" />
 			</Component>
 
-			<Files Include="$(var.PluginInstaller.TargetDir)**" >
+			<!--<Files Include="$(var.PluginInstaller.TargetDir)**" >
 				<Exclude Files="*.pdb"/>
 				<Exclude Files="PluginInstaller.exe"/>
-			</Files>
+			</Files>-->
 
 		</ComponentGroup>
 		

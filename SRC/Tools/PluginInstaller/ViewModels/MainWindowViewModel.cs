@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using PluginInstaller.Constants;
 using PluginInstaller.Tools;
-using PluginInstaller.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;

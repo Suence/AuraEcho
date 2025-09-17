@@ -4,12 +4,54 @@
 		<ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
 			<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
 				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
-				<File Id="PowerLabIcon" Source="Assets/Icons/PowerLab.ico" />
 			</Component>
 
-			<Files Include="$(var.PowerLab.TargetDir)**" >
+			<Files Include="$(var.PowerLab.TargetDir)**">
 				<Exclude Files="*.pdb"/>
 				<Exclude Files="PowerLab.exe"/>
+				<Exclude Files="cs\*"/>
+				<Exclude Files="de\*"/>
+				<Exclude Files="es\*"/>
+				<Exclude Files="fr\*"/>
+				<Exclude Files="it\*"/>
+				<Exclude Files="pl\*"/>
+				<Exclude Files="pt-BR\*"/>
+				<Exclude Files="ru\*"/>
+				<Exclude Files="tr\*"/>
+				<Exclude Files="ja\*"/>
+				<Exclude Files="ko\*"/>
+			
+				<Exclude Files="runtimes\browser\**"/>
+				<Exclude Files="runtimes\browser-wasm\**"/>
+				<Exclude Files="runtimes\linux-arm\**"/>
+				<Exclude Files="runtimes\linux-arm64\**"/>
+				<Exclude Files="runtimes\linux-armel\**"/>
+				<Exclude Files="runtimes\linux-mips64\**"/>
+				<Exclude Files="runtimes\linux-musl-arm\**"/>
+				<Exclude Files="runtimes\linux-musl-arm64\**"/>
+				<Exclude Files="runtimes\linux-musl-s390x\**"/>
+				<Exclude Files="runtimes\linux-musl-x64\**"/>
+				<Exclude Files="runtimes\linux-ppc64le\**"/>
+				<Exclude Files="runtimes\linux-s390x\**"/>
+				<Exclude Files="runtimes\linux-x64\**"/>
+				<Exclude Files="runtimes\linux-x86\**"/>
+				<Exclude Files="runtimes\maccatalyst-arm64\**"/>
+				<Exclude Files="runtimes\maccatalyst-x64\**"/>
+				<Exclude Files="runtimes\osx-arm64\**"/>
+				<Exclude Files="runtimes\osx-x64\**"/>
+				<Exclude Files="runtimes\win\**"/>
+				<Exclude Files="runtimes\win-arm\**"/>
+				<Exclude Files="runtimes\win-arm64\**"/>
+				<!--<Exclude Files="runtimes\win-x64\**"/>-->
+				<Exclude Files="runtimes\win-x86\**"/>
+				
+				<Exclude Files="Humanizer.dll"/>
+				<Exclude Files="Microsoft.Bcl.AsyncInterfaces.dll"/>
+				<Exclude Files="Microsoft.Build.Locator.dll"/>
+				<Exclude Files="Microsoft.CodeAnalysis.*.dll"/>
+				<Exclude Files="Microsoft.EntityFrameworkCore.Design.dll"/>
+				<Exclude Files="Mono.TextTemplating.dll"/>
+				<Exclude Files="System.Composition.*.dll"/>
 			</Files>
 
 		</ComponentGroup>

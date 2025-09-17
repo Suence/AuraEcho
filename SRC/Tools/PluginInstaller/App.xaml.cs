@@ -1,8 +1,6 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using DryIoc;
 using Microsoft.EntityFrameworkCore;
-using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PluginInstaller.Views;
 using PowerLab.Core.Attributes;
@@ -17,7 +15,6 @@ using PowerLab.UIToolkit.ContentDialog;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 
 namespace PluginInstaller
 {

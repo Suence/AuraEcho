@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using PluginInstaller.Constants;
+﻿using PluginInstaller.Constants;
 using PowerLab.Core.Contracts;
-using PowerLab.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
