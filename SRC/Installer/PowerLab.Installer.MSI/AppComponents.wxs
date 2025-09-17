@@ -46,6 +46,7 @@
 				<Exclude Files="runtimes\win-x86\**"/>
 				
 				<Exclude Files="Humanizer.dll"/>
+				<Exclude Files="Microsoft.CodeAnalysis.dll"/>
 				<Exclude Files="Microsoft.Bcl.AsyncInterfaces.dll"/>
 				<Exclude Files="Microsoft.Build.Locator.dll"/>
 				<Exclude Files="Microsoft.CodeAnalysis.*.dll"/>

@@ -26,6 +26,7 @@
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.UIToolkit.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)WixToolset.BootstrapperApplicationApi.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.runtimeconfig.json" />
+			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.deps.json" />
 
 			<bal:WixPrerequisiteBootstrapperApplication Theme="standard" LogoFile="Assets/Icons/PowerLab.ico" LocalizationFile="Strings/zh-cn.wxl"/>
 		</BootstrapperApplication>
