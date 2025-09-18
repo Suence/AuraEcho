@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using PowerLab.Installer.Bootstrapper.Constants;
@@ -158,7 +159,25 @@ namespace PowerLab.Installer.Bootstrapper.ViewModels
                 return;
             }
 
+            Message = "正在完成安装...";
+            DataMigration();
+
             _regionManager.RequestNavigateOnUIThread(InstallerRegionNames.MainRegion, InstallerViewNames.InstallFinish);
+        }
+
+        private void DataMigration()
+        {
+            var installFolder = Path.GetDirectoryName(GetInstallPath());
+            var dataMigratorPath = Path.Combine(installFolder, "PowerLab.DataMigrator.exe");
+
+            var dataMigratorStartupInfo = new ProcessStartInfo
+            {
+                FileName = dataMigratorPath,
+                CreateNoWindow = true
+            };
+            var dataMigratorProcess = Process.Start(dataMigratorStartupInfo);
+
+            dataMigratorProcess.WaitForExit();
         }
 
         private void UnsubscriptionInstallEvents()

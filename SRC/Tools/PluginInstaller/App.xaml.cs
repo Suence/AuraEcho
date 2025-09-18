@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using DryIoc;
 using Microsoft.EntityFrameworkCore;
 using PluginInstaller.Tools;
@@ -55,7 +56,7 @@ namespace PluginInstaller
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
         }
-        
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -66,8 +67,12 @@ namespace PluginInstaller
             GlobalObjectHolder.StartupArgs = e.Args;
             base.OnStartup(e);
 
-            using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
-            pluginDbContext.Database.Migrate();
+            var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
+            if (!File.Exists(dbPath))
+            {
+                using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
+                pluginDbContext.Database.Migrate();
+            }
         }
 
         /// <summary>

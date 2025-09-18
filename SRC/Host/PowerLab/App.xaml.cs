@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,12 +90,16 @@ namespace PowerLab
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
 
-            using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
+            string dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
+            if (!File.Exists(dbPath))
+            {
+                using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
 
-            var logger = Container.Resolve<ILogger>();
-            logger.Information("Begin Migrate");
-            pluginDbContext.Database.Migrate();
-            logger.Information("End Migrate");
+                var logger = Container.Resolve<ILogger>();
+                logger.Information("Begin Migrate");
+                pluginDbContext.Database.Migrate();
+                logger.Information("End Migrate");
+            }
         }
 
         private void LoadConfig()
@@ -111,9 +116,9 @@ namespace PowerLab
             };
             ApplicationResources.ChangeCulture(targetCultureInfo);
 
-            RenderOptions.ProcessRenderMode = 
-                hostSettings.HardwareAcceleration 
-                ? RenderMode.Default 
+            RenderOptions.ProcessRenderMode =
+                hostSettings.HardwareAcceleration
+                ? RenderMode.Default
                 : RenderMode.SoftwareOnly;
         }
 
@@ -125,7 +130,7 @@ namespace PowerLab
         {
             var logger = new SerilogService();
             logger.Debug("程序已启动");
-            
+
             if (Mutex.TryOpenExisting(MutexNames.INSTALLER_MUTEX_ID, out var _))
             {
                 logger.Debug("检测到安装程序正在运行，正在退出程序。");

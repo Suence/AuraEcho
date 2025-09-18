@@ -11,6 +11,9 @@
     <Project Path="SRC/Host/PowerLab/PowerLab.csproj" />
   </Folder>
   <Folder Name="/SRC/Installer/">
+    <Project Path="SRC/Installer/PowerLab.DataMigrator.MSI/PowerLab.DataMigrator.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="be58907e-406b-46dc-b585-4d9e455dad21">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
     <Project Path="SRC/Installer/PowerLab.Installer.Bootstrapper/PowerLab.Installer.Bootstrapper.csproj" />
     <Project Path="SRC/Installer/PowerLab.Installer.Bundle/PowerLab.Installer.Bundle.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
       <Platform Solution="*|Any CPU" Project="x64" />
@@ -32,8 +35,8 @@
     <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
   <Folder Name="/SRC/Shared/">
-    <Project Path="SRC/Shared/PowerLab.Core/PowerLab.Core.csproj" />
     <Project Path="SRC/Shared/PowerLab.Controls/PowerLab.Controls.csproj" />
+    <Project Path="SRC/Shared/PowerLab.Core/PowerLab.Core.csproj" />
     <Project Path="SRC/Shared/PowerLab.PluginContracts/PowerLab.PluginContracts.csproj" Id="88f69dd3-259f-4c4d-b8e2-f23f4baa8823" />
     <Project Path="SRC/Shared/PowerLab.Themes/PowerLab.Themes.csproj" />
     <Project Path="SRC/Shared/PowerLab.UIToolkit/PowerLab.UIToolkit.csproj" Id="ca0e586d-0fd5-4f8d-8bbe-f9b45765068c" />
@@ -41,6 +44,7 @@
   <Folder Name="/SRC/Tools/">
     <Project Path="SRC/Tools/PluginInstaller/PluginInstaller.csproj" />
     <Project Path="SRC/Tools/PluginPacker/PluginPacker.csproj" />
+    <Project Path="SRC/Tools/PowerLab.DataMigrator/PowerLab.DataMigrator.csproj" Id="f0defa8d-407c-4110-9a42-1c5b04a025ea" />
   </Folder>
   <Folder Name="/TEST/">
     <Project Path="TEST/PowerLab.Control.Tests/PowerLab.Control.Tests.csproj" />
