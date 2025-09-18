@@ -36,7 +36,6 @@ namespace PowerLab.ViewModels
                 }
             ];
 
-            if (_pluginManager.Plugins.Count <= 0) return;
             foreach (var plugin in _pluginManager.Plugins)
             {
                 var pluginSettingsItem = plugin.PluginContext.GetSettings();
