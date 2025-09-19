@@ -1,13 +1,4 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace PowerLab.Control.Tests
 {
@@ -19,6 +10,26 @@ namespace PowerLab.Control.Tests
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void MaxWin_MouseClick(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+            {
+                WindowState = WindowState.Maximized;
+                return;
+            }
+
+            if (WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Normal;
+                return;
+            }
+        }
+
+        private void CloseWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

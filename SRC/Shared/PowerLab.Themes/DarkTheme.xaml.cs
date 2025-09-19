@@ -4,7 +4,7 @@ namespace PowerLab.Themes
 {
     public partial class DarkTheme : ResourceDictionary
     {
-        private DarkTheme() => InitializeComponent();
+        public DarkTheme() => InitializeComponent();
         public static DarkTheme Instance { get; } = new DarkTheme();
     }
 }
