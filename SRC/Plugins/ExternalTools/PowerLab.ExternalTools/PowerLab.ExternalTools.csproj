@@ -3,6 +3,7 @@
 		<TargetFramework>net8.0-windows10.0.18362.0</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="Assets\Images\command.png" />

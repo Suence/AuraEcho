@@ -1,26 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.18362.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows10.0.18362.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SatelliteResourceLanguages>zh-Hans;en-us</SatelliteResourceLanguages>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+		<PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
-    <ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
-    <ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
+		<ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
+		<ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Converters\" />
+	</ItemGroup>
 
 </Project>

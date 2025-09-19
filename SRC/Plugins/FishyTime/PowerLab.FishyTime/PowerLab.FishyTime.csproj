@@ -5,6 +5,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<Configurations>Debug;Release;PLUGIN_DEBUG</Configurations>
 		<LangVersion>12</LangVersion>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 	<ItemGroup>

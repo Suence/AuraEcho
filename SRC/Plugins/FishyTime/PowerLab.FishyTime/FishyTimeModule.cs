@@ -1,11 +1,9 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using PowerLab.FishyTime.Themes;
 using PowerLab.FishyTime.Views;
 using PowerLab.PluginContracts.Interfaces;
 using PowerLab.PluginContracts.Models;
 using Prism.Ioc;
-using Prism.Modularity;
 
 namespace PowerLab.FishyTime
 {

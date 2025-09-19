@@ -11,7 +11,7 @@
 		</BootstrapperApplication>-->
 
 		<BootstrapperApplication Secondary="true" SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.exe">
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)runtimes/win-x64/native/mbanative.dll" />
+			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)mbanative.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)DryIoc.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Microsoft.WindowsAPICodePack.dll" />
