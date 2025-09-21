@@ -3,5 +3,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Dark/Brushes.xaml"/>
         <ResourceDictionary Source="Dark/Button.xaml"/>
+        <ResourceDictionary Source="Dark/RadioButton.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
