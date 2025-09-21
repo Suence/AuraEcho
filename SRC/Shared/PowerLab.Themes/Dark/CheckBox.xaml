@@ -1,0 +1,246 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="ShowInnerShape">
+                            <DoubleAnimation FillBehavior="HoldEnd"
+                                             Storyboard.TargetName="InnerShape"
+                                             Storyboard.TargetProperty="StrokeDashOffset"
+                                             From="24"
+                                             To="0"
+                                             Duration="0:0:0.4" />
+                        </Storyboard>
+                        <Storyboard x:Key="HideInnerShape">
+                            <DoubleAnimation FillBehavior="HoldEnd"
+                                             Storyboard.TargetName="InnerShape"
+                                             Storyboard.TargetProperty="StrokeDashOffset"
+                                             To="-24"
+                                             Duration="0:0:0.3" />
+                        </Storyboard>
+                    </ControlTemplate.Resources>
+
+                    <BulletDecorator Background="Transparent">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="20"
+                                  Height="20"
+                                  Margin="0,0,4,0">
+                                <Rectangle x:Name="OuterCircle"
+                                           Fill="Transparent"
+                                           RadiusX="2"
+                                           RadiusY="2"
+                                           Stroke="Gray"
+                                           StrokeThickness="1" />
+
+                                <Viewbox x:Name="InnerCanvas"
+                                         Width="16"
+                                         Height="16">
+                                    <Canvas Width="20" Height="20">
+                                        <Path x:Name="InnerShape"
+                                              Data="M3 10 L8 15 L17 5"
+                                              Stroke="Black"
+                                              StrokeDashArray="24"
+                                              StrokeDashOffset="24"
+                                              StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="4,0,0,0"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True" />
+                    </BulletDecorator>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard x:Name="ShowShape" Storyboard="{StaticResource ShowInnerShape}" />
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard x:Name="HideShape" Storyboard="{StaticResource HideInnerShape}" />
+                            </Trigger.ExitActions>
+                            <Setter TargetName="OuterCircle" Property="StrokeThickness" Value="0" />
+                            <Setter TargetName="OuterCircle" Property="Fill" Value="{DynamicResource Themes.Brushes.Primary}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="OuterCircle" Property="Fill" Value="#10FFFFFF" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="InnerShape" Property="Stroke" Value="#AA000000" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="OuterCircle" Property="Fill" Value="#05FFFFFF" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="ToggleSwitchCheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="InnerCircleToRight">
+                            <DoubleAnimation Storyboard.TargetName="InnerCircleTransform"
+                                             Storyboard.TargetProperty="X"
+                                             To="22"
+                                             Duration="0:0:0.2">
+                                <DoubleAnimation.EasingFunction>
+                                    <CircleEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <ColorAnimation Storyboard.TargetName="InnerCircle"
+                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
+                                            To="Black"
+                                            Duration="0:0:0.1" />
+                        </Storyboard>
+                        <Storyboard x:Key="InnerCircleToLeft">
+                            <DoubleAnimation Storyboard.TargetName="InnerCircleTransform"
+                                             Storyboard.TargetProperty="X"
+                                             To="0"
+                                             Duration="0:0:0.2">
+                                <DoubleAnimation.EasingFunction>
+                                    <CircleEase EasingMode="EaseOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <ColorAnimation Storyboard.TargetName="InnerCircle"
+                                            Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
+                                            To="White"
+                                            Duration="0:0:0.1" />
+                        </Storyboard>
+                        <Storyboard x:Key="InnerCircleToLarge">
+                            <DoubleAnimation Storyboard.TargetName="InnerCircle"
+                                             Storyboard.TargetProperty="Width"
+                                             To="16"
+                                             Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="InnerCircleTransform"
+                                             Storyboard.TargetProperty="X"
+                                             To="0"
+                                             Duration="0:0:0" />
+                        </Storyboard>
+                        <Storyboard x:Key="InnerCircleWidthRestore">
+                            <DoubleAnimation Storyboard.TargetName="InnerCircle"
+                                             Storyboard.TargetProperty="Width"
+                                             To="10"
+                                             Duration="0:0:0.1" />
+                        </Storyboard>
+                    </ControlTemplate.Resources>
+
+                    <BulletDecorator Background="Transparent">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="40"
+                                  Height="20"
+                                  Margin="0,0,4,0">
+                                <Border x:Name="OuterCircle"
+                                        Background="Transparent"
+                                        BorderBrush="Gray"
+                                        BorderThickness="1"
+                                        Padding="4"
+                                        CornerRadius="10">
+                                    <Rectangle x:Name="InnerCircle"
+                                               Width="10"
+                                               Height="10"
+                                               HorizontalAlignment="Left"
+                                               Fill="White"
+                                               RadiusX="5"
+                                               RadiusY="5">
+                                        <Rectangle.RenderTransform>
+                                            <TranslateTransform x:Name="InnerCircleTransform" X="0" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                </Border>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="4,0,0,0"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True" />
+                    </BulletDecorator>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource InnerCircleToRight}" />
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource InnerCircleToLeft}" />
+                            </Trigger.ExitActions>
+                            <Setter TargetName="OuterCircle" Property="BorderThickness" Value="0" />
+                            <Setter TargetName="OuterCircle" Property="Background" Value="{DynamicResource Themes.Brushes.Primary}" />
+                        </Trigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="OuterCircle" Property="Background" Value="#10FFFFFF" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard x:Name="ictl1" Storyboard="{StaticResource InnerCircleToLarge}" />
+                            </MultiTrigger.EnterActions>
+                            <MultiTrigger.ExitActions>
+                                <RemoveStoryboard BeginStoryboardName="ictl1" />
+                            </MultiTrigger.ExitActions>
+                            <Setter TargetName="InnerCircle" Property="HorizontalAlignment" Value="Right" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard x:Name="ictl2" Storyboard="{StaticResource InnerCircleToLarge}" />
+                            </MultiTrigger.EnterActions>
+                            <MultiTrigger.ExitActions>
+                                <RemoveStoryboard BeginStoryboardName="ictl2" />
+                            </MultiTrigger.ExitActions>
+                            <Setter TargetName="OuterCircle" Property="Background" Value="#05FFFFFF" />
+                        </MultiTrigger>
+                        
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

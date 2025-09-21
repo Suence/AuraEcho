@@ -4,5 +4,6 @@
         <ResourceDictionary Source="Dark/Brushes.xaml"/>
         <ResourceDictionary Source="Dark/Button.xaml"/>
         <ResourceDictionary Source="Dark/RadioButton.xaml"/>
+        <ResourceDictionary Source="Dark/CheckBox.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Page Remove="Dark\CheckBox.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PowerLab.Controls\PowerLab.Controls.csproj" />
   </ItemGroup>
 
