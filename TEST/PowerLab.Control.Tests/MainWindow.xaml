@@ -5,6 +5,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:powerlab="http://ui.powerlab.com/"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="MainWindow"
         Width="800"
         Height="450"
@@ -175,39 +176,50 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Margin="24">
-            <StackPanel>
-                <StackPanel Margin="4" Orientation="Horizontal">
-                    <Button Margin="4"
-                            Padding="16,8"
-                            Content="Primary Button"
-                            Style="{DynamicResource PrimaryButtonStyle}" />
-                    <Button Margin="4"
-                            Padding="16,8"
-                            Content="Secondry Button" />
-                    <Button Margin="4"
-                            Padding="16,8"
-                            Style="{DynamicResource IconButtonStyle}">
-                        <Canvas Width="16" Height="16">
-                            <Path Data="M 3.14645 3.14645 C 3.34171 2.95118 3.65829 2.95118 3.85355 3.14645 L 8 7.293 L 12.1464 3.14645 C 12.32 2.97288 12.5894 2.9536 12.7843 3.08859 L 12.8536 3.14645 C 13.0488 3.34171 13.0488 3.65829 12.8536 3.85355 L 8.707 8 L 12.8536 12.1464 C 13.0271 12.32 13.0464 12.5894 12.9114 12.7843 L 12.8536 12.8536 C 12.6583 13.0488 12.3417 13.0488 12.1464 12.8536 L 8 8.707 L 3.85355 12.8536 C 3.67999 13.0271 3.41056 13.0464 3.21569 12.9114 L 3.14645 12.8536 C 2.95118 12.6583 2.95118 12.3417 3.14645 12.1464 L 7.293 8 L 3.14645 3.85355 C 2.97288 3.67999 2.9536 3.41056 3.08859 3.21569 L 3.14645 3.14645 Z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
-                        </Canvas>
-                    </Button>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                <ScrollViewer.Resources>
+                    <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">8</sys:Double>
+                </ScrollViewer.Resources>
+                <StackPanel>
+                    <StackPanel Margin="4" Orientation="Horizontal">
+                        <Button Margin="4"
+                                Padding="16,8"
+                                Content="Primary Button"
+                                Style="{DynamicResource PrimaryButtonStyle}" />
+                        <Button Margin="4"
+                                Padding="16,8"
+                                Content="Secondry Button" />
+                        <Button Margin="4"
+                                Padding="16,8"
+                                Style="{DynamicResource IconButtonStyle}">
+                            <Canvas Width="16" Height="16">
+                                <Path Data="M 3.14645 3.14645 C 3.34171 2.95118 3.65829 2.95118 3.85355 3.14645 L 8 7.293 L 12.1464 3.14645 C 12.32 2.97288 12.5894 2.9536 12.7843 3.08859 L 12.8536 3.14645 C 13.0488 3.34171 13.0488 3.65829 12.8536 3.85355 L 8.707 8 L 12.8536 12.1464 C 13.0271 12.32 13.0464 12.5894 12.9114 12.7843 L 12.8536 12.8536 C 12.6583 13.0488 12.3417 13.0488 12.1464 12.8536 L 8 8.707 L 3.85355 12.8536 C 3.67999 13.0271 3.41056 13.0464 3.21569 12.9114 L 3.14645 12.8536 C 2.95118 12.6583 2.95118 12.3417 3.14645 12.1464 L 7.293 8 L 3.14645 3.85355 C 2.97288 3.67999 2.9536 3.41056 3.08859 3.21569 L 3.14645 3.14645 Z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                            </Canvas>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Margin="4" Orientation="Horizontal">
+                        <RadioButton Margin="4" Content="RadioButton" />
+                        <RadioButton Margin="4" Content="RadioButton" />
+                        <RadioButton Margin="4" Content="RadioButton" />
+                    </StackPanel>
+                    <StackPanel Margin="4" Orientation="Horizontal">
+                        <CheckBox Margin="4" Content="CheckBox" />
+                        <CheckBox Margin="4" Content="CheckBox" />
+                        <CheckBox Margin="4" Content="CheckBox" />
+                    </StackPanel>
+                    <StackPanel Margin="4" Orientation="Horizontal">
+                        <CheckBox Margin="4"
+                                  Content="ToggleSwitch"
+                                  Style="{DynamicResource ToggleSwitchCheckBox}" />
+                        <CheckBox Margin="4"
+                                  Content="ToggleSwitch"
+                                  Style="{DynamicResource ToggleSwitchCheckBox}" />
+                        <CheckBox Margin="4"
+                                  Content="ToggleSwitch"
+                                  Style="{DynamicResource ToggleSwitchCheckBox}" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Margin="4" Orientation="Horizontal">
-                    <RadioButton Margin="4" Content="RadioButton" />
-                    <RadioButton Margin="4" Content="RadioButton" />
-                    <RadioButton Margin="4" Content="RadioButton" />
-                </StackPanel>
-                <StackPanel Margin="4" Orientation="Horizontal">
-                    <CheckBox Margin="4" Content="CheckBox" />
-                    <CheckBox Margin="4" Content="CheckBox" />
-                    <CheckBox Margin="4" Content="CheckBox" />
-                </StackPanel>
-                <StackPanel Margin="4" Orientation="Horizontal">
-                    <CheckBox Margin="4" Content="ToggleSwitch" Style="{DynamicResource ToggleSwitchCheckBox}"/>
-                    <CheckBox Margin="4" Content="ToggleSwitch" Style="{DynamicResource ToggleSwitchCheckBox}"/>
-                    <CheckBox Margin="4" Content="ToggleSwitch" Style="{DynamicResource ToggleSwitchCheckBox}"/>
-                </StackPanel>
-            </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Window>
