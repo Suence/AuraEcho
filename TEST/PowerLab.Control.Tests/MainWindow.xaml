@@ -225,7 +225,7 @@
                                    Text="{Binding ElementName=HorizontalSlider, Path=Value}" />
                     </StackPanel>
                     <StackPanel Margin="4" Orientation="Horizontal">
-                        <TextBox MinWidth="50"
+                        <TextBox MinWidth="150"
                                  MinHeight="30"
                                  powerlab:ControlHelper.PlaceHolder="搜索"
                                  IsEnabled="True" />
