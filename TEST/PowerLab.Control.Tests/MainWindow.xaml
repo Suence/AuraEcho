@@ -177,9 +177,6 @@
         </Grid>
         <Grid Grid.Row="1" Margin="24">
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                <ScrollViewer.Resources>
-                    <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">8</sys:Double>
-                </ScrollViewer.Resources>
                 <StackPanel>
                     <StackPanel Margin="4" Orientation="Horizontal">
                         <Button Margin="4"
@@ -217,6 +214,15 @@
                         <CheckBox Margin="4"
                                   Content="ToggleSwitch"
                                   Style="{DynamicResource ToggleSwitchCheckBox}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider x:Name="HorizontalSlider"
+                                Width="200"
+                                Margin="4"
+                                HorizontalAlignment="Left" />
+                        <TextBlock VerticalAlignment="Center"
+                                   Foreground="White"
+                                   Text="{Binding ElementName=HorizontalSlider, Path=Value}" />
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
