@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="PowerLab.Views.GeneralSettings"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pm="clr-namespace:PowerLab.PluginContracts.Models;assembly=PowerLab.PluginContracts"
-             xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:GeneralSettingsViewModel}"
              d:DesignHeight="425"
@@ -90,7 +90,9 @@
                     BorderBrush="#333333"
                     BorderThickness="1">
                 <DockPanel LastChildFill="True">
-                    <CheckBox VerticalAlignment="Center" DockPanel.Dock="Right" IsChecked="{Binding HardwareAcceleration}" />
+                    <CheckBox VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              IsChecked="{Binding HardwareAcceleration}" />
                     <TextBlock Margin="0,0,8,0"
                                VerticalAlignment="Center"
                                Text="BETTER USER EXPERIENCE, MAY USE MORE MEMORY." />

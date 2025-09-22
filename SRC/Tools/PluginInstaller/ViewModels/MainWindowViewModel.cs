@@ -1,52 +1,51 @@
-﻿using System.IO;
-using PluginInstaller.Constants;
+﻿using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.IO;
 
-namespace PluginInstaller.ViewModels
+namespace PluginInstaller.ViewModels;
+
+public class MainWindowViewModel : BindableBase
 {
-    public class MainWindowViewModel : BindableBase
+    #region private members
+    private string _title = "PlixInstaller";
+    private readonly IRegionManager _regionManager;
+    #endregion
+
+    /// <summary>
+    /// 窗口标题
+    /// </summary>
+    public string Title
     {
-        #region private members
-        private string _title = "PlixInstaller";
-        private readonly IRegionManager _regionManager;
-        #endregion
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
 
-        /// <summary>
-        /// 窗口标题
-        /// </summary>
-        public string Title
+    public DelegateCommand NavigationToInitPageCommand { get; }
+    private void NavigationToInitPage()
+    {
+        string? filePath = GlobalObjectHolder.StartupArgs?.FirstOrDefault();
+        if (filePath is null || !File.Exists(filePath))
         {
-            get => _title;
-            set => SetProperty(ref _title, value);
+            _regionManager.RequestNavigate(RegionNames.MainRegion, ViewNames.PickPluginInstallFile);
+            return;
         }
 
-        public DelegateCommand NavigationToInitPageCommand { get; }
-        private void NavigationToInitPage()
-        {
-            string? filePath = GlobalObjectHolder.StartupArgs?.FirstOrDefault();
-            if (filePath is null || !File.Exists(filePath))
+        _regionManager.RequestNavigate(
+            RegionNames.MainRegion,
+            ViewNames.InstallPreparation,
+            new NavigationParameters
             {
-                _regionManager.RequestNavigate(RegionNames.MainRegion, ViewNames.PickPluginInstallFile);
-                return;
-            }
+                { "PluginInstallFilePath", filePath }
+            });
+    }
 
-            _regionManager.RequestNavigate(
-                RegionNames.MainRegion,
-                ViewNames.InstallPreparation,
-                new NavigationParameters
-                {
-                    { "PluginInstallFilePath", filePath }
-                });
-        }
+    public MainWindowViewModel(IRegionManager regionManager)
+    {
+        _regionManager = regionManager;
 
-        public MainWindowViewModel(IRegionManager regionManager)
-        {
-            _regionManager = regionManager;
-
-            NavigationToInitPageCommand = new DelegateCommand(NavigationToInitPage);
-        }
+        NavigationToInitPageCommand = new DelegateCommand(NavigationToInitPage);
     }
 }

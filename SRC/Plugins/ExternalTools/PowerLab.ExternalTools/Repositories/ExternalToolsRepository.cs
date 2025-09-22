@@ -1,55 +1,54 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using PowerLab.ExternalTools.Contracts;
+﻿using PowerLab.ExternalTools.Contracts;
 using PowerLab.ExternalTools.Data;
 using PowerLab.ExternalTools.Models;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace PowerLab.ExternalTools.Repositories
+namespace PowerLab.ExternalTools.Repositories;
+
+public class ExternalToolsRepository : IExternalToolsRepository
 {
-    public class ExternalToolsRepository : IExternalToolsRepository
+    private readonly ExternalToolsDbContext _dbContext;
+
+    public ExternalToolsRepository(ExternalToolsDbContext dbContext)
     {
-        private readonly ExternalToolsDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public ExternalToolsRepository(ExternalToolsDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public void AddExternalTool(ExternalTool externalTool)
+    {
+        _dbContext.ExternalTools.Add(externalTool);
+        _dbContext.SaveChanges();
+    }
 
-        public void AddExternalTool(ExternalTool externalTool)
-        {
-            _dbContext.ExternalTools.Add(externalTool);
-            _dbContext.SaveChanges();
-        }
+    public void DeleteExternalTool(string id)
+    {
+        var entity = _dbContext.ExternalTools.FirstOrDefault(et => et.Id == id);
 
-        public void DeleteExternalTool(string id)
-        {
-            var entity = _dbContext.ExternalTools.FirstOrDefault(et => et.Id == id);
+        if (entity is null) return;
 
-            if (entity is null) return;
+        _dbContext.ExternalTools.Remove(entity);
+        _dbContext.SaveChanges();
+    }
 
-            _dbContext.ExternalTools.Remove(entity);
-            _dbContext.SaveChanges();
-        }
+    public ExternalTool GetExternalToolById(string id)
+    {
+        return _dbContext.ExternalTools.FirstOrDefault(et => et.Id == id);
+    }
 
-        public ExternalTool GetExternalToolById(string id)
-        {
-            return _dbContext.ExternalTools.FirstOrDefault(et => et.Id == id);
-        }
+    public List<ExternalTool> GetExternalTools()
+    {
+        return _dbContext.ExternalTools.ToList();
+    }
 
-        public List<ExternalTool> GetExternalTools()
-        {
-            return _dbContext.ExternalTools.ToList();
-        }
-
-        public void UpdateExternalTool(ExternalTool externalTool)
-        {
-            var entity = _dbContext.ExternalTools.FirstOrDefault(et => et.Id == externalTool.Id);
-            if (entity is null) return;
-            entity.Name = externalTool.Name;
-            entity.Command = externalTool.Command;
-            entity.Arguments = externalTool.Arguments;
-            entity.Type = externalTool.Type;
-            _dbContext.SaveChanges();
-        }
+    public void UpdateExternalTool(ExternalTool externalTool)
+    {
+        var entity = _dbContext.ExternalTools.FirstOrDefault(et => et.Id == externalTool.Id);
+        if (entity is null) return;
+        entity.Name = externalTool.Name;
+        entity.Command = externalTool.Command;
+        entity.Arguments = externalTool.Arguments;
+        entity.Type = externalTool.Type;
+        _dbContext.SaveChanges();
     }
 }

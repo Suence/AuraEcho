@@ -3,7 +3,7 @@
     <!--  Primary 系列  -->
     <Color x:Key="Themes.Colors.PrimaryFixed">#FF5B5FC7</Color>
     <Color x:Key="Themes.Colors.PrimaryFixedDim">#FF383966</Color>
-    
+
     <SolidColorBrush x:Key="Themes.Brushes.Primary">#4F52B2</SolidColorBrush>
     <SolidColorBrush x:Key="Themes.Brushes.OnPrimary">White</SolidColorBrush>
     <SolidColorBrush x:Key="Themes.Brushes.PrimaryContainer">#FF4F378B</SolidColorBrush>
@@ -16,7 +16,7 @@
     <!--  Secondary 系列  -->
     <Color x:Key="Themes.Colors.SecondaryFixed">#20FFFFFF</Color>
     <Color x:Key="Themes.Colors.SecondaryFixedDim">#10FFFFFF</Color>
-    
+
     <SolidColorBrush x:Key="Themes.Brushes.Secondary">#10FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="Themes.Brushes.OnSecondary">White</SolidColorBrush>
     <SolidColorBrush x:Key="Themes.Brushes.SecondaryContainer">#FF4A4458</SolidColorBrush>

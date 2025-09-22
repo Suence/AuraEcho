@@ -1,68 +1,65 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows;
-using Prism.Commands;
 
-namespace PluginPacker.Models
+namespace PluginPacker.Models;
+
+public class PluginFolder : PluginItem
 {
-    public class PluginFolder : PluginItem
+    #region private members
+    private string _folderPath;
+    public ObservableCollection<PluginItem> _children = [];
+    #endregion
+
+    public PluginFolder Parent { get; set; }
+
+    public ObservableCollection<PluginItem> Children
     {
-        #region private members
-        private string _folderPath;
-        public ObservableCollection<PluginItem> _children = [];
-        #endregion
+        get => _children;
+        set => SetProperty(ref _children, value);
+    }
 
-        public PluginFolder Parent { get; set; }
+    public string FolderPath
+    {
+        get => _folderPath;
+        set => SetProperty(ref _folderPath, value);
+    }
 
-        public ObservableCollection<PluginItem> Children
+    public PluginFolder(string folderPath, PluginFolder parent)
+    {
+        Type = PluginItemType.Folder;
+        FolderPath = folderPath;
+        Parent = parent;
+
+        if (!String.IsNullOrWhiteSpace(FolderPath))
         {
-            get => _children;
-            set => SetProperty(ref _children, value);
+            Name = Path.GetFileName(FolderPath);
         }
 
-        public string FolderPath
-        {
-            get => _folderPath;
-            set => SetProperty(ref _folderPath, value);
-        }
+        InitChildrenFiles();
+    }
 
-        public PluginFolder(string folderPath, PluginFolder parent)
-        {
-            Type = PluginItemType.Folder;
-            FolderPath = folderPath;
-            Parent = parent;
+    private void InitChildrenFiles()
+    {
+        if (String.IsNullOrWhiteSpace(FolderPath)) return;
 
-            if (!String.IsNullOrWhiteSpace(FolderPath))
-            {
-                Name = Path.GetFileName(FolderPath);
-            }
+        string[] files = Directory.GetFiles(FolderPath);
+        List<PluginFile> pluginFiles = [.. files.Select(file => new PluginFile(file, Path.GetFileName(file), this))];
+        pluginFiles.ForEach(Children.Add);
 
-            InitChildrenFiles();
-        }
+        string[] folders = Directory.GetDirectories(FolderPath);
+        if (folders is null || folders.Length <= 0) return;
 
-        private void InitChildrenFiles()
-        {
-            if (String.IsNullOrWhiteSpace(FolderPath)) return;
+        List<PluginFolder> subFolders = [.. folders.Select(folder => new PluginFolder(folder, this))];
+        subFolders.ForEach(Children.Add);
+    }
 
-            string[] files = Directory.GetFiles(FolderPath);
-            List<PluginFile> pluginFiles = [.. files.Select(file => new PluginFile(file, Path.GetFileName(file), this))];
-            pluginFiles.ForEach(Children.Add);
+    public void Add(PluginFolder subFolder)
+    {
+        Children.Add(subFolder);
+    }
 
-            string[] folders = Directory.GetDirectories(FolderPath);
-            if (folders is null || folders.Length <= 0) return;
-
-            List<PluginFolder> subFolders = [.. folders.Select(folder => new PluginFolder(folder, this))];
-            subFolders.ForEach(Children.Add);
-        }
-
-        public void Add(PluginFolder subFolder)
-        {
-            Children.Add(subFolder);
-        }
-
-        public void Add(PluginFile file)
-        {
-            Children.Add(file);
-        }
+    public void Add(PluginFile file)
+    {
+        Children.Add(file);
     }
 }

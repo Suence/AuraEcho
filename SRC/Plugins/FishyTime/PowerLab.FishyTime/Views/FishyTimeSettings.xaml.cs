@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.FishyTime.Views
+namespace PowerLab.FishyTime.Views;
+
+/// <summary>
+/// Interaction logic for FishyTimeSettings
+/// </summary>
+public partial class FishyTimeSettings : UserControl
 {
-    /// <summary>
-    /// Interaction logic for FishyTimeSettings
-    /// </summary>
-    public partial class FishyTimeSettings : UserControl
+    public FishyTimeSettings()
     {
-        public FishyTimeSettings()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

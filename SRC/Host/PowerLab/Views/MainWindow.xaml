@@ -94,7 +94,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <!-- 内容区域 -->
+            <!--  内容区域  -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
                             prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.MainRegion}" />
@@ -234,7 +234,7 @@
                 </StackPanel>
             </Grid>
             <!--#endregion-->
-            <!-- 提示消息区域 -->
+            <!--  提示消息区域  -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
                             prism:RegionManager.RegionName="{x:Static constants:HostRegionNames.ContentDialogRegion}" />

@@ -1,19 +1,17 @@
-﻿namespace PowerLab.Core.Models
+﻿namespace PowerLab.Core.Models;
+
+/// <summary>
+/// 模块状态
+/// </summary>
+public enum PluginStatus
 {
     /// <summary>
-    /// 模块状态
+    /// 已启用
     /// </summary>
-    public enum PluginStatus
-    {
-        /// <summary>
-        /// 已启用
-        /// </summary>
-        Enabled, 
+    Enabled, 
 
-        /// <summary>
-        /// 已禁用
-        /// </summary>
-        Disabled
-    }
-
+    /// <summary>
+    /// 已禁用
+    /// </summary>
+    Disabled
 }

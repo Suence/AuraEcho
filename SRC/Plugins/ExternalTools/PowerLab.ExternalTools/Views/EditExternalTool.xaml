@@ -8,8 +8,8 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:EditExternalToolViewModel}"
              d:DesignHeight="600"
              d:DesignWidth="855"
-             Background="#80000000"
              prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="#80000000"
              mc:Ignorable="d">
     <Grid>
         <Border Width="400"
@@ -36,7 +36,7 @@
                           Y2="0" />
                     <StackPanel Margin="8,0,0,0">
                         <TextBlock Margin="0,0,0,4" Text="NAME" />
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock Margin="0,0,0,4" Text="COMMAND" />
                         <TextBox Text="{Binding Command, UpdateSourceTrigger=PropertyChanged}" />
@@ -55,9 +55,9 @@
                             Content="CANCEL" />
                     <Button Margin="4"
                             Padding="16,4"
-                            IsDefault="True"
                             Command="{Binding SubmitCommand}"
-                            Content="CONFIRM" />
+                            Content="CONFIRM"
+                            IsDefault="True" />
                 </StackPanel>
             </Grid>
         </Border>

@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.Views
+namespace PowerLab.Views;
+
+/// <summary>
+/// Interaction logic for PluginsDashboard
+/// </summary>
+public partial class PluginsDashboard : UserControl
 {
-    /// <summary>
-    /// Interaction logic for PluginsDashboard
-    /// </summary>
-    public partial class PluginsDashboard : UserControl
+    public PluginsDashboard()
     {
-        public PluginsDashboard()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

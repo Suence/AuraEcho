@@ -7,13 +7,12 @@
         Title="MaskWindow"
         Width="800"
         Height="450"
-        WindowStyle="None"
-        ResizeMode="NoResize"
+        AllowsTransparency="True"
         Background="Black"
         Loaded="Window_Loaded"
-        MouseUp="Window_MouseUp"
         MouseDown="Window_MouseDown"
-        AllowsTransparency="True"
+        MouseUp="Window_MouseUp"
+        ResizeMode="NoResize"
         ShowInTaskbar="True"
-        mc:Ignorable="d">
-</Window>
+        WindowStyle="None"
+        mc:Ignorable="d" />

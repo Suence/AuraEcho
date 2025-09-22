@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Prism.Commands;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 
-namespace PluginPacker.ViewModels
+namespace PluginPacker.ViewModels;
+
+public class MainWindowViewModel : BindableBase
 {
-    public class MainWindowViewModel : BindableBase
+    public MainWindowViewModel()
     {
-        public MainWindowViewModel()
-        {
 
-        }
     }
 }

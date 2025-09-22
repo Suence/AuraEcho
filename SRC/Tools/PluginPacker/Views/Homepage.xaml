@@ -233,8 +233,8 @@
                       HorizontalContentAlignment="Stretch"
                       av:ItemsSource="{av:SampleData ItemCount=3}"
                       AllowDrop="True"
-                      BorderThickness="0"
                       Background="Transparent"
+                      BorderThickness="0"
                       Drop="PluginFilesTreeView_Drop"
                       FontSize="14"
                       ItemsSource="{Binding RootFolder.Children}">

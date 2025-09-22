@@ -22,8 +22,8 @@
         <StackPanel HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Orientation="Horizontal">
-            <Button Padding="16,4"
-                    Margin="0, 0, 8, 0"
+            <Button Margin="0,0,8,0"
+                    Padding="16,4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Command="{Binding ReselectPluginInstallFileCommand}"

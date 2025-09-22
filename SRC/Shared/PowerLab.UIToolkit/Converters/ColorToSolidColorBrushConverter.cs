@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace PowerLab.UIToolkit.Converters
-{
-    /// <summary>
-    /// <see cref="Color"/> 转换为 <see cref="SolidColorBrush"/> 的转换器"/>
-    /// </summary>
-    [ValueConversion(typeof(Color), typeof(SolidColorBrush))]
-    public class ColorToSolidColorBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return new SolidColorBrush((Color)value);
-        }
+namespace PowerLab.UIToolkit.Converters;
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+/// <summary>
+/// <see cref="Color"/> 转换为 <see cref="SolidColorBrush"/> 的转换器"/>
+/// </summary>
+[ValueConversion(typeof(Color), typeof(SolidColorBrush))]
+public class ColorToSolidColorBrushConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return new SolidColorBrush((Color)value);
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

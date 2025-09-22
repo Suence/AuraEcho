@@ -1,11 +1,10 @@
 ﻿using Prism.Mvvm;
 
-namespace PowerLab.FishyTime.ViewModels
+namespace PowerLab.FishyTime.ViewModels;
+
+public class SpotlightWindowViewModel : BindableBase
 {
-    public class SpotlightWindowViewModel : BindableBase
+    public SpotlightWindowViewModel()
     {
-        public SpotlightWindowViewModel()
-        {
-        }
     }
 }

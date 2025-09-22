@@ -1,10 +1,9 @@
-﻿namespace OTLog.Views
+﻿namespace OTLog.Views;
+
+partial class NotifyIcon
 {
-    partial class NotifyIcon
+    public NotifyIcon()
     {
-        public NotifyIcon()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

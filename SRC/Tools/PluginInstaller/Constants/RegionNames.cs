@@ -1,13 +1,12 @@
-﻿namespace PluginInstaller.Constants
+﻿namespace PluginInstaller.Constants;
+
+/// <summary>
+/// Region 名称
+/// </summary>
+public static class RegionNames
 {
     /// <summary>
-    /// Region 名称
+    /// 主区域名称
     /// </summary>
-    public static class RegionNames
-    {
-        /// <summary>
-        /// 主区域名称
-        /// </summary>
-        public const string MainRegion = nameof(MainRegion);
-    }
+    public const string MainRegion = nameof(MainRegion);
 }

@@ -1,10 +1,9 @@
-﻿namespace PowerLab.PluginContracts.Models
+﻿namespace PowerLab.PluginContracts.Models;
+
+public class RegionDialogParameter
 {
-    public class RegionDialogParameter
-    {
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string ConfirmText { get; set; }
-        public string CancelText { get; set; }
-    }
+    public string Title { get; set; }
+    public string Message { get; set; }
+    public string ConfirmText { get; set; }
+    public string CancelText { get; set; }
 }

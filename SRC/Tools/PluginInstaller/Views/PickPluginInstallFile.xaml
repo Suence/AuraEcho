@@ -14,12 +14,12 @@
              mc:Ignorable="d">
     <Grid Width="500"
           Height="200"
-          Background="Transparent"
-          AllowDrop="True"
-          Drop="Grid_Drop"
-          DragDrop.DragOver="Grid_DragOver"
           HorizontalAlignment="Center"
-          VerticalAlignment="Center">
+          VerticalAlignment="Center"
+          AllowDrop="True"
+          Background="Transparent"
+          DragDrop.DragOver="Grid_DragOver"
+          Drop="Grid_Drop">
         <Rectangle RadiusX="4"
                    RadiusY="4"
                    Stroke="#666666"
@@ -33,8 +33,8 @@
             </Viewbox>
             <TextBlock Margin="0,0,0,4"
                        HorizontalAlignment="Center"
-                       Text="拖放以安装" 
-                       FontSize="14"/>
+                       FontSize="14"
+                       Text="拖放以安装" />
             <StackPanel Margin="0,0,0,8"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">

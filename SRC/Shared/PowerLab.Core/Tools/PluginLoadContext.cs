@@ -1,29 +1,28 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace PowerLab.Core.Tools
+namespace PowerLab.Core.Tools;
+
+/// <summary>
+/// 自定义程序集加载上下文，用于加载插件程序集
+/// </summary>
+public class PluginLoadContext : AssemblyLoadContext
 {
-    /// <summary>
-    /// 自定义程序集加载上下文，用于加载插件程序集
-    /// </summary>
-    public class PluginLoadContext : AssemblyLoadContext
+    private readonly AssemblyDependencyResolver _resolver;
+
+    public PluginLoadContext(string pluginPath) : base(isCollectible: true)
     {
-        private readonly AssemblyDependencyResolver _resolver;
+        _resolver = new AssemblyDependencyResolver(pluginPath);
+    }
 
-        public PluginLoadContext(string pluginPath) : base(isCollectible: true)
+    protected override Assembly Load(AssemblyName assemblyName)
+    {
+        string assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
+        if (assemblyPath != null)
         {
-            _resolver = new AssemblyDependencyResolver(pluginPath);
+            return LoadFromAssemblyPath(assemblyPath);
         }
 
-        protected override Assembly Load(AssemblyName assemblyName)
-        {
-            string assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
-            if (assemblyPath != null)
-            {
-                return LoadFromAssemblyPath(assemblyPath);
-            }
-
-            return null;
-        }
+        return null;
     }
 }

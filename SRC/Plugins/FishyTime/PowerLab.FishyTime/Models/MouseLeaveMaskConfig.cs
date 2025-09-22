@@ -1,14 +1,13 @@
 ﻿using Prism.Mvvm;
 
-namespace PowerLab.FishyTime.Models
+namespace PowerLab.FishyTime.Models;
+
+public class MouseLeaveMaskConfig : BindableBase
 {
-    public class MouseLeaveMaskConfig : BindableBase
+    private WindowMaskStyleConfig _windowMaskStyleConfig;
+    public WindowMaskStyleConfig WindowMaskStyleConfig
     {
-        private WindowMaskStyleConfig _windowMaskStyleConfig;
-        public WindowMaskStyleConfig WindowMaskStyleConfig
-        {
-            get => _windowMaskStyleConfig;
-            set => SetProperty(ref _windowMaskStyleConfig, value);
-        }
+        get => _windowMaskStyleConfig;
+        set => SetProperty(ref _windowMaskStyleConfig, value);
     }
 }

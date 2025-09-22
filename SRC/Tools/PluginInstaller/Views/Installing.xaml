@@ -3,23 +3,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:prism="http://prismlibrary.com/"
-             Background="#212121"
-             Foreground="#EFEFEF"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PluginInstaller.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:InstallingViewModel}"
+             d:DesignHeight="245"
+             d:DesignWidth="630"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" d:DesignHeight="245" d:DesignWidth="630">
+             Background="#212121"
+             Foreground="#EFEFEF"
+             mc:Ignorable="d">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding InstallPluginCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="正在安装：" FontSize="20" HorizontalAlignment="Left" />
-            <TextBlock Text="{Binding PluginManifest.PluginName}" FontSize="20" HorizontalAlignment="Left" d:Text="PluginName"/>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Left"
+                       FontSize="20"
+                       Text="正在安装：" />
+            <TextBlock HorizontalAlignment="Left"
+                       d:Text="PluginName"
+                       FontSize="20"
+                       Text="{Binding PluginManifest.PluginName}" />
         </StackPanel>
     </Grid>
 </UserControl>

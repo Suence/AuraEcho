@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 
-namespace PowerLab.FishyTime.Themes
+namespace PowerLab.FishyTime.Themes;
+
+public partial class FishyTimeLightTheme : ResourceDictionary
 {
-    public partial class FishyTimeLightTheme : ResourceDictionary
-    {
-        public FishyTimeLightTheme() => InitializeComponent();
-    }
+    public FishyTimeLightTheme() => InitializeComponent();
 }

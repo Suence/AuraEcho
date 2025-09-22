@@ -1,8 +1,7 @@
-﻿namespace PowerLab.Installer.Bootstrapper.Constants
+﻿namespace PowerLab.Installer.Bootstrapper.Constants;
+
+public static class InstallerRegionNames
 {
-    public static class InstallerRegionNames
-    {
-        public const string MessageRegion = nameof(MessageRegion);
-        public const string MainRegion = nameof(MainRegion);
-    }
+    public const string MessageRegion = nameof(MessageRegion);
+    public const string MainRegion = nameof(MainRegion);
 }

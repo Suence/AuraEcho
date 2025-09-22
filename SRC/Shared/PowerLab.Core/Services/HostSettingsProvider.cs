@@ -1,40 +1,39 @@
-﻿using System.IO;
-using System.Text.Json;
-using PowerLab.Core.Constants;
+﻿using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using System.IO;
+using System.Text.Json;
 
-namespace PowerLab.Core.Services
+namespace PowerLab.Core.Services;
+
+public class HostSettingsProvider(ILogger logger) : IHostSettingsProvider
 {
-    public class HostSettingsProvider(ILogger logger) : IHostSettingsProvider
+    private readonly ILogger _logger = logger;
+
+    public HostSettings LoadHostSettings()
     {
-        private readonly ILogger _logger = logger;
-
-        public HostSettings LoadHostSettings()
+        if (!File.Exists(ApplicationPaths.HostSettings))
         {
-            if (!File.Exists(ApplicationPaths.HostSettings))
-            {
-                SaveHostSettings(HostSettings.Default);
-                return HostSettings.Default;
-            }
-
-            string hostSettingsJson = File.ReadAllText(ApplicationPaths.HostSettings);
-            var hostSettings = JsonSerializer.Deserialize<HostSettings>(hostSettingsJson);
-
-            if (hostSettings == null)
-            {
-                _logger.Error("无法解析插件注册表。");
-                SaveHostSettings(HostSettings.Default);
-                return HostSettings.Default;
-            }
-
-            return hostSettings;
+            SaveHostSettings(HostSettings.Default);
+            return HostSettings.Default;
         }
 
-        public void SaveHostSettings(HostSettings settings)
+        string hostSettingsJson = File.ReadAllText(ApplicationPaths.HostSettings);
+        var hostSettings = JsonSerializer.Deserialize<HostSettings>(hostSettingsJson);
+
+        if (hostSettings == null)
         {
-            string pluginRegistriesJson = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(ApplicationPaths.HostSettings, pluginRegistriesJson);
+            _logger.Error("无法解析插件注册表。");
+            SaveHostSettings(HostSettings.Default);
+            return HostSettings.Default;
         }
+
+        return hostSettings;
+    }
+
+    public void SaveHostSettings(HostSettings settings)
+    {
+        string pluginRegistriesJson = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(ApplicationPaths.HostSettings, pluginRegistriesJson);
     }
 }

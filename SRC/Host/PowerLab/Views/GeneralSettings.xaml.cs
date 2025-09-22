@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.Views
+namespace PowerLab.Views;
+
+/// <summary>
+/// Interaction logic for GeneralSettings
+/// </summary>
+public partial class GeneralSettings : UserControl
 {
-    /// <summary>
-    /// Interaction logic for GeneralSettings
-    /// </summary>
-    public partial class GeneralSettings : UserControl
+    public GeneralSettings()
     {
-        public GeneralSettings()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

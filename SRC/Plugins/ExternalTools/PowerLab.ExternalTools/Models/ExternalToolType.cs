@@ -1,10 +1,9 @@
-﻿namespace PowerLab.ExternalTools.Models
+﻿namespace PowerLab.ExternalTools.Models;
+
+public enum ExternalToolType
 {
-    public enum ExternalToolType
-    {
-        None = 0,
-        Website = 1,
-        File = 2,
-        PathCommand = 3
-    }
+    None = 0,
+    Website = 1,
+    File = 2,
+    PathCommand = 3
 }

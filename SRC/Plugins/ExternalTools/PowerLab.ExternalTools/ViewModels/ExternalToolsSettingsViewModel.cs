@@ -1,8 +1,7 @@
 ﻿using Prism.Mvvm;
 
-namespace PowerLab.ExternalTools.ViewModels
+namespace PowerLab.ExternalTools.ViewModels;
+
+public class ExternalToolsSettingsViewModel : BindableBase
 {
-    public class ExternalToolsSettingsViewModel : BindableBase
-    {
-    }
 }

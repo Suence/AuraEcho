@@ -28,7 +28,7 @@
                                IsHitTestVisible="False"
                                Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=(ap:ControlHelper.PlaceHolder)}"
                                Visibility="Hidden" />
-                    
+
                     <Line x:Name="FocusedLine"
                           Margin="1,0"
                           VerticalAlignment="Bottom"

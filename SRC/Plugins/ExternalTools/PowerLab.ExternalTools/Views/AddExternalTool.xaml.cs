@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.ExternalTools.Views
+namespace PowerLab.ExternalTools.Views;
+
+/// <summary>
+/// Interaction logic for AddExternalTool
+/// </summary>
+public partial class AddExternalTool : UserControl
 {
-    /// <summary>
-    /// Interaction logic for AddExternalTool
-    /// </summary>
-    public partial class AddExternalTool : UserControl
+    public AddExternalTool()
     {
-        public AddExternalTool()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

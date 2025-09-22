@@ -67,7 +67,7 @@
                                          Visibility="Collapsed" />
                             </Grid>
                         </BulletDecorator.Bullet>
-                        <ContentPresenter Margin="4, 0, 0, 0"
+                        <ContentPresenter Margin="4,0,0,0"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           RecognizesAccessKey="True" />

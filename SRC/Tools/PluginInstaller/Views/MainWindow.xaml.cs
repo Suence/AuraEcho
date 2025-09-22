@@ -1,17 +1,16 @@
-﻿using System.Windows;
-using PowerLab.Core.Attributes;
+﻿using PowerLab.Core.Attributes;
+using System.Windows;
 
-namespace PluginInstaller.Views
+namespace PluginInstaller.Views;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    [Logging]
+    public MainWindow()
     {
-        [Logging]
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

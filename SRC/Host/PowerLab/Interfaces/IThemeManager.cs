@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using PowerLab.PluginContracts.Interfaces;
+﻿using PowerLab.PluginContracts.Interfaces;
 using PowerLab.PluginContracts.Models;
+using System.Collections.Generic;
 
-namespace PowerLab.Interfaces
+namespace PowerLab.Interfaces;
+
+public interface IThemeManager
 {
-    public interface IThemeManager
-    {
-        /// <summary>
-        /// 当前主题
-        /// </summary>
-        AppTheme CurrentTheme { get; set; }
+    /// <summary>
+    /// 当前主题
+    /// </summary>
+    AppTheme CurrentTheme { get; set; }
 
-        void ApplyTheme(AppTheme appTheme);
+    void ApplyTheme(AppTheme appTheme);
 
-        void AttachPluginTheme(IPlugin plugin);
+    void AttachPluginTheme(IPlugin plugin);
 
-        void AttachPluginThemes(IEnumerable<IPlugin> plugins);
-    }
+    void AttachPluginThemes(IEnumerable<IPlugin> plugins);
 }

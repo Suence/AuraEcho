@@ -1,10 +1,9 @@
-﻿namespace PowerLab.PluginContracts.Models
+﻿namespace PowerLab.PluginContracts.Models;
+
+public enum RegionDialogResult
 {
-    public enum RegionDialogResult
-    {
-        None,
-        OK,
-        Cancel,
-        Close
-    }
+    None,
+    OK,
+    Cancel,
+    Close
 }

@@ -1,20 +1,14 @@
-﻿using PowerLab.Themes;
-using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
-namespace PowerLab.Control.Tests
+namespace PowerLab.Control.Tests;
+
+/// <summary>
+/// Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    protected override void OnStartup(StartupEventArgs e)
     {
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            //Resources.MergedDictionaries.Add(DarkTheme.Instance);
-            base.OnStartup(e);
-        }
+        base.OnStartup(e);
     }
-
 }

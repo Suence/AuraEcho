@@ -1,7 +1,6 @@
-﻿namespace PowerLab.PluginContracts.Constants
+﻿namespace PowerLab.PluginContracts.Constants;
+
+public static class HostRegionDialogTypes
 {
-    public static class HostRegionDialogTypes
-    {
-        public const string ConfirmDialog = "ConfirmDialog";
-    }
+    public const string ConfirmDialog = "ConfirmDialog";
 }

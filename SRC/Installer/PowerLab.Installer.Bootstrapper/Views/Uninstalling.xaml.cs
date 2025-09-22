@@ -2,31 +2,30 @@
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace PowerLab.Installer.Bootstrapper.Views
+namespace PowerLab.Installer.Bootstrapper.Views;
+
+/// <summary>
+/// Interaction logic for Uninstalling
+/// </summary>
+public partial class Uninstalling : UserControl
 {
-    /// <summary>
-    /// Interaction logic for Uninstalling
-    /// </summary>
-    public partial class Uninstalling : UserControl
+    public Uninstalling()
     {
-        public Uninstalling()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        private Storyboard _progressStoryboard => (Storyboard)FindResource("ProgressStorybard");
+    private Storyboard _progressStoryboard => (Storyboard)FindResource("ProgressStorybard");
 
-        public void BeginProgressStoryboard()
-        {
-            var newProgress = (DataContext as UninstallingViewModel).Progress;
-            _progressStoryboard.Begin();
-            UninstallProgressBar.Value = newProgress;
-        }
+    public void BeginProgressStoryboard()
+    {
+        var newProgress = (DataContext as UninstallingViewModel).Progress;
+        _progressStoryboard.Begin();
+        UninstallProgressBar.Value = newProgress;
+    }
 
-        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _progressStoryboard.Begin();
-            _progressStoryboard.Stop();
-        }
+    private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+    {
+        _progressStoryboard.Begin();
+        _progressStoryboard.Stop();
     }
 }

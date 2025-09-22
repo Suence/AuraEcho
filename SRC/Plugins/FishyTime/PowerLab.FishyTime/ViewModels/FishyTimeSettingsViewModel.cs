@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Prism.Commands;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 
-namespace PowerLab.FishyTime.ViewModels
+namespace PowerLab.FishyTime.ViewModels;
+
+public class FishyTimeSettingsViewModel : BindableBase
 {
-    public class FishyTimeSettingsViewModel : BindableBase
+    public FishyTimeSettingsViewModel()
     {
-        public FishyTimeSettingsViewModel()
-        {
 
-        }
     }
 }

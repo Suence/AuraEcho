@@ -1,9 +1,8 @@
-﻿namespace PowerLab.PluginContracts.Models
+﻿namespace PowerLab.PluginContracts.Models;
+
+public enum AppTheme
 {
-    public enum AppTheme
-    {
-        Light,
-        Dark,
-        FollowSystem
-    }
+    Light,
+    Dark,
+    FollowSystem
 }

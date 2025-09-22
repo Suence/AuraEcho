@@ -1,53 +1,51 @@
 ﻿using Microsoft.Xaml.Behaviors;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace PowerLab.UIToolkit.Behaviors
+namespace PowerLab.UIToolkit.Behaviors;
+
+/// <summary>
+/// 数字输入框行为，限制输入为整数
+/// </summary>
+public class Int32TextBoxBehavior : Behavior<TextBox>
 {
-    /// <summary>
-    /// 数字输入框行为，限制输入为整数
-    /// </summary>
-    public class Int32TextBoxBehavior : Behavior<TextBox>
+    protected override void OnAttached()
     {
-        protected override void OnAttached()
+        AssociatedObject.PreviewTextInput += TextBox_PreviewTextInput;
+        AssociatedObject.PreviewKeyDown += TextBox_PreviewKeyDown;
+        DataObject.AddPastingHandler(AssociatedObject, TextBoxPasting);
+        AssociatedObject.SetValue(InputMethod.IsInputMethodEnabledProperty, false);
+    }
+    private void TextBoxPasting(object sender, DataObjectPastingEventArgs e)
+    {
+        if (!e.DataObject.GetDataPresent(typeof(string)) ||
+            !Int32.TryParse((string)e.DataObject.GetData(typeof(string)), out _))
         {
-            AssociatedObject.PreviewTextInput += TextBox_PreviewTextInput;
-            AssociatedObject.PreviewKeyDown += TextBox_PreviewKeyDown;
-            DataObject.AddPastingHandler(AssociatedObject, TextBoxPasting);
-            AssociatedObject.SetValue(InputMethod.IsInputMethodEnabledProperty, false);
+            e.CancelCommand();
         }
-        private void TextBoxPasting(object sender, DataObjectPastingEventArgs e)
+    }
+    private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Space)
         {
-            if (!e.DataObject.GetDataPresent(typeof(string)) ||
-                !Int32.TryParse((string)e.DataObject.GetData(typeof(string)), out _))
-            {
-                e.CancelCommand();
-            }
+            e.Handled = true;
         }
-        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Space)
-            {
-                e.Handled = true;
-            }
-        }
+    }
 
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        if (!Int32.TryParse(e.Text, out _))
         {
-            if (!Int32.TryParse(e.Text, out _))
-            {
-                e.Handled = true;
-            }
+            e.Handled = true;
         }
+    }
 
-        protected override void OnDetaching()
-        {
-            AssociatedObject.PreviewTextInput -= TextBox_PreviewTextInput;
-            AssociatedObject.PreviewKeyDown -= TextBox_PreviewKeyDown;
-            DataObject.RemovePastingHandler(AssociatedObject, TextBoxPasting);
-            AssociatedObject.SetValue(InputMethod.IsInputMethodEnabledProperty, true);
-        }
+    protected override void OnDetaching()
+    {
+        AssociatedObject.PreviewTextInput -= TextBox_PreviewTextInput;
+        AssociatedObject.PreviewKeyDown -= TextBox_PreviewKeyDown;
+        DataObject.RemovePastingHandler(AssociatedObject, TextBoxPasting);
+        AssociatedObject.SetValue(InputMethod.IsInputMethodEnabledProperty, true);
     }
 }

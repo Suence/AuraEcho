@@ -1,125 +1,124 @@
-﻿using System.IO;
-using System.IO.Compression;
-using System.Text.Json;
-using PluginInstaller.Constants;
+﻿using PluginInstaller.Constants;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.IO;
+using System.IO.Compression;
+using System.Text.Json;
 
-namespace PluginInstaller.ViewModels
+namespace PluginInstaller.ViewModels;
+
+/// <summary>
+/// 安装准备
+/// </summary>
+public class InstallPreparationViewModel : BindableBase, INavigationAware
 {
+    #region private members
+    private readonly ILogger? _logger;
+    private readonly IRegionManager? _regionManager;
+
+    private PluginManifest? _pluginManifest;
+    private string _tempExtractPath;
+    private const string MANIFEST_FILE_NAME = "plugin.manifest.json";
+    private string _pluginInstallFilePath;
+    #endregion
+
     /// <summary>
-    /// 安装准备
+    /// 模块清单信息
     /// </summary>
-    public class InstallPreparationViewModel : BindableBase, INavigationAware
+    public PluginManifest? PluginManifest
     {
-        #region private members
-        private readonly ILogger? _logger;
-        private readonly IRegionManager? _regionManager;
+        get => _pluginManifest;
+        set => SetProperty(ref _pluginManifest, value);
+    }
 
-        private PluginManifest? _pluginManifest;
-        private string _tempExtractPath;
-        private const string MANIFEST_FILE_NAME = "plugin.manifest.json";
-        private string _pluginInstallFilePath;
-        #endregion
+    public DelegateCommand LoadPluginCommand { get; }
+    /// <summary>
+    /// 加载模块清单
+    /// </summary>
+    /// <exception cref="FileNotFoundException"></exception>
+    private void LoadPlugin()
+    {
+        // 解压插件到临时目录
+        _tempExtractPath = Path.Combine(ApplicationPaths.Temp, "PluginInstall_" + Guid.NewGuid());
+        ZipFile.ExtractToDirectory(_pluginInstallFilePath, _tempExtractPath);
 
-        /// <summary>
-        /// 模块清单信息
-        /// </summary>
-        public PluginManifest? PluginManifest
+        // 读取并解析 manifest 文件
+        string manifestPath = Path.Combine(_tempExtractPath, MANIFEST_FILE_NAME);
+        if (!File.Exists(manifestPath))
+            throw new FileNotFoundException("插件缺少 manifest 文件。");
+
+        string manifestJson = File.ReadAllText(manifestPath);
+        var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
+
+        if (manifest is null)
         {
-            get => _pluginManifest;
-            set => SetProperty(ref _pluginManifest, value);
+            _logger.Error("插件 manifest 文件格式错误。");
+            return;
         }
 
-        public DelegateCommand LoadPluginCommand { get; }
-        /// <summary>
-        /// 加载模块清单
-        /// </summary>
-        /// <exception cref="FileNotFoundException"></exception>
-        private void LoadPlugin()
+        PluginManifest = manifest;
+    }
+
+    public DelegateCommand BeginInstallCommand { get; }
+
+    /// <summary>
+    /// 开始安装
+    /// </summary>
+    private void BeginInstall()
+    {
+        if (PluginManifest is null)
         {
-            // 解压插件到临时目录
-            _tempExtractPath = Path.Combine(ApplicationPaths.Temp, "PluginInstall_" + Guid.NewGuid());
-            ZipFile.ExtractToDirectory(_pluginInstallFilePath, _tempExtractPath);
-
-            // 读取并解析 manifest 文件
-            string manifestPath = Path.Combine(_tempExtractPath, MANIFEST_FILE_NAME);
-            if (!File.Exists(manifestPath))
-                throw new FileNotFoundException("插件缺少 manifest 文件。");
-
-            string manifestJson = File.ReadAllText(manifestPath);
-            var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
-
-            if (manifest is null)
+            _logger.Error("请先加载插件。");
+            return;
+        }
+        _regionManager.RequestNavigate(
+            RegionNames.MainRegion,
+            ViewNames.Installing,
+            new NavigationParameters
             {
-                _logger.Error("插件 manifest 文件格式错误。");
-                return;
-            }
+                { "PluginTempDir", _tempExtractPath },
+                { "PluginManifest", PluginManifest }
+            });
+    }
 
-            PluginManifest = manifest;
-        }
+    public DelegateCommand ReselectPluginInstallFileCommand { get; }
+    private void ReselectPluginInstallFile()
+    {
+        _regionManager.RequestNavigate(RegionNames.MainRegion, ViewNames.PickPluginInstallFile);
+    }
 
-        public DelegateCommand BeginInstallCommand { get; }
+    public void OnNavigatedTo(NavigationContext navigationContext)
+    {
+        if (navigationContext.Parameters["PluginInstallFilePath"] is not string filePath)
+            return;
 
-        /// <summary>
-        /// 开始安装
-        /// </summary>
-        private void BeginInstall()
-        {
-            if (PluginManifest is null)
-            {
-                _logger.Error("请先加载插件。");
-                return;
-            }
-            _regionManager.RequestNavigate(
-                RegionNames.MainRegion,
-                ViewNames.Installing,
-                new NavigationParameters
-                {
-                    { "PluginTempDir", _tempExtractPath },
-                    { "PluginManifest", PluginManifest }
-                });
-        }
+        _pluginInstallFilePath = filePath;
+        LoadPlugin();
+    }
 
-        public DelegateCommand ReselectPluginInstallFileCommand { get; }
-        private void ReselectPluginInstallFile()
-        {
-            _regionManager.RequestNavigate(RegionNames.MainRegion, ViewNames.PickPluginInstallFile);
-        }
+    public bool IsNavigationTarget(NavigationContext navigationContext)
+        => true;
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            if (navigationContext.Parameters["PluginInstallFilePath"] is not string filePath)
-                return;
+    public void OnNavigatedFrom(NavigationContext navigationContext)
+    {
+    }
 
-            _pluginInstallFilePath = filePath;
-            LoadPlugin();
-        }
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="regionManager"></param>
+    /// <param name="logger"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public InstallPreparationViewModel(IRegionManager regionManager, ILogger logger)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-            => true;
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="regionManager"></param>
-        /// <param name="logger"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public InstallPreparationViewModel(IRegionManager regionManager, ILogger logger)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
-
-            BeginInstallCommand = new DelegateCommand(BeginInstall);
-            ReselectPluginInstallFileCommand = new DelegateCommand(ReselectPluginInstallFile);
-        }
+        BeginInstallCommand = new DelegateCommand(BeginInstall);
+        ReselectPluginInstallFileCommand = new DelegateCommand(ReselectPluginInstallFile);
     }
 }

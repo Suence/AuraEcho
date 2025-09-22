@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using PowerLab.ExternalTools.Constants;
-using PowerLab.ExternalTools.Events;
+﻿using PowerLab.ExternalTools.Events;
 using PowerLab.ExternalTools.Models;
 using PowerLab.ExternalTools.Utils;
 using PowerLab.PluginContracts.Constants;
@@ -10,93 +6,93 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using System;
 
-namespace PowerLab.ExternalTools.ViewModels
+namespace PowerLab.ExternalTools.ViewModels;
+
+public class EditExternalToolViewModel : BindableBase, INavigationAware
 {
-    public class EditExternalToolViewModel : BindableBase, INavigationAware
+    #region private members
+    private ExternalTool _editingExternalTool;
+    private readonly IRegionManager _regionManager;
+    private readonly IEventAggregator _eventAggregator;
+    private string _name;
+    private string _command;
+    private string _arguments;
+    #endregion
+
+    public string Name
     {
-        #region private members
-        private ExternalTool _editingExternalTool;
-        private readonly IRegionManager _regionManager;
-        private readonly IEventAggregator _eventAggregator;
-        private string _name;
-        private string _command;
-        private string _arguments;
-        #endregion
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
+    public string Command
+    {
+        get => _command;
+        set => SetProperty(ref _command, value);
+    }
+    public string Arguments
+    {
+        get => _arguments;
+        set => SetProperty(ref _arguments, value);
+    }
 
-        public string Name
+    public DelegateCommand SubmitCommand { get; }
+    private void Submit()
+    {
+        var newExternalTool = new Models.ExternalTool
         {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-        public string Command
+            Id = _editingExternalTool.Id,
+            Name = Name,
+            Command = FixCommand(Command),
+            Arguments = Arguments
+        };
+        newExternalTool.Type = ShellHelper.CheckExternalToolType(newExternalTool.Command);
+
+
+        _eventAggregator.GetEvent<ExternalToolUpdatedEvent>().Publish(newExternalTool);
+        _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
+    }
+
+    private string FixCommand(string command)
+    {
+        var trimed = Command.Trim('"');
+        if (trimed.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
         {
-            get => _command;
-            set => SetProperty(ref _command, value);
+            return "http://" + trimed;
         }
-        public string Arguments
-        {
-            get => _arguments;
-            set => SetProperty(ref _arguments, value);
-        }
+        return trimed;
+    }
+    public bool CanSubmit() => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Command);
 
-        public DelegateCommand SubmitCommand { get; }
-        private void Submit()
-        {
-            var newExternalTool = new Models.ExternalTool
-            {
-                Id = _editingExternalTool.Id,
-                Name = Name,
-                Command = FixCommand(Command),
-                Arguments = Arguments
-            };
-            newExternalTool.Type = ShellHelper.CheckExternalToolType(newExternalTool.Command);
+    public DelegateCommand CancelCommand { get; }
+    private void Cancel()
+    {
+        _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
+    }
 
+    public void OnNavigatedTo(NavigationContext navigationContext)
+    {
+        _editingExternalTool = navigationContext.Parameters["ExternalTool"] as ExternalTool;
+        Name = _editingExternalTool.Name;
+        Command = _editingExternalTool.Command;
+        Arguments = _editingExternalTool.Arguments;
 
-            _eventAggregator.GetEvent<ExternalToolUpdatedEvent>().Publish(newExternalTool);
-            _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
-        }
+    }
 
-        private string FixCommand(string command)
-        {
-            var trimed = Command.Trim('"');
-            if (trimed.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
-            {
-                return "http://" + trimed;
-            }
-            return trimed;
-        }
-        public bool CanSubmit() => !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Command);
+    public bool IsNavigationTarget(NavigationContext navigationContext)
+        => true;
 
-        public DelegateCommand CancelCommand { get; }
-        private void Cancel()
-        {
-            _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
-        }
+    public void OnNavigatedFrom(NavigationContext navigationContext)
+    {
+    }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            _editingExternalTool = navigationContext.Parameters["ExternalTool"] as ExternalTool;
-            Name = _editingExternalTool.Name;
-            Command = _editingExternalTool.Command;
-            Arguments = _editingExternalTool.Arguments;
+    public EditExternalToolViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+    {
+        _regionManager = regionManager;
+        _eventAggregator = eventAggregator;
 
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-            => true;
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        public EditExternalToolViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
-        {
-            _regionManager = regionManager;
-            _eventAggregator = eventAggregator;
-
-            SubmitCommand = new DelegateCommand(Submit, CanSubmit).ObservesProperty(() => Name).ObservesProperty(() => Command);
-            CancelCommand = new DelegateCommand(Cancel);
-        }
+        SubmitCommand = new DelegateCommand(Submit, CanSubmit).ObservesProperty(() => Name).ObservesProperty(() => Command);
+        CancelCommand = new DelegateCommand(Cancel);
     }
 }

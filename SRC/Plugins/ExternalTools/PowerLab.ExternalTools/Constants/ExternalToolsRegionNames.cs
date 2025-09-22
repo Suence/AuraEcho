@@ -1,6 +1,5 @@
-﻿namespace PowerLab.ExternalTools.Constants
+﻿namespace PowerLab.ExternalTools.Constants;
+
+public class ExternalToolsRegionNames
 {
-    public class ExternalToolsRegionNames
-    {
-    }
 }

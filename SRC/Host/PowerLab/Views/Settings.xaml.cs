@@ -1,17 +1,14 @@
-﻿using System;
-using System.Windows.Controls;
-using Prism;
+﻿using System.Windows.Controls;
 
-namespace PowerLab.Views
+namespace PowerLab.Views;
+
+/// <summary>
+/// Interaction logic for Settings
+/// </summary>
+public partial class Settings : UserControl
 {
-    /// <summary>
-    /// Interaction logic for Settings
-    /// </summary>
-    public partial class Settings : UserControl
+    public Settings()
     {
-        public Settings()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

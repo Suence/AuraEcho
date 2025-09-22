@@ -1,39 +1,37 @@
-﻿using System;
+﻿using PowerLab.Core.Strings;
 using System.ComponentModel;
 using System.Reflection;
-using PowerLab.Core.Strings;
 
-namespace PowerLab.Core.Converters.TypeConverters
+namespace PowerLab.Core.Converters.TypeConverters;
+
+public class EnumDescriptionTypeConverter : EnumConverter
 {
-    public class EnumDescriptionTypeConverter : EnumConverter
+    public EnumDescriptionTypeConverter(Type type)
+        : base(type)
     {
-        public EnumDescriptionTypeConverter(Type type)
-            : base(type)
+    }
+    public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+    {
+        if (destinationType == typeof(string))
         {
-        }
-        public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
-        {
-            if (destinationType == typeof(string))
+            if (value != null)
             {
-                if (value != null)
+                FieldInfo fi = value.GetType().GetField(value.ToString());
+                if (fi != null)
                 {
-                    FieldInfo fi = value.GetType().GetField(value.ToString());
-                    if (fi != null)
-                    {
-                        var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                    var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 #if DEBUG
-                        var appName = Labels.ResourceManager.GetString(nameof(Labels.AppName), Labels.Culture);
+                    var appName = Labels.ResourceManager.GetString(nameof(Labels.AppName), Labels.Culture);
 #endif
-                        return attributes.Length > 0 && !String.IsNullOrEmpty(attributes[0].Description)
-                               ? Labels.ResourceManager.GetString(attributes[0].Description)
-                               : value.ToString();
-                    }
+                    return attributes.Length > 0 && !String.IsNullOrEmpty(attributes[0].Description)
+                           ? Labels.ResourceManager.GetString(attributes[0].Description)
+                           : value.ToString();
                 }
-
-                return string.Empty;
             }
 
-            return base.ConvertTo(context, culture, value, destinationType);
+            return string.Empty;
         }
+
+        return base.ConvertTo(context, culture, value, destinationType);
     }
 }

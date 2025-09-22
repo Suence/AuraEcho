@@ -1,10 +1,9 @@
 ﻿using System.Windows;
 
-namespace PowerLab.Themes
+namespace PowerLab.Themes;
+
+public partial class DarkTheme : ResourceDictionary
 {
-    public partial class DarkTheme : ResourceDictionary
-    {
-        public DarkTheme() => InitializeComponent();
-        public static DarkTheme Instance { get; } = new DarkTheme();
-    }
+    public DarkTheme() => InitializeComponent();
+    public static DarkTheme Instance { get; } = new DarkTheme();
 }

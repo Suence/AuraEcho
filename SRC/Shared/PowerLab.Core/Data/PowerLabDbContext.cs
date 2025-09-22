@@ -1,35 +1,34 @@
-﻿using System.IO;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Models;
-namespace PowerLab.Core.Data
+using System.IO;
+namespace PowerLab.Core.Data;
+
+public class PowerLabDbContext : DbContext
 {
-    public class PowerLabDbContext : DbContext
+    public DbSet<PluginRegistry> PluginRegistries { get; set; }
+
+    //public PluginDbContext(DbContextOptions<PluginDbContext> options) : base(options)
+    //{
+    //}
+
+    public PowerLabDbContext()
     {
-        public DbSet<PluginRegistry> PluginRegistries { get; set; }
+    }
 
-        //public PluginDbContext(DbContextOptions<PluginDbContext> options) : base(options)
-        //{
-        //}
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
 
-        public PowerLabDbContext()
-        {
-        }
+        var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+        optionsBuilder.UseSqlite($"Data Source={dbPath}");
+    }
 
-            var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            optionsBuilder.UseSqlite($"Data Source={dbPath}");
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<PluginRegistry>(pr => pr.OwnsOne(p => p.Manifest));
-        }
+        modelBuilder.Entity<PluginRegistry>(pr => pr.OwnsOne(p => p.Manifest));
     }
 }

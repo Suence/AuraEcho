@@ -1,18 +1,17 @@
-﻿namespace PowerLab.Installer.Bootstrapper.WixToolset
+﻿namespace PowerLab.Installer.Bootstrapper.WixToolset;
+
+/// <summary>
+/// Represents the detection state of a product on the target system.
+/// </summary>
+public enum DetectionState
 {
     /// <summary>
-    /// Represents the detection state of a product on the target system.
+    /// The product is not detected on the system.
     /// </summary>
-    public enum DetectionState
-    {
-        /// <summary>
-        /// The product is not detected on the system.
-        /// </summary>
-        Absent,
+    Absent,
 
-        /// <summary>
-        /// The product is detected and present on the system.
-        /// </summary>
-        Present,
-    }
+    /// <summary>
+    /// The product is detected and present on the system.
+    /// </summary>
+    Present,
 }

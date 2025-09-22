@@ -1,9 +1,8 @@
-﻿namespace PowerLab.FishyTime.Models
+﻿namespace PowerLab.FishyTime.Models;
+
+public enum WindowMaskMode
 {
-    public enum WindowMaskMode
-    {
-        MouseLeave,
-        HotZone,
-        Spotlight
-    }
+    MouseLeave,
+    HotZone,
+    Spotlight
 }

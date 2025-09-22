@@ -1,38 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.Json;
-using System.Windows;
-using PowerLab.Core.Attributes;
-using PowerLab.Core.Contracts;
-using Prism.Commands;
-using Prism.Modularity;
-using Prism.Mvvm;
-using Prism.Regions;
+﻿using Prism.Mvvm;
 
-namespace PowerLab.ViewModels
+namespace PowerLab.ViewModels;
+
+public class MainWindowViewModel : BindableBase
 {
-    public class MainWindowViewModel : BindableBase
+    #region private members
+    private string _title = "PowerLab";
+    #endregion
+
+    /// <summary>
+    /// 窗口标题
+    /// </summary>
+    public string Title
     {
-        #region private members
-        private string _title = "PowerLab";
-        #endregion
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
 
-        /// <summary>
-        /// 窗口标题
-        /// </summary>
-        public string Title
-        {
-            get => _title;
-            set => SetProperty(ref _title, value);
-        }
+    public MainWindowViewModel()
+    {
 
-        public MainWindowViewModel()
-        {
-
-        }
     }
 }

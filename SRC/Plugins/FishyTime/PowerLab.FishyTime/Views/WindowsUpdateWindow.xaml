@@ -27,7 +27,7 @@
                                     </Style>
                                 </Grid.Resources>
 
-                                <!-- 6 个小圆点 -->
+                                <!--  6 个小圆点  -->
                                 <Canvas RenderTransformOrigin=".5, .5">
                                     <Canvas.RenderTransform>
                                         <RotateTransform x:Name="RT1" />

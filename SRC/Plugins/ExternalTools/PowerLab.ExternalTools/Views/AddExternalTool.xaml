@@ -41,16 +41,22 @@
                         <TextBlock Margin="0,0,0,4" Text="COMMAND" />
                         <TextBox Text="{Binding Command, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <TextBlock Margin="0, 0, 0, 4" Text="ARGUMENTS"/>
-                        <TextBox Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Margin="0,0,0,4" Text="ARGUMENTS" />
+                        <TextBox Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Row="1"
                             Margin="4"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
-                    <Button Command="{Binding CancelCommand}" Content="CANCEL" Margin="4" Padding="16, 4"/>
-                    <Button Command="{Binding SubmitCommand}" Content="CONFIRM" Margin="4" Padding="16, 4"/>
+                    <Button Margin="4"
+                            Padding="16,4"
+                            Command="{Binding CancelCommand}"
+                            Content="CANCEL" />
+                    <Button Margin="4"
+                            Padding="16,4"
+                            Command="{Binding SubmitCommand}"
+                            Content="CONFIRM" />
                 </StackPanel>
             </Grid>
         </Border>

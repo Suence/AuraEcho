@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.Installer.Bootstrapper.Views
+namespace PowerLab.Installer.Bootstrapper.Views;
+
+/// <summary>
+/// Interaction logic for InstallFinish
+/// </summary>
+public partial class InstallFinish : UserControl
 {
-    /// <summary>
-    /// Interaction logic for InstallFinish
-    /// </summary>
-    public partial class InstallFinish : UserControl
+    public InstallFinish()
     {
-        public InstallFinish()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

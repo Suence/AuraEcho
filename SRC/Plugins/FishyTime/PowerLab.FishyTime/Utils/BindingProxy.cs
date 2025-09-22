@@ -1,23 +1,22 @@
 ﻿using System.Windows;
 
-namespace PowerLab.FishyTime.Utils
+namespace PowerLab.FishyTime.Utils;
+
+public class BindingProxy : Freezable
 {
-    public class BindingProxy : Freezable
+    protected override Freezable CreateInstanceCore()
+        => new BindingProxy();
+
+    public object Data
     {
-        protected override Freezable CreateInstanceCore()
-            => new BindingProxy();
-
-        public object Data
-        {
-            get => GetValue(DataProperty);
-            set => SetValue(DataProperty, value);
-        }
-
-        public static readonly DependencyProperty DataProperty
-            = DependencyProperty.Register(
-                "Data",
-                typeof(object),
-                typeof(BindingProxy),
-                new UIPropertyMetadata(null));
+        get => GetValue(DataProperty);
+        set => SetValue(DataProperty, value);
     }
+
+    public static readonly DependencyProperty DataProperty
+        = DependencyProperty.Register(
+            "Data",
+            typeof(object),
+            typeof(BindingProxy),
+            new UIPropertyMetadata(null));
 }

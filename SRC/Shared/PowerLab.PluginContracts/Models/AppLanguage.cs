@@ -1,8 +1,7 @@
-﻿namespace PowerLab.PluginContracts.Models
+﻿namespace PowerLab.PluginContracts.Models;
+
+public enum AppLanguage
 {
-    public enum AppLanguage
-    {
-        ChineseSimplified = 0,
-        English = 1
-    }
+    ChineseSimplified = 0,
+    English = 1
 }

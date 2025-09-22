@@ -1,8 +1,7 @@
-﻿namespace PowerLab.ExternalTools.Constants
+﻿namespace PowerLab.ExternalTools.Constants;
+
+public static class ExternalToolsViewNames
 {
-    public static class ExternalToolsViewNames
-    {
-        public const string AddExternalTool = nameof(Views.AddExternalTool);
-        public const string EditExternalTool = nameof(Views.EditExternalTool);
-    }
+    public const string AddExternalTool = nameof(Views.AddExternalTool);
+    public const string EditExternalTool = nameof(Views.EditExternalTool);
 }

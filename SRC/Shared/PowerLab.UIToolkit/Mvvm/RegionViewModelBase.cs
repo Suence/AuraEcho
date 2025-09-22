@@ -1,35 +1,33 @@
-﻿using System;
-using Prism.Regions;
+﻿using Prism.Regions;
 
-namespace PowerLab.UIToolkit.Mvvm
+namespace PowerLab.UIToolkit.Mvvm;
+
+public class RegionViewModelBase : ViewModelBase, INavigationAware, IConfirmNavigationRequest
 {
-    public class RegionViewModelBase : ViewModelBase, INavigationAware, IConfirmNavigationRequest
+    protected IRegionManager RegionManager { get; private set; }
+
+    public RegionViewModelBase(IRegionManager regionManager)
     {
-        protected IRegionManager RegionManager { get; private set; }
+        RegionManager = regionManager;
+    }
 
-        public RegionViewModelBase(IRegionManager regionManager)
-        {
-            RegionManager = regionManager;
-        }
+    public virtual void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
+    {
+        continuationCallback(true);
+    }
 
-        public virtual void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
-        {
-            continuationCallback(true);
-        }
+    public virtual bool IsNavigationTarget(NavigationContext navigationContext)
+    {
+        return true;
+    }
 
-        public virtual bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
+    public virtual void OnNavigatedFrom(NavigationContext navigationContext)
+    {
 
-        public virtual void OnNavigatedFrom(NavigationContext navigationContext)
-        {
+    }
 
-        }
+    public virtual void OnNavigatedTo(NavigationContext navigationContext)
+    {
 
-        public virtual void OnNavigatedTo(NavigationContext navigationContext)
-        {
-
-        }
     }
 }

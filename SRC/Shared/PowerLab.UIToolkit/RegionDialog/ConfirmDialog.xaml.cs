@@ -1,17 +1,16 @@
-﻿using System.Windows.Controls;
-using Prism.Ioc;
+﻿using Prism.Ioc;
+using System.Windows.Controls;
 
-namespace PowerLab.UIToolkit.ContentDialog
+namespace PowerLab.UIToolkit.RegionDialog;
+
+/// <summary>
+/// ConfirmDialog.xaml 的交互逻辑
+/// </summary>
+public partial class ConfirmDialog : UserControl
 {
-    /// <summary>
-    /// ConfirmDialog.xaml 的交互逻辑
-    /// </summary>
-    public partial class ConfirmDialog : UserControl
+    public ConfirmDialog(IContainerProvider containerProvider)
     {
-        public ConfirmDialog(IContainerProvider containerProvider)
-        {
-            InitializeComponent();
-            DataContext = containerProvider.Resolve<ConfirmDialogViewModel>();
-        }
+        InitializeComponent();
+        DataContext = containerProvider.Resolve<ConfirmDialogViewModel>();
     }
 }

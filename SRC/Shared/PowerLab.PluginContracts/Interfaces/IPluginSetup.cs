@@ -1,9 +1,8 @@
 ﻿using Prism.Ioc;
 
-namespace PowerLab.PluginContracts.Interfaces
+namespace PowerLab.PluginContracts.Interfaces;
+
+public interface IPluginSetup
 {
-    public interface IPluginSetup
-    {
-        void Setup(IContainerProvider containerProvider);
-    }
+    void Setup(IContainerProvider containerProvider);
 }

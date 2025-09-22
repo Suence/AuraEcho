@@ -1,13 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore.Design;
 
-namespace PowerLab.ExternalTools.Data
+namespace PowerLab.ExternalTools.Data;
+
+public class ExternalToolsDbContextFactory : IDesignTimeDbContextFactory<ExternalToolsDbContext>
 {
-    public class ExternalToolsDbContextFactory : IDesignTimeDbContextFactory<ExternalToolsDbContext>
+    public ExternalToolsDbContext CreateDbContext(string[] args)
     {
-        public ExternalToolsDbContext CreateDbContext(string[] args)
-        {
-            return new ExternalToolsDbContext(new PathProviderDesignTime());
-        }
+        return new ExternalToolsDbContext(new PathProviderDesignTime());
     }
 }

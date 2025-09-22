@@ -1,10 +1,9 @@
 ﻿using PowerLab.Core.Models;
 
-namespace PowerLab.Core.Contracts
+namespace PowerLab.Core.Contracts;
+
+public interface IHostSettingsProvider
 {
-    public interface IHostSettingsProvider
-    {
-        HostSettings LoadHostSettings();
-        void SaveHostSettings(HostSettings settings);
-    }
+    HostSettings LoadHostSettings();
+    void SaveHostSettings(HostSettings settings);
 }

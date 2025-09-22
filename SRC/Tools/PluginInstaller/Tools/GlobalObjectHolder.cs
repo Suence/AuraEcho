@@ -1,10 +1,9 @@
-﻿namespace PluginInstaller.Tools
+﻿namespace PluginInstaller.Tools;
+
+public static class GlobalObjectHolder
 {
-    public static class GlobalObjectHolder
-    {
-        /// <summary>
-        /// 程序启动参数
-        /// </summary>
-        public static string[] StartupArgs { get; set; }
-    }
+    /// <summary>
+    /// 程序启动参数
+    /// </summary>
+    public static string[] StartupArgs { get; set; }
 }

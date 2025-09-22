@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PluginInstaller.Views
+namespace PluginInstaller.Views;
+
+/// <summary>
+/// Interaction logic for InstallPreparation
+/// </summary>
+public partial class InstallPreparation : UserControl
 {
-    /// <summary>
-    /// Interaction logic for InstallPreparation
-    /// </summary>
-    public partial class InstallPreparation : UserControl
+    public InstallPreparation()
     {
-        public InstallPreparation()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,35 +1,34 @@
 ﻿using System.Windows;
 
-namespace PowerLab.Control.Tests
+namespace PowerLab.Control.Tests;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+    }
+
+    private void MaxWin_MouseClick(object sender, RoutedEventArgs e)
+    {
+        if (WindowState == WindowState.Normal)
         {
-            InitializeComponent();
+            WindowState = WindowState.Maximized;
+            return;
         }
 
-        private void MaxWin_MouseClick(object sender, RoutedEventArgs e)
+        if (WindowState == WindowState.Maximized)
         {
-            if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-                return;
-            }
-
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                return;
-            }
+            WindowState = WindowState.Normal;
+            return;
         }
+    }
 
-        private void CloseWindowButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+    private void CloseWindowButton_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }

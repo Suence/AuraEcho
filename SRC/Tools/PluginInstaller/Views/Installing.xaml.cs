@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PluginInstaller.Views
+namespace PluginInstaller.Views;
+
+/// <summary>
+/// Interaction logic for Installing
+/// </summary>
+public partial class Installing : UserControl
 {
-    /// <summary>
-    /// Interaction logic for Installing
-    /// </summary>
-    public partial class Installing : UserControl
+    public Installing()
     {
-        public Installing()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

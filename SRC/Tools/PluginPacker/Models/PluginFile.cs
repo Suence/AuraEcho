@@ -1,25 +1,24 @@
-﻿namespace PluginPacker.Models
+﻿namespace PluginPacker.Models;
+
+public class PluginFile : PluginItem
 {
-    public class PluginFile : PluginItem
+    private bool _isEntryFile;
+
+    public string FilePath { get; }
+
+    public bool IsEntryFile
     {
-        private bool _isEntryFile;
+        get => _isEntryFile;
+        set => SetProperty(ref _isEntryFile, value);
+    }
 
-        public string FilePath { get; }
+    public PluginFolder Parent { get; set; }
 
-        public bool IsEntryFile
-        {
-            get => _isEntryFile;
-            set => SetProperty(ref _isEntryFile, value);
-        }
+    public PluginFile(string filePath, string fileName, PluginFolder folder) : base(fileName)
+    {
+        Type = PluginItemType.File;
+        FilePath = filePath;
 
-        public PluginFolder Parent { get; set; }
-
-        public PluginFile(string filePath, string fileName, PluginFolder folder) : base(fileName)
-        {
-            Type = PluginItemType.File;
-            FilePath = filePath;
-
-            Parent = folder;
-        }
+        Parent = folder;
     }
 }

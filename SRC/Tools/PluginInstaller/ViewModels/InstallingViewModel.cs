@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
-using PluginInstaller.Constants;
+﻿using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
@@ -12,132 +10,133 @@ using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.IO;
+using System.Reflection;
 
-namespace PluginInstaller.ViewModels
+namespace PluginInstaller.ViewModels;
+
+/// <summary>
+/// 正在安装
+/// </summary>
+public class InstallingViewModel : BindableBase, INavigationAware
 {
+    #region private members
+    private readonly IRegionManager _regionManager;
+    private readonly IPluginRepository _pluginRepository;
+    private readonly ILogger _logger;
+    private readonly IContainerProvider _containerProvider;
+
+    private string _pluginTempDir;
+    private PluginManifest _pluginManifest;
+    #endregion
+
     /// <summary>
-    /// 正在安装
+    /// 模块清单
     /// </summary>
-    public class InstallingViewModel : BindableBase, INavigationAware
+    public PluginManifest PluginManifest
     {
-        #region private members
-        private readonly IRegionManager _regionManager;
-        private readonly IPluginRepository _pluginRepository;
-        private readonly ILogger _logger;
-        private readonly IContainerProvider _containerProvider;
+        get => _pluginManifest;
+        set => SetProperty(ref _pluginManifest, value);
+    }
 
-        private string _pluginTempDir;
-        private PluginManifest _pluginManifest;
-        #endregion
+    public DelegateCommand InstallPluginCommand { get; }
+    /// <summary>
+    /// 安装模块
+    /// </summary>
+    private void InstallPlugin()
+    {
+        // 拷贝到目标插件目录
+        string finalPath = Path.Combine(ApplicationPaths.Plugins, PluginManifest.Id);
+        if (Directory.Exists(finalPath))
+            Directory.Delete(finalPath, true);
 
-        /// <summary>
-        /// 模块清单
-        /// </summary>
-        public PluginManifest PluginManifest
+        DirectoryUtils.SafeMoveDirectory(_pluginTempDir, finalPath);
+
+        var existingPlugin = _pluginRepository.GetPluginRegistries().FirstOrDefault(pr => pr.Manifest.Id == PluginManifest.Id);
+        if (existingPlugin is not null)
         {
-            get => _pluginManifest;
-            set => SetProperty(ref _pluginManifest, value);
+            _pluginRepository.RemovePluginRegistry(existingPlugin.Id);
         }
 
-        public DelegateCommand InstallPluginCommand { get; }
-        /// <summary>
-        /// 安装模块
-        /// </summary>
-        private void InstallPlugin()
+        var entryAssemblyPath = Path.Combine(finalPath, PluginManifest.EntryAssemblyName);
+        var alc = new PluginLoadContext(entryAssemblyPath);
+        Assembly pluginAssembly = null;
+        try
         {
-            // 拷贝到目标插件目录
-            string finalPath = Path.Combine(ApplicationPaths.Plugins, PluginManifest.Id);
-            if (Directory.Exists(finalPath))
-                Directory.Delete(finalPath, true);
-
-            DirectoryUtils.SafeMoveDirectory(_pluginTempDir, finalPath);
-
-            var existingPlugin = _pluginRepository.GetPluginRegistries().FirstOrDefault(pr => pr.Manifest.Id == PluginManifest.Id);
-            if (existingPlugin is not null)
-            {
-                _pluginRepository.RemovePluginRegistry(existingPlugin.Id);
-            }
-
-            var entryAssemblyPath = Path.Combine(finalPath, PluginManifest.EntryAssemblyName);
-            var alc = new PluginLoadContext(entryAssemblyPath);
-            Assembly pluginAssembly = null;
-            try
-            {
-                pluginAssembly = alc.LoadFromAssemblyPath(entryAssemblyPath);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"加载插件程序集失败：{PluginManifest.PluginName}，异常：{ex.Message}");
-            }
-            string defaultView = GetPluginDefaultView(pluginAssembly);
-
-            IPluginSetup pluginDatabaseInitializer = GetPluginDatabaseInitializer(pluginAssembly);
-            if (pluginDatabaseInitializer is not null)
-            {
-                pluginDatabaseInitializer.Setup(_containerProvider);
-            }
-            _pluginRepository.AddPluginRegistry(new PluginRegistry
-            {
-                Id = Guid.NewGuid().ToString(),
-                PlanStatus = PluginPlanStatus.None,
-                Manifest = PluginManifest,
-                PluginFolder = ApplicationPaths.GetPluginPath(PluginManifest.Id),
-                Status = PluginStatus.Enabled,
-                DefaultView = defaultView
-            });
-
-            _regionManager.RequestNavigate(
-                RegionNames.MainRegion,
-                ViewNames.InstallCompleted);
+            pluginAssembly = alc.LoadFromAssemblyPath(entryAssemblyPath);
         }
-
-        private IPluginSetup GetPluginDatabaseInitializer(Assembly pluginAssembly)
+        catch (Exception ex)
         {
-            Type? pluginDatabaseInitializerType =
-                pluginAssembly.GetExportedTypes()
-                              .Where(t => typeof(IPluginSetup).IsAssignableFrom(t))
-                              .Where(t => t != typeof(IPluginSetup))
-                              .Where(t => !t.IsAbstract)
-                              .SingleOrDefault();
-            return _containerProvider.Resolve(pluginDatabaseInitializerType) as IPluginSetup;
+            _logger.Error($"加载插件程序集失败：{PluginManifest.PluginName}，异常：{ex.Message}");
         }
+        string defaultView = GetPluginDefaultView(pluginAssembly);
 
-        private string GetPluginDefaultView(Assembly pluginAssembly)
+        IPluginSetup pluginDatabaseInitializer = GetPluginDatabaseInitializer(pluginAssembly);
+        if (pluginDatabaseInitializer is not null)
         {
-            var targetAttribute = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
-            if (targetAttribute is null) throw new Exception("插件程序集没有指定 DefaultView");
-
-            return targetAttribute.ViewName;
+            pluginDatabaseInitializer.Setup(_containerProvider);
         }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="regionManager"></param>
-        /// <param name="logger"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public InstallingViewModel(IRegionManager regionManager, IContainerProvider containerProvider, IPluginRepository pluginRepository, ILogger logger)
+        _pluginRepository.AddPluginRegistry(new PluginRegistry
         {
-            _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
-            _pluginRepository = pluginRepository ?? throw new ArgumentNullException(nameof(pluginRepository));
-            _containerProvider = containerProvider ?? throw new ArgumentNullException(nameof(containerProvider));
+            Id = Guid.NewGuid().ToString(),
+            PlanStatus = PluginPlanStatus.None,
+            Manifest = PluginManifest,
+            PluginFolder = ApplicationPaths.GetPluginPath(PluginManifest.Id),
+            Status = PluginStatus.Enabled,
+            DefaultView = defaultView
+        });
 
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _regionManager.RequestNavigate(
+            RegionNames.MainRegion,
+            ViewNames.InstallCompleted);
+    }
 
-            InstallPluginCommand = new DelegateCommand(InstallPlugin);
-        }
+    private IPluginSetup GetPluginDatabaseInitializer(Assembly pluginAssembly)
+    {
+        Type? pluginDatabaseInitializerType =
+            pluginAssembly.GetExportedTypes()
+                          .Where(t => typeof(IPluginSetup).IsAssignableFrom(t))
+                          .Where(t => t != typeof(IPluginSetup))
+                          .Where(t => !t.IsAbstract)
+                          .SingleOrDefault();
+        return _containerProvider.Resolve(pluginDatabaseInitializerType) as IPluginSetup;
+    }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-            => true;
+    private string GetPluginDefaultView(Assembly pluginAssembly)
+    {
+        var targetAttribute = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
+        if (targetAttribute is null) throw new Exception("插件程序集没有指定 DefaultView");
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
+        return targetAttribute.ViewName;
+    }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            _pluginTempDir = navigationContext.Parameters.GetValue<string>("PluginTempDir");
-            PluginManifest = navigationContext.Parameters.GetValue<PluginManifest>("PluginManifest");
-        }
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="regionManager"></param>
+    /// <param name="logger"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public InstallingViewModel(IRegionManager regionManager, IContainerProvider containerProvider, IPluginRepository pluginRepository, ILogger logger)
+    {
+        _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
+        _pluginRepository = pluginRepository ?? throw new ArgumentNullException(nameof(pluginRepository));
+        _containerProvider = containerProvider ?? throw new ArgumentNullException(nameof(containerProvider));
+
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+        InstallPluginCommand = new DelegateCommand(InstallPlugin);
+    }
+
+    public bool IsNavigationTarget(NavigationContext navigationContext)
+        => true;
+
+    public void OnNavigatedFrom(NavigationContext navigationContext)
+    {
+    }
+
+    public void OnNavigatedTo(NavigationContext navigationContext)
+    {
+        _pluginTempDir = navigationContext.Parameters.GetValue<string>("PluginTempDir");
+        PluginManifest = navigationContext.Parameters.GetValue<PluginManifest>("PluginManifest");
     }
 }

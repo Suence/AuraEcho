@@ -1,18 +1,17 @@
 ﻿using Prism.Mvvm;
 using Prism.Navigation;
 
-namespace PowerLab.UIToolkit.Mvvm
+namespace PowerLab.UIToolkit.Mvvm;
+
+public abstract class ViewModelBase : BindableBase, IDestructible
 {
-    public abstract class ViewModelBase : BindableBase, IDestructible
+    protected ViewModelBase()
     {
-        protected ViewModelBase()
-        {
 
-        }
+    }
 
-        public virtual void Destroy()
-        {
+    public virtual void Destroy()
+    {
 
-        }
     }
 }

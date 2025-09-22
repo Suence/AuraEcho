@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 
-namespace PowerLab.ExternalTools.Themes
+namespace PowerLab.ExternalTools.Themes;
+
+public partial class ExternalToolsDarkTheme : ResourceDictionary
 {
-    public partial class ExternalToolsDarkTheme : ResourceDictionary
-    {
-        public ExternalToolsDarkTheme() => InitializeComponent();
-    }
+    public ExternalToolsDarkTheme() => InitializeComponent();
 }

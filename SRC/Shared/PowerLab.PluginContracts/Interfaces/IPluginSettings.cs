@@ -1,9 +1,8 @@
 ﻿using PowerLab.PluginContracts.Models;
 
-namespace PowerLab.PluginContracts.Interfaces
+namespace PowerLab.PluginContracts.Interfaces;
+
+public interface IPluginSettings
 {
-    public interface IPluginSettings
-    {
-        AppSettingsItem GetSettings();
-    }
+    AppSettingsItem GetSettings();
 }

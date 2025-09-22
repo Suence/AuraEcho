@@ -1,8 +1,7 @@
-﻿namespace PluginPacker.Models
+﻿namespace PluginPacker.Models;
+
+public enum PluginItemType
 {
-    public enum PluginItemType
-    {
-        File = 0,
-        Folder = 1
-    }
+    File = 0,
+    Folder = 1
 }

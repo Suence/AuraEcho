@@ -1,8 +1,7 @@
-﻿namespace PowerLab.PluginContracts.Interfaces
+﻿namespace PowerLab.PluginContracts.Interfaces;
+
+public interface IPathProvider
 {
-    public interface IPathProvider
-    {
-        string PluginsRootPath { get; }
-        string DataRootPath { get; }
-    }
+    string PluginsRootPath { get; }
+    string DataRootPath { get; }
 }

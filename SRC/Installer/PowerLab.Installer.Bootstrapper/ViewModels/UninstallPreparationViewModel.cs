@@ -3,27 +3,26 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace PowerLab.Installer.Bootstrapper.ViewModels
+namespace PowerLab.Installer.Bootstrapper.ViewModels;
+
+public class UninstallPreparationViewModel : BindableBase
 {
-    public class UninstallPreparationViewModel : BindableBase
+    private readonly IRegionManager _regionManager;
+
+    public DelegateCommand NavigationToUninstallCommand { get; }
+    private void NavigationToUninstall()
     {
-        private readonly IRegionManager _regionManager;
+        _regionManager.RequestNavigate(InstallerRegionNames.MainRegion, InstallerViewNames.Uninstalling);
+    }
 
-        public DelegateCommand NavigationToUninstallCommand { get; }
-        private void NavigationToUninstall()
-        {
-            _regionManager.RequestNavigate(InstallerRegionNames.MainRegion, InstallerViewNames.Uninstalling);
-        }
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="model"></param>
+    public UninstallPreparationViewModel(IRegionManager regionManager)
+    {
+        _regionManager = regionManager;
 
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-        /// <param name="model"></param>
-        public UninstallPreparationViewModel(IRegionManager regionManager)
-        {
-            _regionManager = regionManager;
-
-            NavigationToUninstallCommand = new DelegateCommand(NavigationToUninstall);
-        }
+        NavigationToUninstallCommand = new DelegateCommand(NavigationToUninstall);
     }
 }

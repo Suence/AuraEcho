@@ -16,9 +16,9 @@
                    FontSize="20"
                    Text="安装完成" />
         <Button Padding="16,4"
-                Click="FinishedButon_Click"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
+                Click="FinishedButon_Click"
                 Content="OK" />
     </Grid>
 </UserControl>

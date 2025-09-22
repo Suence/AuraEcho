@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace PowerLab.Installer.Bootstrapper.Views
+namespace PowerLab.Installer.Bootstrapper.Views;
+
+/// <summary>
+/// Interaction logic for ActionCancelled
+/// </summary>
+public partial class ActionCancelled : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ActionCancelled
-    /// </summary>
-    public partial class ActionCancelled : UserControl
+    public ActionCancelled()
     {
-        public ActionCancelled()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

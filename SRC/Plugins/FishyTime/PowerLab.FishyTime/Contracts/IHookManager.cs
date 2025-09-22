@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace PowerLab.FishyTime.Contracts
+namespace PowerLab.FishyTime.Contracts;
+
+public interface IHookManager : IDisposable
 {
-    public interface IHookManager : IDisposable
-    {
-        public void StartHook();
-        public void StopHook();
-        public void ClearEventSubscribers();
-    }
+    public void StartHook();
+    public void StopHook();
+    public void ClearEventSubscribers();
 }

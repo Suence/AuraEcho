@@ -1,11 +1,10 @@
 ﻿using Prism.Mvvm;
 
-namespace PluginInstaller.ViewModels
+namespace PluginInstaller.ViewModels;
+
+public class InstallCompletedViewModel : BindableBase
 {
-    public class InstallCompletedViewModel : BindableBase
+    public InstallCompletedViewModel()
     {
-        public InstallCompletedViewModel()
-        {
-        }
     }
 }

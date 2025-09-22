@@ -1,16 +1,14 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Data;
 
-namespace PowerLab.ExternalTools.Views
+namespace PowerLab.ExternalTools.Views;
+
+/// <summary>
+/// Interaction logic for ExternalToolsHome
+/// </summary>
+public partial class ExternalToolsHome : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ExternalToolsHome
-    /// </summary>
-    public partial class ExternalToolsHome : UserControl
+    public ExternalToolsHome()
     {
-        public ExternalToolsHome()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

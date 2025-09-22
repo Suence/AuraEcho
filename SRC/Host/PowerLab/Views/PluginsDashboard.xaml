@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:PowerLab.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:models="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
              xmlns:powerlab="http://ui.powerlab.com/"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
@@ -28,21 +28,25 @@
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0"
                            Width="50"
-                           Margin="0, 0, 4, 0"
-                           Height="50" Source="{Binding Path=., Converter={converters:PluginIconConverter}}"/>
+                           Height="50"
+                           Margin="0,0,4,0"
+                           Source="{Binding Path=., Converter={converters:PluginIconConverter}}" />
                     <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock HorizontalAlignment="Left" Grid.Row="0" FontWeight="Bold" Text="{Binding Manifest.PluginName}" />
-                        <TextBlock Grid.Row="1" Text="{Binding Manifest.Description}"/>
+                        <TextBlock Grid.Row="0"
+                                   HorizontalAlignment="Left"
+                                   FontWeight="Bold"
+                                   Text="{Binding Manifest.PluginName}" />
+                        <TextBlock Grid.Row="1" Text="{Binding Manifest.Description}" />
                         <DockPanel Grid.Row="2" LastChildFill="False">
-                            <TextBlock DockPanel.Dock="Left" Text="{Binding Manifest.Author}"/>
-                            <StackPanel DockPanel.Dock="Right"
-                                    VerticalAlignment="Bottom"
-                                    Orientation="Horizontal">
+                            <TextBlock DockPanel.Dock="Left" Text="{Binding Manifest.Author}" />
+                            <StackPanel VerticalAlignment="Bottom"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Horizontal">
                                 <TextBlock Margin="0,0,4,0" d:Text="已启用">
                                     <TextBlock.Text>
                                         <MultiBinding Converter="{converters:PluginStatusTextConverter}">
@@ -52,16 +56,16 @@
                                     </TextBlock.Text>
                                 </TextBlock>
                                 <Button x:Name="PluginPlanButton"
-                                    Padding="8,0"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    Content="...">
+                                        Padding="8,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Content="...">
                                     <Button.ContextMenu>
                                         <ContextMenu x:Name="PluginContextMenu" StaysOpen="False">
                                             <MenuItem x:Name="EnablePluginMenuItem"
-                                                  Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanEnablePluginCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  Header="ENABLE">
+                                                      Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanEnablePluginCommand}"
+                                                      CommandParameter="{Binding}"
+                                                      Header="ENABLE">
                                                 <i:Interaction.Triggers>
                                                     <i:DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginStatus.Enabled}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
@@ -81,8 +85,8 @@
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
-                                                                                       Operator="Equal"
-                                                                                       RightOperand="{x:Static models:PluginStatus.Enabled}" />
+                                                                                           Operator="Equal"
+                                                                                           RightOperand="{x:Static models:PluginStatus.Enabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
@@ -93,8 +97,8 @@
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
-                                                                                       Operator="Equal"
-                                                                                       RightOperand="{x:Static models:PluginStatus.Disabled}" />
+                                                                                           Operator="Equal"
+                                                                                           RightOperand="{x:Static models:PluginStatus.Disabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
@@ -107,9 +111,9 @@
                                             </MenuItem>
 
                                             <MenuItem x:Name="DisablePluginMenuItem"
-                                                  Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanDisablePluginCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  Header="DISABLE">
+                                                      Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanDisablePluginCommand}"
+                                                      CommandParameter="{Binding}"
+                                                      Header="DISABLE">
                                                 <i:Interaction.Triggers>
                                                     <i:DataTrigger Binding="{Binding Status}" Value="{x:Static models:PluginStatus.Enabled}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
@@ -132,8 +136,8 @@
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
-                                                                                       Operator="Equal"
-                                                                                       RightOperand="{x:Static models:PluginStatus.Enabled}" />
+                                                                                           Operator="Equal"
+                                                                                           RightOperand="{x:Static models:PluginStatus.Enabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
@@ -144,8 +148,8 @@
                                                             <i:ConditionBehavior>
                                                                 <i:ConditionalExpression>
                                                                     <i:ComparisonCondition LeftOperand="{Binding Status}"
-                                                                                       Operator="Equal"
-                                                                                       RightOperand="{x:Static models:PluginStatus.Disabled}" />
+                                                                                           Operator="Equal"
+                                                                                           RightOperand="{x:Static models:PluginStatus.Disabled}" />
                                                                 </i:ConditionalExpression>
                                                             </i:ConditionBehavior>
                                                         </i:Interaction.Behaviors>
@@ -155,29 +159,29 @@
                                                 </i:Interaction.Triggers>
                                             </MenuItem>
                                             <MenuItem Command="{Binding Source={StaticResource BindingProxy}, Path=Data.PlanUninstallPluginCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  Header="UNINSTALL">
+                                                      CommandParameter="{Binding}"
+                                                      Header="UNINSTALL">
                                                 <i:Interaction.Triggers>
                                                     <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
                                                     <i:DataTrigger Binding="{Binding PlanStatus}"
-                                                               Comparison="NotEqual"
-                                                               Value="{x:Static models:PluginPlanStatus.UninstallPending}">
+                                                                   Comparison="NotEqual"
+                                                                   Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
                                                 </i:Interaction.Triggers>
                                             </MenuItem>
                                             <MenuItem Command="{Binding Source={StaticResource BindingProxy}, Path=Data.CancelUninstallPluginCommand}"
-                                                  CommandParameter="{Binding}"
-                                                  Header="CANCEL UNINSTALL">
+                                                      CommandParameter="{Binding}"
+                                                      Header="CANCEL UNINSTALL">
                                                 <i:Interaction.Triggers>
                                                     <i:DataTrigger Binding="{Binding PlanStatus}" Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
                                                     </i:DataTrigger>
                                                     <i:DataTrigger Binding="{Binding PlanStatus}"
-                                                               Comparison="NotEqual"
-                                                               Value="{x:Static models:PluginPlanStatus.UninstallPending}">
+                                                                   Comparison="NotEqual"
+                                                                   Value="{x:Static models:PluginPlanStatus.UninstallPending}">
                                                         <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
                                                     </i:DataTrigger>
                                                 </i:Interaction.Triggers>
@@ -187,13 +191,13 @@
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
                                             <i:ChangePropertyAction PropertyName="IsOpen"
-                                                                TargetName="PluginContextMenu"
-                                                                Value="True" />
+                                                                    TargetName="PluginContextMenu"
+                                                                    Value="True" />
                                         </i:EventTrigger>
                                         <i:EventTrigger EventName="Loaded">
                                             <i:ChangePropertyAction PropertyName="DataContext"
-                                                                TargetName="PluginContextMenu"
-                                                                Value="{Binding}" />
+                                                                    TargetName="PluginContextMenu"
+                                                                    Value="{Binding}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </Button>
