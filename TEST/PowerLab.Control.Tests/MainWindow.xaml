@@ -237,6 +237,19 @@
                         <ComboBoxItem Content="BBB" />
                         <ComboBoxItem Content="CCC" />
                     </ComboBox>
+                    <StackPanel Margin="4">
+                        <ProgressBar Width="200"
+                                     Height="3"
+                                     Margin="4"
+                                     HorizontalAlignment="Left"
+                                     Value="30" />
+                        <ProgressBar Width="200"
+                                     Height="3"
+                                     Margin="4"
+                                     HorizontalAlignment="Left"
+                                     IsIndeterminate="True"
+                                     Value="30" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

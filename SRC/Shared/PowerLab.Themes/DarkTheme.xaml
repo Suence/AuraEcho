@@ -10,5 +10,6 @@
         <ResourceDictionary Source="Dark/Slider.xaml" />
         <ResourceDictionary Source="Dark/Textbox.xaml" />
         <ResourceDictionary Source="Dark/ComboBox.xaml" />
+        <ResourceDictionary Source="Dark/ProgressBar.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
