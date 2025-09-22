@@ -224,9 +224,19 @@
                                    Foreground="White"
                                    Text="{Binding ElementName=HorizontalSlider, Path=Value}" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox IsEnabled="True" MinWidth="50" MinHeight="30"  powerlab:ControlHelper.PlaceHolder="搜索"/>
+                    <StackPanel Margin="4" Orientation="Horizontal">
+                        <TextBox MinWidth="50"
+                                 MinHeight="30"
+                                 powerlab:ControlHelper.PlaceHolder="搜索"
+                                 IsEnabled="True" />
                     </StackPanel>
+                    <ComboBox Width="200"
+                              Margin="4"
+                              HorizontalAlignment="Left">
+                        <ComboBoxItem Content="AAA" />
+                        <ComboBoxItem Content="BBB" />
+                        <ComboBoxItem Content="CCC" />
+                    </ComboBox>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
