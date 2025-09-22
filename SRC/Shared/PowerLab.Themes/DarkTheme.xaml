@@ -7,5 +7,6 @@
         <ResourceDictionary Source="Dark/CheckBox.xaml"/>
         <ResourceDictionary Source="Dark/ScrollViewer.xaml"/>
         <ResourceDictionary Source="Dark/Slider.xaml"/>
+        <ResourceDictionary Source="Dark/Textbox.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
