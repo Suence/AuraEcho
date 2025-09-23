@@ -175,14 +175,75 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" Margin="24">
+        <Grid Grid.Row="1" Margin="24,0,24,24">
             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <StackPanel>
+                    <Menu Background="Transparent"
+                          ContextMenuService.Placement="Bottom"
+                          ContextMenuService.PlacementTarget="{Binding RelativeSource={RelativeSource self}}"
+                          Foreground="White">
+                        <MenuItem Header="File1" />
+                        <MenuItem Header="Window">
+                            <MenuItem Header="AAA" />
+                            <MenuItem Header="BBB">
+                                <MenuItem Header="B1" />
+                                <MenuItem Header="B2" />
+                                <Separator/>
+                                <MenuItem Header="B4" />
+                            </MenuItem>
+                            <MenuItem Header="CCC" />
+                        </MenuItem>
+                        <MenuItem Header="Help">
+                            <MenuItem Header="C1" />
+                            <MenuItem Header="C2" />
+                        </MenuItem>
+                    </Menu>
                     <StackPanel Margin="4" Orientation="Horizontal">
-                        <Button Margin="4"
+                        <Button x:Name="PrimaryButton"
+                                Margin="4"
                                 Padding="16,8"
                                 Content="Primary Button"
-                                Style="{DynamicResource PrimaryButtonStyle}" />
+                                ContextMenuService.IsEnabled="False"
+                                Style="{DynamicResource PrimaryButtonStyle}">
+                            <Button.ContextMenu>
+                                <ContextMenu x:Name="PrimaryButtonContextMenu"
+                                             Placement="Top"
+                                             PlacementTarget="{x:Reference PrimaryButton}">
+                                    <MenuItem Header="AAAA">
+                                        <MenuItem.Icon>
+                                            <Viewbox>
+                                                <Canvas Width="16" Height="16">
+                                                    <Path Data="M 3.14645 3.14645 C 3.34171 2.95118 3.65829 2.95118 3.85355 3.14645 L 8 7.293 L 12.1464 3.14645 C 12.32 2.97288 12.5894 2.9536 12.7843 3.08859 L 12.8536 3.14645 C 13.0488 3.34171 13.0488 3.65829 12.8536 3.85355 L 8.707 8 L 12.8536 12.1464 C 13.0271 12.32 13.0464 12.5894 12.9114 12.7843 L 12.8536 12.8536 C 12.6583 13.0488 12.3417 13.0488 12.1464 12.8536 L 8 8.707 L 3.85355 12.8536 C 3.67999 13.0271 3.41056 13.0464 3.21569 12.9114 L 3.14645 12.8536 C 2.95118 12.6583 2.95118 12.3417 3.14645 12.1464 L 7.293 8 L 3.14645 3.85355 C 2.97288 3.67999 2.9536 3.41056 3.08859 3.21569 L 3.14645 3.14645 Z" Fill="White" />
+                                                </Canvas>
+                                            </Viewbox>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="BBBB">
+                                        <MenuItem Header="B1">
+                                            <MenuItem.Icon>
+                                                <Viewbox>
+                                                    <Canvas Width="16" Height="16">
+                                                        <Path Data="M 3.14645 3.14645 C 3.34171 2.95118 3.65829 2.95118 3.85355 3.14645 L 8 7.293 L 12.1464 3.14645 C 12.32 2.97288 12.5894 2.9536 12.7843 3.08859 L 12.8536 3.14645 C 13.0488 3.34171 13.0488 3.65829 12.8536 3.85355 L 8.707 8 L 12.8536 12.1464 C 13.0271 12.32 13.0464 12.5894 12.9114 12.7843 L 12.8536 12.8536 C 12.6583 13.0488 12.3417 13.0488 12.1464 12.8536 L 8 8.707 L 3.85355 12.8536 C 3.67999 13.0271 3.41056 13.0464 3.21569 12.9114 L 3.14645 12.8536 C 2.95118 12.6583 2.95118 12.3417 3.14645 12.1464 L 7.293 8 L 3.14645 3.85355 C 2.97288 3.67999 2.9536 3.41056 3.08859 3.21569 L 3.14645 3.14645 Z" Fill="White" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                            </MenuItem.Icon>
+                                            <MenuItem Header="B2" />
+                                            <MenuItem Header="B3" />
+                                            <Separator />
+                                            <MenuItem Header="B4" />
+                                        </MenuItem>
+                                    </MenuItem>
+                                    <MenuItem Header="CCCC" />
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <i:ChangePropertyAction PropertyName="IsOpen"
+                                                            TargetName="PrimaryButtonContextMenu"
+                                                            Value="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
                         <Button Margin="4"
                                 Padding="16,8"
                                 Content="Secondry Button" />
@@ -250,6 +311,7 @@
                                      IsIndeterminate="True"
                                      Value="30" />
                     </StackPanel>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>

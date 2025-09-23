@@ -11,5 +11,8 @@
         <ResourceDictionary Source="Dark/Textbox.xaml" />
         <ResourceDictionary Source="Dark/ComboBox.xaml" />
         <ResourceDictionary Source="Dark/ProgressBar.xaml" />
+        <ResourceDictionary Source="Dark/MenuItem.xaml" />
+        <ResourceDictionary Source="Dark/Menu.xaml" />
+        <ResourceDictionary Source="Dark/ContextMenu.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
