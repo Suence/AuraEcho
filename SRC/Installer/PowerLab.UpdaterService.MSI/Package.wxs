@@ -1,0 +1,13 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Name="PowerLab.UpdaterService"
+			 Manufacturer="Suencesoft"
+			 Version="1.0.0.0"
+			 Codepage="65001"
+			 UpgradeCode="FDE1BB05-00BD-4250-88B0-08E3A3E1AC0B">
+		<MajorUpgrade DowngradeErrorMessage="不允许降级安装" />
+
+		<Feature Id="Main">
+			<ComponentGroupRef Id="FileComponents" />
+		</Feature>
+	</Package>
+</Wix>

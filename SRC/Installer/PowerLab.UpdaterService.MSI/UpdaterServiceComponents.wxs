@@ -1,0 +1,33 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<ComponentGroup Id="FileComponents" Directory="INSTALLFOLDER">
+			<Files Include="$(var.PowerLab.UpdaterService.TargetDir)**">
+				<Exclude Files="*.pdb"/>
+				<Exclude Files="PowerLabUpdaterService.exe"/>
+			</Files>
+			
+			<Component Id="ProductComponent" Guid="1577B0BC-EFED-4FC6-AD98-68DE350FACBC">
+				<File Id="PowerLabUpdaterService.exe" 
+					  Source="$(var.PowerLab.UpdaterService.TargetDir)PowerLabUpdaterService.exe" 
+					  KeyPath="yes"/>
+
+				<ServiceInstall Id="InstallUpdaterService"
+					            Name="PowerLabUpdaterService"
+					            DisplayName="PowerLab Updater Service"
+					            Description="此服务用于检测、下载和安装 PowerLab 的更新。如果此服务被禁用，PowerLab 将无法自动更新。"
+					            Start="auto"
+					            Type="ownProcess"
+					            ErrorControl="normal"
+					            Vital="yes"
+					            Account="LocalSystem" />
+
+				<ServiceControl Id="ControlUpdaterService"
+					            Name="PowerLabUpdaterService"
+					            Start="install"
+					            Stop="both"
+					            Remove="uninstall"
+					            Wait="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

@@ -6,10 +6,7 @@
 			Version="1.1.13.0"
 			IconSourceFile="Assets/Icons/PowerLab.ico"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
-		<!--<BootstrapperApplication>
-			<bal:WixStandardBootstrapperApplication LicenseUrl="https://www.example.com/license" Theme="hyperlinkLicense" />
-		</BootstrapperApplication>-->
-
+		
 		<BootstrapperApplication Secondary="true" SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.exe">
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)mbanative.dll" />
 			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.dll" />
@@ -30,7 +27,6 @@
 			<bal:WixPrerequisiteBootstrapperApplication Theme="standard" LogoFile="Assets/Icons/PowerLab.ico" LocalizationFile="Strings/zh-cn.wxl"/>
 		</BootstrapperApplication>
 
-		<!-- 自动检测 .NET 8 Desktop Runtime -->
 		<netfx:DotNetCoreSearch
 			RuntimeType="desktop"
 			MajorVersion="8"
@@ -52,7 +48,8 @@
 						UninstallArguments="windowsdesktop-runtime-8.0.18-win-x64.exe /uninstall /quiet /norestart">
 				<ExePackagePayload Name="windowsdesktop-runtime-8.0.18-win-x64.exe" SourceFile="ExePackageFiles/windowsdesktop-runtime-8.0.18-win-x64.exe" />
 			</ExePackage>
-
+			
+			<!-- PowerLab -->
 			<MsiPackage Id="PowerLabInstallerMSI"
 						Visible="no"
 						Compressed="yes"
@@ -62,19 +59,27 @@
 				<MsiProperty Name="UNINSTALLER_PATH" Value="[UNINSTALLER_PATH]"/>
 			</MsiPackage>
 
+			<!-- Plugin Installer -->
 			<MsiPackage Id="PluginInstallerMSI"
 						Visible="no"
 						Compressed="yes"
-						EnableFeatureSelection="yes"
 						SourceFile="PowerLab.PluginInstaller.MSI.msi">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 
+			<!-- Data Migrator -->
 			<MsiPackage Id="PowerLabDataMigratorMsi"
 						Visible="no"
 						Compressed="yes"
-						EnableFeatureSelection="yes"
 						SourceFile="PowerLab.DataMigrator.MSI.msi">
+				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
+			</MsiPackage>
+
+			<!-- Updater Service -->
+			<MsiPackage Id="PowerLabUpdaterServiceMsi"
+						Visible="no"
+						Compressed="yes"
+						SourceFile="PowerLab.UpdaterService.MSI.msi">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 		</Chain>

@@ -1,25 +1,26 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-	<PropertyGroup>
-		<OutputType>Bundle</OutputType>
-		<OutputName>PowerLabSetup</OutputName>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-		<Cultures>zh-CN;</Cultures>
-	</PropertyGroup>
-	<ItemGroup>
-		<Content Include="Assets\Icons\PowerLab.ico" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.1" />
-		<PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\PowerLab.DataMigrator.MSI\PowerLab.DataMigrator.MSI.wixproj" />
-		<ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
-		<ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
-		<ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="ExePackageFiles\windowsdesktop-runtime-8.0.18-win-x64.exe" />
-	</ItemGroup>
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <OutputName>PowerLabSetup</OutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Cultures>zh-CN;</Cultures>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\PowerLab.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.1" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PowerLab.DataMigrator.MSI\PowerLab.DataMigrator.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
+    <ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.UpdaterService.MSI\PowerLab.UpdaterService.MSI.wixproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ExePackageFiles\windowsdesktop-runtime-8.0.18-win-x64.exe" />
+  </ItemGroup>
 </Project>
