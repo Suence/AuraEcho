@@ -34,6 +34,9 @@
     <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime.Themes/PowerLab.FishyTime.Themes.csproj" Id="3ea07b88-81a0-4819-95ad-55220defbf59" />
     <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
+  <Folder Name="/SRC/Services/">
+    <Project Path="SRC/Services/PowerLab.UpdaterService/PowerLab.UpdaterService.csproj" Id="e639c754-aeb7-4817-bde3-c6d110dbe754" />
+  </Folder>
   <Folder Name="/SRC/Shared/">
     <Project Path="SRC/Shared/PowerLab.Controls/PowerLab.Controls.csproj" />
     <Project Path="SRC/Shared/PowerLab.Core/PowerLab.Core.csproj" />
