@@ -7,8 +7,8 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:UninstallingViewModel}"
-             d:DesignHeight="625"
-             d:DesignWidth="1030"
+             d:DesignHeight="500"
+             d:DesignWidth="750"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -35,27 +35,24 @@
         <StackPanel Grid.Row="1"
                     Margin="24"
                     VerticalAlignment="Bottom">
-            <DockPanel Margin="0,0,0,16" LastChildFill="False">
+            <DockPanel Margin="0,0,0,8" LastChildFill="False">
                 <TextBlock d:Text="正在安装，请稍后..."
                            DockPanel.Dock="Left"
                            FontSize="14"
-                           Foreground="#EFEFEF"
                            Text="{Binding Message}" />
                 <TextBlock d:Text="10%"
                            DockPanel.Dock="Right"
-                           Foreground="#EFEFEF"
                            Text="{Binding ElementName=UninstallProgressBar, Path=Value, StringFormat={}{0:N0}%}" />
             </DockPanel>
             <ProgressBar x:Name="UninstallProgressBar"
-                         Height="16 "
-                         Margin="0,0,0,24"
+                         Height="4"
+                         Margin="0,0,0,16"
                          d:Value="10"
                          Maximum="100"
                          Minimum="0" />
             <Button Width="75"
                     Height="36"
                     HorizontalAlignment="Right"
-                    BorderThickness="1"
                     Command="{Binding CancelCommand}"
                     Content="取消"
                     FontSize="14" />

@@ -8,14 +8,14 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
         Title="MainWindow"
-        Width="1200"
-        Height="676"
+        Width="750"
+        Height="500"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
-        d:DesignHeight="432"
-        d:DesignWidth="738"
+        d:DesignHeight="500"
+        d:DesignWidth="750"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Background="Black"
-        Foreground="#646464"
+        Foreground="White"
         Loaded="Window_Loaded"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -40,7 +40,6 @@
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button Width="40"
                         Click="Button_Click"
-                        Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
                         Style="{DynamicResource IconButtonStyle}">
                     <Button.Content>
                         <Viewbox Width="20" Height="20">
@@ -52,7 +51,6 @@
                 </Button>
                 <Button Width="40"
                         Command="{Binding ExitCommand}"
-                        Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
                         Style="{DynamicResource IconButtonStyle}">
                     <Viewbox Width="20" Height="20">
                         <Canvas Width="16" Height="16">

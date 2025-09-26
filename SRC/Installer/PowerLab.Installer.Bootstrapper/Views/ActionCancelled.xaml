@@ -6,15 +6,15 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
              av:DataContext="{av:DesignInstance Type=viewmodels:ActionCancelledViewModel}"
-             av:DesignHeight="676"
-             av:DesignWidth="1200"
+             av:DesignHeight="500"
+             av:DesignWidth="750"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="#1B1B1B"
              mc:Ignorable="av">
     <Grid>
         <TextBlock HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   FontSize="48"
+                   FontSize="36"
                    Foreground="#EFEFEF"
                    Text="已取消" />
     </Grid>

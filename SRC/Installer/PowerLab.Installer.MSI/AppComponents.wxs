@@ -38,13 +38,6 @@
 					  Target="[UNINSTALLER_PATH]"
 					  Arguments="/uninstall"
 					  WorkingDirectory="ProgramMenuFolder" />
-			<!--<Shortcut Id="UninstallShortcut"
-					  Name="卸载 PowerLab"
-					  Icon="PowerLab.ico"
-					  Description="卸载 PowerLab"
-					  Target="[SystemFolder]msiexec.exe"
-					  Arguments="/x [ProductCode]"
-					  WorkingDirectory="SystemFolder" />-->
 
 			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolder"/>
 			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>

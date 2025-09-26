@@ -7,10 +7,9 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:InstallingViewModel}"
-             d:DesignHeight="676"
-             d:DesignWidth="1200"
+             d:DesignHeight="500"
+             d:DesignWidth="750"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Background="#F9FAFC"
              Loaded="UserControl_Loaded"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -35,27 +34,24 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" />
         <StackPanel Grid.Row="1" Margin="24">
-            <DockPanel Margin="0,0,0,16" LastChildFill="False">
+            <DockPanel Margin="0,0,0,8" LastChildFill="False">
                 <TextBlock d:Text="正在安装，请稍后"
                            DockPanel.Dock="Left"
                            FontSize="14"
-                           Foreground="#202532"
                            Text="{Binding Message}" />
                 <TextBlock d:Text="10%"
                            DockPanel.Dock="Right"
-                           Foreground="#202532"
                            Text="{Binding ElementName=InstallProgressBar, Path=Value, StringFormat={}{0:N0}%}" />
             </DockPanel>
             <ProgressBar x:Name="InstallProgressBar"
-                         Height="16 "
-                         Margin="0,0,0,24"
+                         Height="4"
+                         Margin="0,0,0,16"
                          d:Value="10"
                          Maximum="100"
                          Minimum="0" />
             <Button Width="75"
                     Height="36"
                     HorizontalAlignment="Right"
-                    BorderThickness="1"
                     Command="{Binding CancelCommand}"
                     Content="取消"
                     FontSize="14" />

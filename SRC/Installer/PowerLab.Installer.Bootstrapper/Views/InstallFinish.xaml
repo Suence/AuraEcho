@@ -6,10 +6,9 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
              av:DataContext="{av:DesignInstance Type=viewmodels:InstallFinishViewModel}"
-             av:DesignHeight="676"
-             av:DesignWidth="1200"
+             av:DesignHeight="500"
+             av:DesignWidth="750"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Background="#F9FAFC"
              mc:Ignorable="av">
     <Grid>
         <Grid.RowDefinitions>
@@ -17,15 +16,10 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <StackPanel Margin="0,106,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top">
-                <Image Width="208" Height="208" />
-                <TextBlock HorizontalAlignment="Center"
-                           FontSize="24"
-                           Foreground="White"
-                           Text="恭喜你，安装成功！" />
-            </StackPanel>
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="24"
+                       Text="安装成功！" />
         </Grid>
         <Grid Grid.Row="1" Height="154">
             <Button Width="176"

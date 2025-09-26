@@ -6,50 +6,49 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:InstallPreparationViewModel}"
-             d:DesignHeight="676"
-             d:DesignWidth="1200"
+             d:DesignHeight="500"
+             d:DesignWidth="750"
+             Foreground="White"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
-    <Grid Background="#F9FAFC">
+    <Grid Background="{DynamicResource Themes.Brushes.Background}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"
-                    Margin="0,112,0,0"
+                    Margin="0,60,0,0"
                     HorizontalAlignment="Center">
-            <Image Width="160"
-                   Height="160"
-                   Margin="0,0,0,19"
+            <Image Width="120"
+                   Height="120"
+                   Margin="0,0,0,16"
                    Source="/Assets/Images/powerlab.png" />
-            <StackPanel Margin="0,0,0,63"
+            <StackPanel Margin="0,0,0,24"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">
                 <TextBlock Margin="0,0,8,0"
-                           FontSize="32"
+                           FontSize="24"
                            FontWeight="Bold"
-                           Foreground="#1b1b1b"
                            Text="PowerLab" />
                 <TextBlock VerticalAlignment="Center"
                            d:Text="V1.2.0"
-                           FontSize="24"
-                           Foreground="#4c4c4c"
+                           FontSize="18"
+                           Foreground="#8c8c8c"
                            Text="{Binding Version, StringFormat=V{0}}" />
             </StackPanel>
             <StackPanel x:Name="CustomInstallationLayout"
                         d:Visibility="Visible"
                         Visibility="Hidden">
                 <StackPanel Height="40"
-                            Margin="0,0,0,24"
+                            Margin="0,0,0,16"
                             HorizontalAlignment="Center"
                             Orientation="Horizontal">
                     <TextBlock Margin="0,0,16,0"
                                VerticalAlignment="Center"
                                FontSize="14"
-                               Foreground="#1b1b1b"
                                Text="安装路径:"
                                TextOptions.TextFormattingMode="Display" />
-                    <Border Width="548"
+                    <Border Width="360"
                             Padding="8,0"
                             BorderBrush="#d1d1d1"
                             BorderThickness="1">
@@ -68,7 +67,6 @@
                                     Margin="0,0,8,0"
                                     VerticalAlignment="Center"
                                     Click="SelectFolderButton_Click"
-                                    Foreground="#333333"
                                     Style="{DynamicResource IconButtonStyle}">
                                 <Viewbox Width="16" Height="16">
                                     <Canvas Width="16"
@@ -85,29 +83,29 @@
                         </Grid>
                     </Border>
                 </StackPanel>
-                <StackPanel Margin="0,0,0,48"
+                <StackPanel Margin="0,0,0,24"
                             HorizontalAlignment="Center"
                             Orientation="Horizontal">
-                    <CheckBox Margin="0,0,64,0"
+                    <CheckBox Margin="0,0,48,0"
                               Content="创建桌面图标"
                               IsChecked="{Binding IsCreateDesktopFolderShortcut}" />
-                    <CheckBox Margin="0,0,64,0"
+                    <CheckBox Margin="0,0,48,0"
                               Content="添加到快速启动栏"
                               IsChecked="True" />
                     <CheckBox Content="开机默认启动 " IsChecked="{Binding IsRunAtBoot}" />
                 </StackPanel>
             </StackPanel>
-            <Button Width="216"
-                    Height="72"
+            <Button Width="160"
+                    Height="48"
                     HorizontalAlignment="Center"
                     Command="{Binding InstallCommand}"
                     Content="快速安装"
-                    FontSize="24"
+                    FontSize="18"
                     Foreground="White"
                     Style="{DynamicResource PrimaryButtonStyle}"
                     TextOptions.TextFormattingMode="Display" />
         </StackPanel>
-        <Grid Grid.Row="1" Margin="24">
+        <Grid Grid.Row="1" Margin="16">
             <DockPanel x:Name="RegularInstallation" LastChildFill="False">
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
 
