@@ -9,8 +9,15 @@
 		<MediaTemplate EmbedCab="yes"/>
 		
 		<Feature Id="Main">
-			<ComponentGroupRef Id="AppComponents" />
-			<ComponentRef Id="UninstallShortcut"/>
+			<ComponentGroupRef Id="AppFileComponents" />
+			<ComponentRef Id="StartMenuShortcutComponent"/>
+		</Feature>
+		<Feature Id="DesktopShortcut">
+			<ComponentRef Id="DesktopShortcutComponent"/>
+		</Feature>
+
+		<Feature Id="RunAtBoot">
+			<ComponentRef Id="RunAtBootComponent" />
 		</Feature>
 	</Package>
 </Wix>

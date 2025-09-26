@@ -22,8 +22,9 @@
                        Text="安装成功！" />
         </Grid>
         <Grid Grid.Row="1" Height="154">
-            <Button Width="176"
-                    Height="56"
+            <Button Width="160"
+                    Height="48"
+                    FontSize="18"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Command="{Binding FinishedCommand}"

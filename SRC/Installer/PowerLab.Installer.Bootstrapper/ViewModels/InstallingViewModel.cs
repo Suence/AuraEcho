@@ -186,12 +186,12 @@ public class InstallingViewModel : BindableBase, INavigationAware
 
     private void PlanMsiFeature(object sender, PlanMsiFeatureEventArgs e)
     {
-        if (e.FeatureId == "DesktopFolderShortcutFeature")
+        if (e.FeatureId == "DesktopShortcut")
         {
             e.State = _isCreateDesktopFolderShortcut ? FeatureState.Local : FeatureState.Absent;
             return;
         }
-        if (e.FeatureId == "RunAtBootFeature")
+        if (e.FeatureId == "RunAtBoot")
         {
             e.State = _isRunAtBoot ? FeatureState.Local : FeatureState.Absent;
             return;

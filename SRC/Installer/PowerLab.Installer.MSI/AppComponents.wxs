@@ -1,8 +1,8 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
 		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
-		<ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
-			<Component Id="ProductComponent" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
+		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER">
+			<Component Id="MainFile" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
 				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
 			</Component>
 
@@ -24,15 +24,31 @@
 
 		</ComponentGroup>
 
+		<Component Id="DesktopShortcutComponent" Guid="*" Directory="ProductFolder">
+			<Shortcut Id="DesktopShortcut"
+					  Directory="DesktopFolder"
+					  Name="PowerLab"
+					  Target="[INSTALLFOLDER]PowerLab.exe"
+					  WorkingDirectory="INSTALLFOLDER"
+					  Icon="PowerLab.ico"
+					  Advertise="no" />
+			<RegistryValue Root="HKCU"
+						   Key="Software\Suencesoft\PowerLab"
+						   Name="DesktopShortcutCreated"
+						   Type="string"
+						   Value="1"
+						   KeyPath="yes"/>
+		</Component>
+
 		<!-- 开始菜单快捷方式 -->
-		<Component Id="UninstallShortcut" Guid="*" Directory="ProductFolder" >
-			<Shortcut Id="ApplicationStartMenuShortcut"
+		<Component Id="StartMenuShortcutComponent" Guid="*" Directory="ProductFolder" >
+			<Shortcut Id="StartMenuShortcut"
 					  Name="PowerLab"
 					  Icon="PowerLab.ico"
 					  Description="PowerLab by suence"
 					  Target="[INSTALLFOLDER]PowerLab.exe"
 					  WorkingDirectory="INSTALLFOLDER"/>
-			<Shortcut Id="UninstallShortcut"
+			<Shortcut Id="StartMenuUninstallShortcut"
 					  Name="卸载 PowerLab"
 				      Description="卸载 PowerLab"
 					  Target="[UNINSTALLER_PATH]"
@@ -41,12 +57,24 @@
 
 			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolder"/>
 			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>
-			<RegistryValue Root="HKCU" 
-						   Key="Software\Suencesoft\PowerLab" 
+			<RegistryValue Root="HKCU"
+						   Key="Software\Suencesoft\PowerLab"
 						   Name="InstallPath"
 						   Type="string"
-						   Value="[INSTALLFOLDER]PowerLab.exe"  
+						   Value="[INSTALLFOLDER]PowerLab.exe"
 						   KeyPath="yes"/>
 		</Component>
+
+		<!-- 开机自启 -->
+		<Component Id="RunAtBootComponent" Guid="*">
+			<RegistryValue
+				Root="HKCU"
+				Key="Software\Microsoft\Windows\CurrentVersion\Run"
+				Name="PowerLab"
+				Value="&quot;[INSTALLFOLDER]PowerLab.exe&quot;"
+				Type="string"
+				KeyPath="yes" />
+		</Component>
+
 	</Fragment>
 </Wix>
