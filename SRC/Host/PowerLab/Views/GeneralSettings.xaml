@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="PowerLab.Views.GeneralSettings"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:prism="http://prismlibrary.com/"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:pm="clr-namespace:PowerLab.PluginContracts.Models;assembly=PowerLab.PluginContracts"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:GeneralSettingsViewModel}"
              d:DesignHeight="425"
@@ -23,11 +23,11 @@
                        HorizontalAlignment="Left"
                        FontSize="20"
                        Text="GENERAL" />
-            <TextBlock Margin="0,0,0,8"
+            <TextBlock Margin="0,0,0,4"
                        FontSize="16"
                        Text="LANGUAGES" />
             <Border Height="40"
-                    Margin="0,0,0,8"
+                    Margin="0,0,0,16"
                     Padding="8,0"
                     BorderBrush="#333333"
                     BorderThickness="1">
@@ -51,11 +51,11 @@
                                Text="CHOOSE THE LANGUAGE USED BY POWERLAB" />
                 </DockPanel>
             </Border>
-            <TextBlock Margin="0,0,0,8"
+            <TextBlock Margin="0,0,0,4"
                        FontSize="16"
                        Text="THEMES" />
             <Border Height="40"
-                    Margin="0,0,0,8"
+                    Margin="0,0,0,16"
                     Padding="8,0"
                     BorderBrush="#333333"
                     BorderThickness="1">
@@ -81,11 +81,11 @@
                 </DockPanel>
             </Border>
 
-            <TextBlock Margin="0,0,0,8"
+            <TextBlock Margin="0,0,0,4"
                        FontSize="16"
                        Text="HARDWARE ACCELERATION" />
             <Border Height="40"
-                    Margin="0,0,0,8"
+                    Margin="0,0,0,16"
                     Padding="8,0"
                     BorderBrush="#333333"
                     BorderThickness="1">
@@ -96,6 +96,25 @@
                     <TextBlock Margin="0,0,8,0"
                                VerticalAlignment="Center"
                                Text="BETTER USER EXPERIENCE, MAY USE MORE MEMORY." />
+                </DockPanel>
+            </Border>
+
+            <TextBlock Margin="0,0,0,4"
+                       FontSize="16"
+                       Text="RUN AT BOOT" />
+            <Border Height="40"
+                    Margin="0,0,0,8"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <CheckBox VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              Style="{DynamicResource ToggleSwitchCheckBox}"
+                              IsChecked="{Binding RunAtBoot}" />
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="POWERLAB RUN AT SYSTEM BOOT." />
                 </DockPanel>
             </Border>
         </StackPanel>
