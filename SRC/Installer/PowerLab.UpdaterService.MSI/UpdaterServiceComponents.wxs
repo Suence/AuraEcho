@@ -5,12 +5,10 @@
 				<Exclude Files="*.pdb"/>
 				<Exclude Files="PowerLabUpdaterService.exe"/>
 			</Files>
-			
-			<Component Id="ProductComponent" Guid="1577B0BC-EFED-4FC6-AD98-68DE350FACBC">
-				<File Id="PowerLabUpdaterService.exe" 
-					  Source="$(var.PowerLab.UpdaterService.TargetDir)PowerLabUpdaterService.exe" 
-					  KeyPath="yes"/>
 
+			<Component Id="ProductComponent" Guid="1577B0BC-EFED-4FC6-AD98-68DE350FACBC">
+				<File Id="PowerLabUpdaterService.exe" Source="$(var.PowerLab.UpdaterService.TargetDir)PowerLabUpdaterService.exe" />
+				
 				<ServiceInstall Id="InstallUpdaterService"
 					            Name="PowerLabUpdaterService"
 					            DisplayName="PowerLab Updater Service"

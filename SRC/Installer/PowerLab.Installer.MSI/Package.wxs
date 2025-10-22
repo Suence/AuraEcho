@@ -2,6 +2,7 @@
 	<Package Name="PowerLab"
 			 Manufacturer="Suencesoft"
 			 Codepage="65001"
+			 Scope="perMachine"
 			 UpgradeCode="F2F37407-114F-4E5E-8B26-5872152FD721"
 			 Version="1.0.0.0">
 		<MajorUpgrade DowngradeErrorMessage="不允许降级安装" />

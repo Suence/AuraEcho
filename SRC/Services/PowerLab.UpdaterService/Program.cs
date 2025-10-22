@@ -1,4 +1,9 @@
 using PowerLab.UpdaterService;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+            .WriteTo.File(@"D:\Workspace\Personal\DNFPowerLabUpdaterLog\updater.log", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseWindowsService(options =>
@@ -9,9 +14,6 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddHostedService<Worker>();
     })
-    .ConfigureLogging((context, logging) =>
-    {
-        logging.AddEventLog(); 
-    })
+    .UseSerilog()
     .Build();
 host.Run();

@@ -138,7 +138,7 @@ public class GeneralSettingsViewModel : BindableBase
     private static string GetInstallPath()
     {
         const string keyPath = @"Software\Suencesoft\PowerLab";
-        using RegistryKey key = Registry.CurrentUser.OpenSubKey(keyPath);
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return null;
 
         object value = key.GetValue("InstallPath");

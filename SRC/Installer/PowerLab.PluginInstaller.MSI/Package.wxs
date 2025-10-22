@@ -3,6 +3,7 @@
 		   Manufacturer="Suencesoft" 
 		   Version="1.1.0.0"
 		   Codepage="65001"
+		   Scope="perMachine"
 		   UpgradeCode="50E1E8C4-5997-466B-8A2D-0307A086C810">
 	  
 	  <MajorUpgrade DowngradeErrorMessage="不允许降级安装" />

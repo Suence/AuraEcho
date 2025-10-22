@@ -39,8 +39,8 @@ public class InstallingViewModel : BindableBase, INavigationAware
     private async Task StopAppAsync()
     {
         List<Process> allProcesses =
-            [.. Process.GetProcessesByName("PowerLab"),
-             .. Process.GetProcessesByName("PlixInstaller")];
+            [.. Process.GetProcessesByName(ProcessNames.HostProcess),
+             .. Process.GetProcessesByName(ProcessNames.PluginInstaller)];
 
         if (allProcesses.Count <= 0) return;
 
@@ -71,10 +71,10 @@ public class InstallingViewModel : BindableBase, INavigationAware
         runningProcesses.ForEach(p => p.Kill());
     }
 
-    private string GetInstallPath()
+    private static string GetInstallPath()
     {
         const string keyPath = @"Software\Suencesoft\PowerLab";
-        using RegistryKey key = Registry.CurrentUser.OpenSubKey(keyPath);
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return null;
 
         object value = key.GetValue("InstallPath");

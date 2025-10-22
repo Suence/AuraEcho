@@ -1,7 +1,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Fragment>
 		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
-		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER">
+		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER" >
 			<Component Id="MainFile" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
 				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
 			</Component>
@@ -21,7 +21,19 @@
 				<Exclude Files="Mono.TextTemplating.dll"/>
 				<Exclude Files="System.Composition.*.dll"/>
 			</Files>
-
+			<Component Id="AppRegistryComponents" Guid="*">
+				<RegistryValue Root="HKLM"
+						   Key="Software\Suencesoft\PowerLab"
+						   Name="InstallPath"
+						   Type="string"
+						   Value="[INSTALLFOLDER]PowerLab.exe"
+						   KeyPath="yes"/>
+				<RegistryValue Root="HKLM"
+						   Key="Software\Suencesoft\PowerLab"
+						   Name="InstallVersion"
+						   Type="string"
+						   Value="$(var.BundleVersion)"/>
+			</Component>
 		</ComponentGroup>
 
 		<Component Id="DesktopShortcutComponent" Guid="*" Directory="ProductFolder">
@@ -34,7 +46,7 @@
 					  Advertise="no" />
 			<RegistryValue Root="HKCU"
 						   Key="Software\Suencesoft\PowerLab"
-						   Name="DesktopShortcutCreated"
+						   Name="DesktopShortcutInstalled"
 						   Type="string"
 						   Value="1"
 						   KeyPath="yes"/>
@@ -45,6 +57,7 @@
 			<Shortcut Id="StartMenuShortcut"
 					  Name="PowerLab"
 					  Icon="PowerLab.ico"
+					  Advertise="no"
 					  Description="PowerLab by suence"
 					  Target="[INSTALLFOLDER]PowerLab.exe"
 					  WorkingDirectory="INSTALLFOLDER"/>
@@ -59,9 +72,9 @@
 			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>
 			<RegistryValue Root="HKCU"
 						   Key="Software\Suencesoft\PowerLab"
-						   Name="InstallPath"
+						   Name="StartMenuShortcutInstalled"
 						   Type="string"
-						   Value="[INSTALLFOLDER]PowerLab.exe"
+						   Value="1"
 						   KeyPath="yes"/>
 		</Component>
 
