@@ -1,8 +1,16 @@
 using PowerLab.UpdaterService;
 using Serilog;
 
+var logDir = Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+    "PowerLab",
+    "UpdaterService",
+    "Logs");
+
+Directory.CreateDirectory(logDir);
+
 Log.Logger = new LoggerConfiguration()
-            .WriteTo.File(@"D:\Workspace\Personal\DNFPowerLabUpdaterLog\updater.log", rollingInterval: RollingInterval.Day)
+            .WriteTo.File(Path.Combine(logDir, "updater.log"), rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
 IHost host = Host.CreateDefaultBuilder(args)

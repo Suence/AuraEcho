@@ -43,7 +43,7 @@ namespace PowerLab.UpdaterService
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-                using Process process = Process.Start(processStartInfo);
+                using Process? process = Process.Start(processStartInfo);
                 return;
             }
         }
