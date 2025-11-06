@@ -27,7 +27,7 @@ namespace PowerLab.UpdaterService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("服务已启动");
+            _logger.LogInformation("ExecuteAsync");
             while (!stoppingToken.IsCancellationRequested)
             {
                 Version currentVersion = GetInstalledVersion();
@@ -37,12 +37,12 @@ namespace PowerLab.UpdaterService
                 if (new Version(newestVersion.Version) <= currentVersion)
                 {
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                    await Task.Delay(10000, stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
                     continue;
                 }
                 _logger.LogInformation("正在下载新版本安装包");
                 var targetPath = Path.Combine(_tempDownloadPath, $"{Guid.NewGuid()}.exe");
-                var progress = new Progress<double>(p => _logger.LogInformation("下载进度: {progress}%", p.ToString("F2")));
+                var progress = new Progress<double>(p => { });
                 bool result = await _fileRespository.DownloadFileAsync(
                     newestVersion.DownloadUrl,
                     targetPath,
@@ -51,7 +51,7 @@ namespace PowerLab.UpdaterService
                 if (!result)
                 {
                     _logger.LogError("下载失败，稍后重试。");
-                    await Task.Delay(10000, stoppingToken);
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
                     continue;
                 }
                 _logger.LogInformation("下载完成：{setup_path}, 准备安装。", targetPath);
@@ -66,13 +66,25 @@ namespace PowerLab.UpdaterService
                     CreateNoWindow = true
                 };
                 using Process? process = Process.Start(processStartInfo);
-                return;
+                if (process is not null)
+                {
+                    await process.WaitForExitAsync(stoppingToken);
+                    _logger.LogInformation("安装程序已退出，等待应用程序启动。");
+                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                    _logger.LogInformation("继续检测更新。");
+                    continue;
+                }
             }
-            _logger.LogInformation("ExecuteAsync END");
         }
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("StopAsync");
+            await base.StopAsync(cancellationToken);
+        }
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("StartAsync");
+            await base.StartAsync(cancellationToken);
         }
         private static Version GetInstalledVersion()
         {
