@@ -3,7 +3,7 @@
     <SuppressSpecificWarnings>
     </SuppressSpecificWarnings>
     <Cultures>zh-CN;</Cultures>
-    <DefineConstants>BundleVersion=1.1.19;</DefineConstants>
+    <DefineConstants>BundleVersion=1.1.28;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\PowerLab.ico" />

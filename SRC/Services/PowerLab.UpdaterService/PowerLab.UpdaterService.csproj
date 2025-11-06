@@ -5,7 +5,6 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		<PublishAot>true</PublishAot>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<UserSecretsId>dotnet-PowerLab.UpdaterService-246ccfe9-2804-4ab7-8024-b3b70e2f64a0</UserSecretsId>
 		<AssemblyName>$(MSBuildProjectName.Replace(".", ""))</AssemblyName>
