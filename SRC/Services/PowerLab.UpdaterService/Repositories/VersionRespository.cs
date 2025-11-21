@@ -16,7 +16,7 @@ namespace PowerLab.UpdaterService.Services
         public async Task<AppVersionInfo> GetLatestAsync()
         {
             HttpHelper httpHelper = new HttpHelper();
-            var result = await httpHelper.GetAsync<AppVersionInfo>($"{_baseApiUrl}/api/version/latest");
+            var result = await httpHelper.GetAsync<AppVersionInfo>($"{_baseApiUrl}/api/appPackage/latest");
             return result;
         }
     }

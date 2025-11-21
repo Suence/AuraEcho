@@ -36,15 +36,14 @@ namespace PowerLab.UpdaterService
                 _logger.LogInformation("最新版本: {version}", newestVersion.Version);
                 if (new Version(newestVersion.Version) <= currentVersion)
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                     await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
                     continue;
                 }
                 _logger.LogInformation("正在下载新版本安装包");
-                var targetPath = Path.Combine(_tempDownloadPath, $"{Guid.NewGuid()}.exe");
+                var targetPath = Path.Combine(_tempDownloadPath, newestVersion.FileName);
                 var progress = new Progress<double>(p => { });
                 bool result = await _fileRespository.DownloadFileAsync(
-                    newestVersion.DownloadUrl,
+                    newestVersion.FileId,
                     targetPath,
                     progress);
 
