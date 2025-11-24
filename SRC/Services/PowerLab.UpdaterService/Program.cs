@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using PowerLab.UpdaterService;
+using PowerLab.UpdaterService.Constants;
 using PowerLab.UpdaterService.Contracts;
 using PowerLab.UpdaterService.Services;
 using Serilog;
@@ -25,7 +26,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddHostedService<Worker>();
         services.AddSingleton<IFileRespository, FileRespository>();
-        services.AddSingleton<IVersionRespository, VersionRespository>();
+        services.AddSingleton<IPackageRespository, PackageRespository>();
     })
     .UseSerilog()
     .Build();

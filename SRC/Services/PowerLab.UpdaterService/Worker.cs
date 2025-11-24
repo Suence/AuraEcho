@@ -8,14 +8,12 @@ namespace PowerLab.UpdaterService
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IFileRespository _fileRespository;
-        private readonly IVersionRespository _versionRespository;
+        private readonly IPackageRespository _packageRespository;
         private readonly string _tempDownloadPath;
-        public Worker(ILogger<Worker> logger, IVersionRespository versionRespository, IFileRespository fileRespository)
+        public Worker(ILogger<Worker> logger, IPackageRespository packageRespository)
         {
             _logger = logger;
-            _versionRespository = versionRespository;
-            _fileRespository = fileRespository;
+            _packageRespository = packageRespository;
 
             _tempDownloadPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
@@ -42,8 +40,8 @@ namespace PowerLab.UpdaterService
                 _logger.LogInformation("正在下载新版本安装包");
                 var targetPath = Path.Combine(_tempDownloadPath, newestVersion.FileName);
                 var progress = new Progress<double>(p => { });
-                bool result = await _fileRespository.DownloadFileAsync(
-                    newestVersion.FileId,
+                bool result = await _packageRespository.DownloadLatestAsync(
+                    "stable",
                     targetPath,
                     progress);
 
@@ -105,7 +103,7 @@ namespace PowerLab.UpdaterService
         }
         private async Task<AppVersionInfo> GetLastestVersionAsync()
         {
-            var latestVersion = await _versionRespository.GetLatestAsync();
+            var latestVersion = await _packageRespository.GetLatestAsync();
             return latestVersion ?? new AppVersionInfo { Version = "1.0.0" };
         }
 

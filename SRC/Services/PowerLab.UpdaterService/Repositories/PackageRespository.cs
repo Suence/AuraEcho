@@ -1,21 +1,18 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
-using PowerLab.UpdaterService.Constants;
+﻿using PowerLab.UpdaterService.Constants;
 using PowerLab.UpdaterService.Contracts;
 using PowerLab.UpdaterService.Models;
 using PowerLab.UpdaterService.Tools;
-using Serilog;
 
 namespace PowerLab.UpdaterService.Services
 {
-    public class FileRespository : IFileRespository
+    public class PackageRespository : IPackageRespository
     {
-        public async Task<bool> DownloadFileAsync(string fileId, string outputPath, IProgress<double> progress)
+        public async Task<bool> DownloadLatestAsync(string build, string outputPath, IProgress<double> progress)
         {
             try
             {
                 using var client = new HttpClient();
-                using var response = await client.GetAsync($"{Urls.ServerUrl}/api/file/download?fileId={fileId}", HttpCompletionOption.ResponseHeadersRead);
+                using var response = await client.GetAsync($"{Urls.ServerUrl}/api/package/download?build={build}", HttpCompletionOption.ResponseHeadersRead);
                 response.EnsureSuccessStatusCode();
 
                 var totalBytes = response.Content.Headers.ContentLength ?? -1L;
@@ -34,7 +31,7 @@ namespace PowerLab.UpdaterService.Services
                     if (totalBytes > 0)
                     {
                         double percent = totalRead * 100.0 / totalBytes;
-                        progress?.Report(percent);
+                        progress.Report(percent);
                     }
                 }
                 return true;
@@ -43,6 +40,13 @@ namespace PowerLab.UpdaterService.Services
             {
                 return false;
             }
+        }
+
+        public async Task<AppVersionInfo> GetLatestAsync()
+        {
+            HttpHelper httpHelper = new HttpHelper();
+            var result = await httpHelper.GetAsync<AppVersionInfo>($"{Urls.ServerUrl}/api/package/latest");
+            return result;
         }
 
     }
