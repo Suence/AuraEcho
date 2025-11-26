@@ -3,7 +3,7 @@
 		   Name="PowerLab.DataMigrator.MSI" 
 		   Manufacturer="Suencesoft" 
 		   Codepage="65001"
-		   Version="1.0.0.0"
+		   Version="$(var.Version)"
 		   Scope="perMachine"
 		   UpgradeCode="61AE8CCC-20A7-4B74-9DBC-982B1726C138">
 	  <MajorUpgrade DowngradeErrorMessage="不允许降级安装" />

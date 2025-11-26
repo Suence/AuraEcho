@@ -1,8 +1,9 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Cultures>zh-CN;</Cultures>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Services\PowerLab.UpdaterService\PowerLab.UpdaterService.csproj" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<Cultures>zh-CN;</Cultures>
+		<DefineConstants>Version=1.0.4;</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Services\PowerLab.UpdaterService\PowerLab.UpdaterService.csproj" />
+	</ItemGroup>
 </Project>
