@@ -1,10 +1,24 @@
-﻿using DryIoc;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.IO.Pipes;
+using System.Reflection.Metadata;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
+using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.EntityFrameworkCore;
+using PowerLab.Constants;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Data;
+using PowerLab.Core.Events;
 using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
@@ -17,19 +31,10 @@ using PowerLab.Services;
 using PowerLab.UIToolkit.RegionDialog;
 using PowerLab.ViewModels;
 using PowerLab.Views;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace PowerLab;
 
@@ -38,6 +43,8 @@ namespace PowerLab;
 /// </summary>
 public partial class App
 {
+    private const string PIPE_NAME = "PowerLab_SingleInstance_Pipe";
+
     private string[] _startupArgs;
     private TaskbarIcon _notifyIcon;
     protected override Window CreateShell()
@@ -84,6 +91,8 @@ public partial class App
     {
         _startupArgs = e.Args;
         base.OnStartup(e);
+
+        StartPipeServer();
 
         RegisterEvents();
         LoadConfig();
@@ -141,9 +150,11 @@ public partial class App
         using var mutex = new Mutex(true, MutexNames.POWERLAB_MUTEX_ID);
         if (!mutex.WaitOne(TimeSpan.Zero, true))
         {
-            IntPtr mainWindowHandle = Win32Helper.FindWindow(null, ApplicationResources.GetString("AppName"));
-            if (mainWindowHandle != IntPtr.Zero)
-                Win32Helper.SetForegroundWindow(mainWindowHandle);
+            using var client = new NamedPipeClientStream(".", PIPE_NAME, PipeDirection.Out);
+            client.Connect(200); 
+            using var writer = new StreamWriter(client);
+            writer.WriteLine(NamedPipeMessages.ShowWindow);
+            writer.Flush();
 
             logger.Debug("已有实例正在运行，正在退出程序。");
             return;
@@ -153,6 +164,33 @@ public partial class App
         var app = new App();
         app.InitializeComponent();
         app.Run();
+    }
+
+    private static void StartPipeServer()
+    {
+        Task.Run(async () =>
+        {
+            while (true)
+            {
+                using var server = new NamedPipeServerStream(
+                    PIPE_NAME,
+                    PipeDirection.In,
+                    1,
+                    PipeTransmissionMode.Byte,
+                    PipeOptions.Asynchronous);
+
+                await server.WaitForConnectionAsync();
+
+                using var reader = new StreamReader(server);
+                string? cmd = await reader.ReadLineAsync();
+
+                if (cmd == NamedPipeMessages.ShowWindow)
+                {
+                    IEventAggregator eventAggregator = (Current as App)!.Container.Resolve<IEventAggregator>();
+                    eventAggregator.GetEvent<RequestShowAppEvent>().Publish();
+                }
+            }
+        });
     }
 
     /// <summary>

@@ -19,24 +19,16 @@ public class NotifyIconViewModel
     public ICommand ShowWindowCommand { get; }
     private void ShowWindow()
     {
-        if (Application.Current.MainWindow.WindowState == WindowState.Minimized)
-            Application.Current.MainWindow.WindowState = WindowState.Normal;
-
-        Application.Current.MainWindow.Show();
-        Application.Current.MainWindow.Activate();
-        Application.Current.MainWindow.Topmost = true;
-        Application.Current.MainWindow.Topmost = false;
-        Application.Current.MainWindow.Focus();
+        _eventAggregator.GetEvent<RequestShowAppEvent>().Publish();
     }
 
     public ICommand ExitApplicationCommand { get; }
     private void ExitApplication() => Application.Current.Shutdown();
 
     public DelegateCommand<string> GoToTargetViewCommand { get; }
-    private async void GoToTargetView(string viewName)
+    private void GoToTargetView(string viewName)
     {
         _eventAggregator.GetEvent<RequestViewEvent>().Publish(viewName);
-        await Task.Delay(100);
         ShowWindow();
     }
 

@@ -6,6 +6,7 @@
 		<ApplicationIcon>Assets/Icons/PowerLab.ico</ApplicationIcon>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<SatelliteResourceLanguages>zh-Hans;en-us</SatelliteResourceLanguages>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
 		<ApplicationDefinition Remove="App.xaml" />

@@ -1,8 +1,8 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using System.Windows;
+using Microsoft.Toolkit.Uwp.Notifications;
 using PowerLab.Core.Attributes;
-using System;
-using System.IO;
-using System.Windows;
+using PowerLab.Core.Events;
+using Prism.Events;
 namespace PowerLab.Views;
 
 /// <summary>
@@ -10,12 +10,16 @@ namespace PowerLab.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
+    private readonly IEventAggregator _eventAggregator;
+
     /// <summary>
     /// 构造函数
     /// </summary>
     [Logging]
-    public MainWindow()
+    public MainWindow(IEventAggregator eventAggregator)
     {
+        _eventAggregator = eventAggregator;
+        _eventAggregator.GetEvent<RequestShowAppEvent>().Subscribe(BringToForeground, ThreadOption.UIThread);
         InitializeComponent();
     }
 
@@ -24,7 +28,7 @@ public partial class MainWindow : Window
     /// </summary>
     public void BringToForeground()
     {
-        if (WindowState == WindowState.Minimized || Visibility == Visibility.Hidden)
+        if (WindowState == WindowState.Minimized || !IsVisible)
         {
             Show();
             WindowState = WindowState.Normal;
@@ -55,12 +59,6 @@ public partial class MainWindow : Window
     /// <param name="e"></param>
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        //if (App.AppArgs?.Contains("--nowindow") ?? false)
-        //{
-        //    await Task.Delay(10);
-        //    Hide();
-        //}
-
         // 点击通知时, 激活程序(即使程序已关闭)
         // Listen to notification activation
         ToastNotificationManagerCompat.OnActivated += toastArgs =>
@@ -90,8 +88,6 @@ public partial class MainWindow : Window
     {
         Hide();
 
-        //if (!GlobalObjectHolder.Config.NotificationAfterMin) return;
-
         ShowToast();
     }
 
@@ -100,46 +96,12 @@ public partial class MainWindow : Window
     /// </summary>
     public static void ShowToast()
     {
-        //ToastNotificationManagerCompat.History.Clear();
-        //var inlineUri = new Uri("E:\\Personal\\Windows10Notification\\Windows10Notification\\bin\\Debug\\net5.0-windows10.0.17763.0\\WallHaven.jpg");
-        //var inlineUri = new Uri("D:\\Document\\Media\\Image\\GIF\\TextBoxFocus.gif");
-        //var inlineUri = new Uri(Path.GetFullPath("./Assets/Images/toastinline800.gif"));
-        //var heroImageUri = new Uri("E:\\Personal\\Windows10Notification\\Windows10Notification\\bin\\Debug\\net5.0-windows10.0.17763.0\\WallHaven.jpg");            //var heroImageUri = new Uri("E:\\Personal\\Windows10Notification\\Windows10Notification\\bin\\Debug\\net5.0-windows10.0.17763.0\\WallHaven.jpg");
-        var appLogoUri = new Uri(Path.GetFullPath("./Assets/Images/timer.png"));
-
         int conversationId = 384928;
 
-        // Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
         new ToastContentBuilder().AddArgument("conversationId", conversationId)
                                  .AddText("程序已最小化到系统托盘")
                                  .AddText("可转到个性化界面关闭推送通知")
-                                 //.AddAttributionText("可转到个性化界面关闭推送通知")
-                                 //.AddInlineImage(inlineUri)
-                                 //.AddAppLogoOverride(appLogoUri, ToastGenericAppLogoCrop.Circle)
-                                 //.AddAppLogoOverride(appLogoUri, ToastGenericAppLogoCrop.Default)
-                                 //.AddHeroImage(heroImageUri)
-                                 //.AddToastInput(BuildToastSelectionBox())
-                                 //.AddInputTextBox("tbReply", placeHolderContent: "回复:")
-                                 //.AddButton(new ToastButton().SetContent("Reply")
-                                 //                            .AddArgument("action", "reply")
-                                 //                            .SetBackgroundActivation())
-                                 //.AddButton(new ToastButton().SetContent("Like")
-                                 //                            .AddArgument("action", "like")
-                                 //                            .SetBackgroundActivation())
-                                 //.AddButton(new ToastButton().SetContent("View")
-                                 //                            .AddArgument("action", "viewImage")
-                                 //                            .AddArgument("imageUrl", "imageUrl"))
-                                 //.AddButton(new ToastButtonSnooze())
                                  .Show();
-
-        ToastSelectionBox BuildToastSelectionBox()
-        {
-            var selectionBox = new ToastSelectionBox("SelectionBox");
-            selectionBox.Title = "SelectionBox";
-            selectionBox.Items.Add(new ToastSelectionBoxItem("Item1", "Item A"));
-            selectionBox.Items.Add(new ToastSelectionBoxItem("Item2", "Item B"));
-            return selectionBox;
-        }
     }
 
     private void MaxWin_MouseClick(object sender, RoutedEventArgs e)
