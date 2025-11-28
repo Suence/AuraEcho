@@ -1,14 +1,14 @@
 ﻿<UserControl x:Class="PowerLab.Views.Homepage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:prism="http://prismlibrary.com/"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cc="clr-namespace:PowerLab.PluginContracts.Constants;assembly=PowerLab.PluginContracts"
+             xmlns:cm="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
+             xmlns:converters="clr-namespace:PowerLab.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:powerlab="http://ui.powerlab.com/"
-             xmlns:converters="clr-namespace:PowerLab.Converters"
-             xmlns:cm="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
-             xmlns:cc="clr-namespace:PowerLab.PluginContracts.Constants;assembly=PowerLab.PluginContracts"
+             xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:Background="#666666"
              d:DataContext="{d:DesignInstance Type=viewmodels:HomepageViewModel}"
@@ -16,11 +16,6 @@
              d:DesignWidth="495"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadPluginsCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <UserControl.Resources>
         <powerlab:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <CollectionViewSource x:Key="EnabledPluginsView"

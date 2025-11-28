@@ -38,6 +38,7 @@ namespace PowerLab;
 /// </summary>
 public partial class App
 {
+    private string[] _startupArgs;
     private TaskbarIcon _notifyIcon;
     protected override Window CreateShell()
     {
@@ -70,7 +71,10 @@ public partial class App
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        if (!_startupArgs.Contains("--boot"))
+        {
+            base.OnInitialized();
+        }
 
         var regionManager = Container.Resolve<IRegionManager>();
         regionManager.RegisterViewWithRegion(HostRegionNames.MainRegion, typeof(Homepage));
@@ -78,6 +82,7 @@ public partial class App
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        _startupArgs = e.Args;
         base.OnStartup(e);
 
         RegisterEvents();

@@ -1,11 +1,11 @@
-﻿using PowerLab.Core.Events;
+﻿using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using PowerLab.Core.Events;
 using Prism.Commands;
 using Prism.DryIoc;
 using Prism.Events;
 using Prism.Regions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace PowerLab.ViewModels;
 

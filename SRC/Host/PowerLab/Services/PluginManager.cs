@@ -56,7 +56,7 @@ public class PluginManager : IPluginManager
             return _plugins;
         }
 
-        List<PluginRegistry> pluginRegistries = _pluginRepository.GetPluginRegistries().ToList();
+        List<PluginRegistry> pluginRegistries = _pluginRepository.GetPluginRegistries();
 
         foreach (var pluginRegistry in pluginRegistries.ToList())
         {

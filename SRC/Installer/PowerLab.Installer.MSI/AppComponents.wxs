@@ -84,7 +84,7 @@
 				Root="HKCU"
 				Key="Software\Microsoft\Windows\CurrentVersion\Run"
 				Name="PowerLab"
-				Value="&quot;[INSTALLFOLDER]PowerLab.exe&quot;"
+				Value="&quot;[INSTALLFOLDER]PowerLab.exe&quot; --boot"
 				Type="string"
 				KeyPath="yes" />
 		</Component>

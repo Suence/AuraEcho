@@ -126,7 +126,7 @@ public class GeneralSettingsViewModel : BindableBase
         using RegistryKey itemKeyRoot = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
         if (isEnabled)
         {
-            itemKeyRoot.SetValue("PowerLab", $@"""{GetInstallPath()}""", RegistryValueKind.String);
+            itemKeyRoot.SetValue("PowerLab", $@"""{GetInstallPath()}"" --boot", RegistryValueKind.String);
             return;
         }
 

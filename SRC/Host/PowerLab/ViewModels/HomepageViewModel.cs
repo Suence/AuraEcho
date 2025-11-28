@@ -85,5 +85,7 @@ public class HomepageViewModel : BindableBase
         SwitchPluginCommand = new DelegateCommand<PluginRegistry>(SwitchPlugin);
         NavigationToSettingsCommand = new DelegateCommand(NavigationToSettings);
         NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
+
+        LoadPlugins();
     }
 }
