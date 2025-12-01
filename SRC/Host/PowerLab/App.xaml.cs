@@ -64,11 +64,17 @@ public partial class App
         containerRegistry.RegisterSingleton<IPluginRepository, PluginRepository>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
 
+        containerRegistry.RegisterSingleton<IFileRespository, FileRespository>();
+        containerRegistry.RegisterSingleton<IAppPackageRespository, AppPackageRespository>();
+        containerRegistry.RegisterSingleton<IPluginRespository, PluginRespository>();
+
         containerRegistry.RegisterForNavigation<Homepage>();
         containerRegistry.RegisterForNavigation<PluginsDashboard>();
         containerRegistry.RegisterForNavigation<Settings>();
         containerRegistry.RegisterForNavigation<GeneralSettings>();
         containerRegistry.RegisterForNavigation<ConfirmDialog>();
+        containerRegistry.RegisterForNavigation<PluginsMarketplace>();
+        containerRegistry.RegisterForNavigation<MarketplacePluginDetails>();
     }
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -83,8 +89,8 @@ public partial class App
             base.OnInitialized();
         }
 
-        var regionManager = Container.Resolve<IRegionManager>();
-        regionManager.RegisterViewWithRegion(HostRegionNames.MainRegion, typeof(Homepage));
+        //var regionManager = Container.Resolve<IRegionManager>();
+        //regionManager.RegisterViewWithRegion(HostRegionNames.MainRegion, typeof(Homepage));
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -151,7 +157,7 @@ public partial class App
         if (!mutex.WaitOne(TimeSpan.Zero, true))
         {
             using var client = new NamedPipeClientStream(".", PIPE_NAME, PipeDirection.Out);
-            client.Connect(200); 
+            client.Connect(200);
             using var writer = new StreamWriter(client);
             writer.WriteLine(NamedPipeMessages.ShowWindow);
             writer.Flush();

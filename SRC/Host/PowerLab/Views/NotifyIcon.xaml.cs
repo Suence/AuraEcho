@@ -1,4 +1,4 @@
-﻿namespace OTLog.Views;
+﻿namespace PowerLab.Views;
 
 partial class NotifyIcon
 {

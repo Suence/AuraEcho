@@ -34,11 +34,8 @@ public class HomepageViewModel : BindableBase
         set => SetProperty(ref _title, value);
     }
 
-    public DelegateCommand NavigationToDashboardCommand { get; }
-    public DelegateCommand NavigationToSettingsCommand { get; }
-    public DelegateCommand LoadPluginsCommand { get; }
-    public DelegateCommand<PluginRegistry> SwitchPluginCommand { get; }
 
+    public DelegateCommand NavigationToDashboardCommand { get; }
     private void NavigationToDashboard()
     {
         _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
@@ -47,11 +44,19 @@ public class HomepageViewModel : BindableBase
         });
     }
 
+    public DelegateCommand NavigationToPluginsMarketplaceCommand { get; }
+    private void NavigationToPluginsMarketplace()
+    {
+        _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsMarketplace);
+    }
+
+    public DelegateCommand NavigationToSettingsCommand { get; }
     private void NavigationToSettings()
     {
         _regionManager.RequestNavigate(HostRegionNames.ContentDialogRegion, ViewNames.Settings);
     }
 
+    public DelegateCommand LoadPluginsCommand { get; }
     private async void LoadPlugins()
     {
         var pluginRegistries = await _pluginManager.LoadPluginsAsync();
@@ -64,6 +69,7 @@ public class HomepageViewModel : BindableBase
         NavigationToDashboard();
     }
 
+    public DelegateCommand<PluginRegistry> SwitchPluginCommand { get; }
     private void SwitchPlugin(PluginRegistry pluginMetadata)
     {
         if (pluginMetadata is null)
@@ -85,6 +91,7 @@ public class HomepageViewModel : BindableBase
         SwitchPluginCommand = new DelegateCommand<PluginRegistry>(SwitchPlugin);
         NavigationToSettingsCommand = new DelegateCommand(NavigationToSettings);
         NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
+        NavigationToPluginsMarketplaceCommand = new DelegateCommand(NavigationToPluginsMarketplace);
 
         LoadPlugins();
     }

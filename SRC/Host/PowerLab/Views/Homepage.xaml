@@ -27,6 +27,7 @@
                     Padding="8"
                     HorizontalContentAlignment="Stretch"
                     d:Content="Plugin"
+                    powerlab:ControlHelper.CornerRadius="0"
                     BorderThickness="0"
                     Command="{Binding Source={StaticResource BindingProxy}, Path=Data.SwitchPluginCommand}"
                     CommandParameter="{Binding}">
@@ -59,6 +60,7 @@
             <StackPanel Grid.Row="0">
                 <Button Height="30"
                         Margin="0,36,0,16"
+                        powerlab:ControlHelper.CornerRadius="0"
                         BorderThickness="0"
                         Command="{Binding NavigationToDashboardCommand}"
                         Content="DASHBOARD" />
@@ -73,12 +75,20 @@
                     </d:ItemsControl.ItemsSource>
                 </ItemsControl>
             </StackPanel>
-
-            <Button Grid.Row="1"
-                    Height="30"
-                    BorderThickness="0"
-                    Command="{Binding NavigationToSettingsCommand}"
-                    Content="{Binding Source={StaticResource R}, Path=Labels.Settings}" />
+            <StackPanel Grid.Row="1">
+                <Button Grid.Row="1"
+                        Height="30"
+                        powerlab:ControlHelper.CornerRadius="0"
+                        BorderThickness="0"
+                        Command="{Binding NavigationToPluginsMarketplaceCommand}"
+                        Content="{Binding Source={StaticResource R}, Path=Labels.PluginsMarketplace}" />
+                <Button Grid.Row="1"
+                        Height="30"
+                        powerlab:ControlHelper.CornerRadius="0"
+                        BorderThickness="0"
+                        Command="{Binding NavigationToSettingsCommand}"
+                        Content="{Binding Source={StaticResource R}, Path=Labels.Settings}" />
+            </StackPanel>
         </Grid>
         <ContentControl Grid.Column="1" prism:RegionManager.RegionName="{x:Static cc:HostRegionNames.HomeContentRegion}" />
     </Grid>

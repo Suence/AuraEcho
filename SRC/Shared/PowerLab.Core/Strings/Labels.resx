@@ -141,4 +141,7 @@
   <data name="Settings" xml:space="preserve">
     <value>设置</value>
   </data>
+  <data name="PluginsMarketplace" xml:space="preserve">
+    <value>插件市场</value>
+  </data>
 </root>
