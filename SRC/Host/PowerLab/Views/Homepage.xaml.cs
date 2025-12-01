@@ -1,4 +1,6 @@
 ﻿using PowerLab.Core.Models;
+using Prism;
+using System;
 using System.Windows.Controls;
 
 namespace PowerLab.Views;

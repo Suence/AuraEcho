@@ -7,8 +7,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:powerlab="http://ui.powerlab.com/"
         xmlns:prism="http://prismlibrary.com/"
-        xmlns:views="clr-namespace:PowerLab.Views"
         xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
+        xmlns:views="clr-namespace:PowerLab.Views"
         Title="{Binding Source={StaticResource R}, Path=Labels.AppName}"
         Width="800"
         Height="600"
@@ -88,7 +88,7 @@
                 <i:ChangePropertyAction PropertyName="Margin" Value="0" />
             </i:DataTrigger>
         </i:Interaction.Triggers>
-        <Grid x:Name="ShaderBackground" Background="{DynamicResource Themes.Brushes.Background}" />
+
         <Grid x:Name="HomeContainer" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -96,7 +96,7 @@
             </Grid.RowDefinitions>
 
             <!-- 首页区域 -->
-            <views:Homepage Grid.Row="0" Grid.RowSpan="2"/>
+            <views:Homepage Grid.Row="0" Grid.RowSpan="2" />
             <!-- 内容区域 -->
             <ContentControl Grid.Row="0"
                             Grid.RowSpan="2"
@@ -130,8 +130,7 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
 
                     <Button Width="47"
-                            powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
-                            powerlab:ButtonBrush.PressBackground="#14000000"
+                            powerlab:ControlHelper.CornerRadius="0"
                             FontSize="15"
                             IsTabStop="False"
                             Style="{DynamicResource IconButtonStyle}"
@@ -155,8 +154,7 @@
                         </Canvas>
                     </Button>
                     <Button Width="47"
-                            powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
-                            powerlab:ButtonBrush.PressBackground="#14000000"
+                            powerlab:ControlHelper.CornerRadius="0"
                             Click="MaxWin_MouseClick"
                             FontSize="15"
                             IsTabStop="False"
@@ -220,8 +218,7 @@
                         </Grid>
                     </Button>
                     <Button Width="47"
-                            powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
-                            powerlab:ButtonBrush.PressBackground="#14000000"
+                            powerlab:ControlHelper.CornerRadius="0"
                             BorderThickness="0"
                             Click="CloseWindowButton_Click"
                             FontFamily="Segoe MDL2 Assets"

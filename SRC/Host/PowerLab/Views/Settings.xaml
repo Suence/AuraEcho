@@ -9,11 +9,12 @@
              xmlns:powerlab="http://ui.powerlab.com/"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
+             Padding="0,36,0,0"
              d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
              d:DesignHeight="425"
              d:DesignWidth="495"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Background="#60000000"
+             Background="{DynamicResource Themes.Brushes.Background}"
              mc:Ignorable="d">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -37,49 +38,42 @@
             </Button>
         </DataTemplate>
     </UserControl.Resources>
-    <Border Margin="20, 56, 20, 20" Background="{DynamicResource Themes.Brushes.Background}" CornerRadius="8" MinHeight="300" MinWidth="400">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Height="32">
-                <TextBlock Text="{Binding Source={StaticResource R}, Path=Labels.Settings}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8, 0"/>
-                <Button Width="36"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    HorizontalAlignment="Right"
-                    Command="{Binding CloseSettingsCommand}"
-                    powerlab:ButtonBrush.HoverBackground="#0A1C1B1F"
-                    powerlab:ButtonBrush.PressBackground="#14000000"
-                    BorderThickness="0"
-                    FontSize="15"
-                    IsTabStop="False"
-                    Style="{DynamicResource IconButtonStyle}">
-                    <Canvas Width="16" Height="16">
-                        <Path Data="M 3.14645 3.14645 C 3.34171 2.95118 3.65829 2.95118 3.85355 3.14645 L 8 7.293 L 12.1464 3.14645 C 12.32 2.97288 12.5894 2.9536 12.7843 3.08859 L 12.8536 3.14645 C 13.0488 3.34171 13.0488 3.65829 12.8536 3.85355 L 8.707 8 L 12.8536 12.1464 C 13.0271 12.32 13.0464 12.5894 12.9114 12.7843 L 12.8536 12.8536 C 12.6583 13.0488 12.3417 13.0488 12.1464 12.8536 L 8 8.707 L 3.85355 12.8536 C 3.67999 13.0271 3.41056 13.0464 3.21569 12.9114 L 3.14645 12.8536 C 2.95118 12.6583 2.95118 12.3417 3.14645 12.1464 L 7.293 8 L 3.14645 3.85355 C 2.97288 3.67999 2.9536 3.41056 3.08859 3.21569 L 3.14645 3.14645 Z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
-                    </Canvas>
-                </Button>
-            </Grid>
-            <Grid Grid.Row="1">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Width="150">
-                    <ItemsControl ItemTemplate="{StaticResource SettingsItemTemplate}" ItemsSource="{Binding SettingsItems}">
-                        <d:ItemsControl.ItemsSource>
-                            <x:Array Type="{x:Type pm:AppSettingsItem}">
-                                <pm:AppSettingsItem Name="常规" />
-                                <pm:AppSettingsItem Name="PLUGINA" />
-                                <pm:AppSettingsItem Name="PLUGINB" />
-                            </x:Array>
-                        </d:ItemsControl.ItemsSource>
-                    </ItemsControl>
-                </StackPanel>
-                <ContentControl Grid.Column="1" prism:RegionManager.RegionName="{x:Static cc:HostRegionNames.SettingsContentRegion}" />
-            </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0, 16">
+            <StackPanel Orientation="Horizontal">
+                <Button Margin="0,0,8,0"
+                        Padding="16,4"
+                        Command="{Binding BackToHomeCommand}"
+                        Content="BACK" />
+                <TextBlock Margin="8,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           Text="{Binding Source={StaticResource R}, Path=Labels.Settings}" />
+            </StackPanel>
         </Grid>
-    </Border>
+        <Grid Grid.Row="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Width="150">
+                <ItemsControl ItemTemplate="{StaticResource SettingsItemTemplate}" ItemsSource="{Binding SettingsItems}">
+                    <d:ItemsControl.ItemsSource>
+                        <x:Array Type="{x:Type pm:AppSettingsItem}">
+                            <pm:AppSettingsItem Name="常规" />
+                            <pm:AppSettingsItem Name="PLUGINA" />
+                            <pm:AppSettingsItem Name="PLUGINB" />
+                        </x:Array>
+                    </d:ItemsControl.ItemsSource>
+                </ItemsControl>
+            </StackPanel>
+            <ContentControl Grid.Column="1" prism:RegionManager.RegionName="{x:Static cc:HostRegionNames.SettingsContentRegion}" />
+        </Grid>
+    </Grid>
 </UserControl>

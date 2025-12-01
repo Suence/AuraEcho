@@ -37,6 +37,12 @@ namespace PowerLab.ViewModels
             Plugins = [.. result];
         }
 
+        public DelegateCommand BackToHomeCommand { get; }
+        private void BackToHome()
+        {
+            _regionManager.Regions[HostRegionNames.MainRegion].RemoveAll();
+        }
+
         public DelegateCommand<AppPlugin> NavigationToPluginDetailsCommand { get; }
         private void NavigationToPluginDetails(AppPlugin plugin)
         {
@@ -54,6 +60,7 @@ namespace PowerLab.ViewModels
             _pluginRespository = pluginRespository;
             _regionManager = regionManager;
 
+            BackToHomeCommand = new DelegateCommand(BackToHome);
             LoadPluginsCommand = new DelegateCommand(LoadPlugins);
             NavigationToPluginDetailsCommand = new DelegateCommand<AppPlugin>(NavigationToPluginDetails);
             LoadPlugins();

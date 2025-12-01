@@ -37,7 +37,7 @@
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="Border"
                                                          Storyboard.TargetProperty="(Border.RenderTransform).(TranslateTransform.Y)"
-                                                         From="90"
+                                                         From="-90"
                                                          To="0"
                                                          Duration="00:00:00.2">
                                             <DoubleAnimation.EasingFunction>

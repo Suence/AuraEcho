@@ -47,10 +47,10 @@ public class SettingsViewModel : BindableBase
         NavigationToSettingsItem(ViewNames.GeneralSettings);
     }
 
-    public DelegateCommand CloseSettingsCommand { get; }
-    private void CloseSettings()
+    public DelegateCommand BackToHomeCommand { get; }
+    private void BackToHome()
     {
-        _regionManager.Regions[HostRegionNames.ContentDialogRegion].RemoveAll();
+        _regionManager.Regions[HostRegionNames.MainRegion].RemoveAll();
     }
 
     public DelegateCommand<string> NavigationToSettingsItemCommand { get; }
@@ -68,6 +68,6 @@ public class SettingsViewModel : BindableBase
 
         NavigationToSettingsItemCommand = new DelegateCommand<string>(NavigationToSettingsItem);
         LoadSettingsCommand = new DelegateCommand(LoadSettings);
-        CloseSettingsCommand = new DelegateCommand(CloseSettings);
+        BackToHomeCommand = new DelegateCommand(BackToHome);
     }
 }

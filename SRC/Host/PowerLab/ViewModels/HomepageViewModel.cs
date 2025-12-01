@@ -47,13 +47,13 @@ public class HomepageViewModel : BindableBase
     public DelegateCommand NavigationToPluginsMarketplaceCommand { get; }
     private void NavigationToPluginsMarketplace()
     {
-        _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsMarketplace);
+        _regionManager.RequestNavigate(HostRegionNames.MainRegion, ViewNames.PluginsMarketplace);
     }
 
     public DelegateCommand NavigationToSettingsCommand { get; }
     private void NavigationToSettings()
     {
-        _regionManager.RequestNavigate(HostRegionNames.ContentDialogRegion, ViewNames.Settings);
+        _regionManager.RequestNavigate(HostRegionNames.MainRegion, ViewNames.Settings);
     }
 
     public DelegateCommand LoadPluginsCommand { get; }
@@ -76,7 +76,7 @@ public class HomepageViewModel : BindableBase
             return;
 
         _regionManager.RequestNavigate(
-            HostRegionNames.HomeContentRegion,
+            HostRegionNames.MainRegion,
             pluginMetadata.DefaultView);
     }
 

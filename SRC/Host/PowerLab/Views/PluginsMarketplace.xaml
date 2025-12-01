@@ -8,6 +8,7 @@
              xmlns:models="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:ui="http://ui.powerlab.com/"
+             Background="{DynamicResource Themes.Brushes.Background}"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:PluginsMarketplaceViewModel}"
              d:DesignHeight="360"
@@ -78,7 +79,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Margin="0,20">
+        <StackPanel Grid.Row="0" Margin="0,20" Orientation="Horizontal">
+            <Button Content="BACK" Padding="16, 4" Margin="0, 0, 8, 0" Command="{Binding BackToHomeCommand}"/>
             <TextBlock FontSize="20" Text="PLUGINS MARKETPLACE" />
         </StackPanel>
         <ItemsControl Grid.Row="1"

@@ -12,6 +12,7 @@
              av:DataContext="{av:DesignInstance Type=viewmodels:FishyTimeHomeViewModel}"
              av:DesignHeight="610"
              av:DesignWidth="495"
+             Background="{DynamicResource Themes.Brushes.Background}"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Loaded="UserControl_Loaded"
              mc:Ignorable="av">
@@ -22,9 +23,12 @@
     </i:Interaction.Triggers>
 
     <UserControl.Resources>
-        <utils:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
-        <DataTemplate x:Key="Win32WindowTemplate" DataType="{x:Type models:Win32Window}">
-            <Border BorderBrush="#333333" BorderThickness="1">
+        <utils:BindingProxy x:Key="BindingProxy"
+                            Data="{Binding}" />
+        <DataTemplate x:Key="Win32WindowTemplate"
+                      DataType="{x:Type models:Win32Window}">
+            <Border BorderBrush="#333333"
+                    BorderThickness="1">
                 <StackPanel>
                     <Border Margin="4"
                             Padding="4"
@@ -35,18 +39,23 @@
                                     Command="{Binding Source={StaticResource BindingProxy}, Path=Data.RemoveWin32WindowCommand}"
                                     CommandParameter="{Binding}"
                                     DockPanel.Dock="Right">
-                                <Viewbox Width="16" Height="16">
-                                    <Canvas Width="16" Height="16">
-                                        <Path Data="m3.14644661 3.14644661c.19526215-.19526215.51184463-.19526215.70710678 0l4.14644661 4.14655339 4.1464466-4.14655339c.1735664-.17356635.4429908-.1928515.6378589-.05785545l.0692479.05785545c.1952621.19526215.1952621.51184463 0 .70710678l-4.1465534 4.14644661 4.1465534 4.1464466c.1735663.1735664.1928515.4429908.0578554.6378589l-.0578554.0692479c-.1952622.1952621-.5118446.1952621-.7071068 0l-4.1464466-4.1465534-4.14644661 4.1465534c-.17356635.1735663-.44299075.1928515-.63785889.0578554l-.06924789-.0578554c-.19526215-.1952622-.19526215-.5118446 0-.7071068l4.14655339-4.1464466-4.14655339-4.14644661c-.17356635-.17356635-.1928515-.44299075-.05785545-.63785889z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                                <Viewbox Width="16"
+                                         Height="16">
+                                    <Canvas Width="16"
+                                            Height="16">
+                                        <Path Data="m3.14644661 3.14644661c.19526215-.19526215.51184463-.19526215.70710678 0l4.14644661 4.14655339 4.1464466-4.14655339c.1735664-.17356635.4429908-.1928515.6378589-.05785545l.0692479.05785545c.1952621.19526215.1952621.51184463 0 .70710678l-4.1465534 4.14644661 4.1465534 4.1464466c.1735663.1735664.1928515.4429908.0578554.6378589l-.0578554.0692479c-.1952622.1952621-.5118446.1952621-.7071068 0l-4.1464466-4.1465534-4.14644661 4.1465534c-.17356635.1735663-.44299075.1928515-.63785889.0578554l-.06924789-.0578554c-.19526215-.1952622-.19526215-.5118446 0-.7071068l4.14655339-4.1464466-4.14655339-4.14644661c-.17356635-.17356635-.1928515-.44299075-.05785545-.63785889z"
+                                              Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
                                     </Canvas>
                                 </Viewbox>
                             </Button>
-                            <StackPanel Margin="0,0,8,0" Orientation="Horizontal">
+                            <StackPanel Margin="0,0,8,0"
+                                        Orientation="Horizontal">
                                 <Image Width="16"
                                        Height="16"
                                        Margin="0,0,4,0"
                                        Source="{Binding Icon, Converter={converters:IconToImageSourceConverter}}" />
-                                <TextBlock VerticalAlignment="Center" av:Text="MainWndow(000000)[Normal]">
+                                <TextBlock VerticalAlignment="Center"
+                                           av:Text="MainWndow(000000)[Normal]">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0}({1:X8})[{2}]">
                                             <Binding Path="Name" />
@@ -63,16 +72,20 @@
                     <StackPanel>
                         <StackPanel>
                             <i:Interaction.Triggers>
-                                <i:DataTrigger Binding="{Binding WindowState}" Value="{x:Static models:ShowWindowCommands.Maximized}">
-                                    <i:ChangePropertyAction PropertyName="IsEnabled" Value="False" />
+                                <i:DataTrigger Binding="{Binding WindowState}"
+                                               Value="{x:Static models:ShowWindowCommands.Maximized}">
+                                    <i:ChangePropertyAction PropertyName="IsEnabled"
+                                                            Value="False" />
                                 </i:DataTrigger>
                                 <i:DataTrigger Binding="{Binding WindowState}"
                                                Comparison="NotEqual"
                                                Value="{x:Static models:ShowWindowCommands.Maximized}">
-                                    <i:ChangePropertyAction PropertyName="IsEnabled" Value="True" />
+                                    <i:ChangePropertyAction PropertyName="IsEnabled"
+                                                            Value="True" />
                                 </i:DataTrigger>
                             </i:Interaction.Triggers>
-                            <DockPanel Margin="4" LastChildFill="True">
+                            <DockPanel Margin="4"
+                                       LastChildFill="True">
                                 <TextBlock Width="60"
                                            VerticalAlignment="Center"
                                            DockPanel.Dock="Left"
@@ -93,7 +106,8 @@
                                         TickFrequency="1"
                                         Value="{Binding Width}" />
                             </DockPanel>
-                            <DockPanel Margin="4" LastChildFill="True">
+                            <DockPanel Margin="4"
+                                       LastChildFill="True">
                                 <TextBlock Width="60"
                                            VerticalAlignment="Center"
                                            DockPanel.Dock="Left"
@@ -161,7 +175,8 @@
                                   Content="ENABLE WINDOW MASK"
                                   FontSize="14"
                                   IsChecked="{Binding IsEnabledMask}" />
-                        <StackPanel x:Name="ModeLayout" IsEnabled="{Binding IsEnabledMask}">
+                        <StackPanel x:Name="ModeLayout"
+                                    IsEnabled="{Binding IsEnabledMask}">
                             <Border Height="32"
                                     Margin="4"
                                     BorderBrush="#333333"
@@ -195,14 +210,15 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <ScrollViewer Margin="0,24,0,0" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer Margin="0,24,0,0"
+                  VerticalScrollBarVisibility="Auto">
         <Grid Margin="24,0,24,24">
             <StackPanel>
-                <TextBlock Margin="0,0,0,12"
-                           HorizontalAlignment="Left"
-                           FontSize="24"
-                           Foreground="{DynamicResource FishyTime.Brand}"
-                           Text="{Binding Source={x:Static utils:FishyTimeResources.Current}, Path=Strings.PluginName}" />
+                <StackPanel Orientation="Horizontal" Margin="0, 12" >
+                    <Button Content="BACK" Padding="16, 4" Margin="0, 0, 8, 0" Command="{Binding BackToHomeCommand}"/>
+                    <TextBlock FontSize="24"
+                               Text="{Binding Source={x:Static utils:FishyTimeResources.Current}, Path=Strings.PluginName}" />
+                </StackPanel>
                 <Line Margin="0,0,0,12"
                       Stretch="Fill"
                       Stroke="#333333"
@@ -249,7 +265,8 @@
                                      VerticalAlignment="Center"
                                      RenderOptions.EdgeMode="Aliased"
                                      Stretch="Uniform">
-                                <Canvas Width="16" Height="16">
+                                <Canvas Width="16"
+                                        Height="16">
                                     <Path Data="M 14.5 8 L 1.49 8.02"
                                           Stroke="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}"
                                           StrokeDashCap="Round"
@@ -266,7 +283,8 @@
                                 </Canvas>
                             </Viewbox>
                         </Button>
-                        <TextBlock VerticalAlignment="Center" Text="DRAG THE ICON TO THE WINDOW YOU WANT TO ADJUST" />
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="DRAG THE ICON TO THE WINDOW YOU WANT TO ADJUST" />
                     </DockPanel>
                 </Border>
                 <ItemsControl av:ItemsSource="{av:SampleData ItemCount=2}"
@@ -274,7 +292,8 @@
                               ItemsSource="{Binding Win32Windows}">
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="ContentPresenter">
-                            <Setter Property="Margin" Value="0,0,0,8" />
+                            <Setter Property="Margin"
+                                    Value="0,0,0,8" />
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
