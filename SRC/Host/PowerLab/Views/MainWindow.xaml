@@ -71,13 +71,6 @@
                       UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Grid x:Name="AppContainer">
-        <Grid.Effect>
-            <powerlab:TransitionRippleEffect Progress="100">
-                <powerlab:TransitionRippleEffect.Texture2>
-                    <VisualBrush Visual="{Binding ElementName=ShaderBackground}" />
-                </powerlab:TransitionRippleEffect.Texture2>
-            </powerlab:TransitionRippleEffect>
-        </Grid.Effect>
         <i:Interaction.Triggers>
             <i:DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="{x:Static WindowState.Maximized}">
                 <i:ChangePropertyAction PropertyName="Margin" Value="8" />
@@ -108,8 +101,7 @@
                   Grid.RowSpan="2"
                   Height="36"
                   VerticalAlignment="Top"
-                  Background="Transparent"
-                  UseLayoutRounding="True">
+                  Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
@@ -121,8 +113,29 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock Margin="15,0"
+                    <Button Width="32"
+                            Height="32"
+                            Padding="0"
+                            Command="{Binding GoBackCommand}"
+                            Style="{DynamicResource IconButtonStyle}"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                        <i:Interaction.Triggers>
+                            <i:DataTrigger Binding="{Binding NavigationService.CanGoBack}" Value="True">
+                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Visible}" />
+                            </i:DataTrigger>
+                            <i:DataTrigger Binding="{Binding NavigationService.CanGoBack}" Value="False">
+                                <i:ChangePropertyAction PropertyName="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                            </i:DataTrigger>
+                        </i:Interaction.Triggers>
+                        <Viewbox Width="16" Height="16">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=Foreground}" />
+                            </Canvas>
+                        </Viewbox>
+                    </Button>
+                    <TextBlock Margin="8,0"
                                VerticalAlignment="Center"
+                               d:Text="AppName"
                                FontSize="12"
                                Foreground="{DynamicResource Themes.Brushes.OnSurface}"
                                Text="{Binding Title}" />

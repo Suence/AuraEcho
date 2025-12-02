@@ -215,7 +215,6 @@
         <Grid Margin="24,0,24,24">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0, 12" >
-                    <Button Content="BACK" Padding="16, 4" Margin="0, 0, 8, 0" Command="{Binding BackToHomeCommand}"/>
                     <TextBlock FontSize="24"
                                Text="{Binding Source={x:Static utils:FishyTimeResources.Current}, Path=Strings.PluginName}" />
                 </StackPanel>

@@ -10,17 +10,15 @@
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:MarketplacePluginDetailsViewModel}"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             d:DesignHeight="520"
+             d:DesignWidth="815">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Margin="16, 0, 0, 0">
-            <Button Content="BACK"
-                    Padding="16, 4"
-                    Margin="0, 0, 8, 0"
-                    Command="{Binding BackToHomeCommand}" />
             <TextBlock HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="20"

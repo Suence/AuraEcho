@@ -63,6 +63,7 @@ public partial class App
         containerRegistry.RegisterSingleton<IHostSettingsProvider, HostSettingsProvider>();
         containerRegistry.RegisterSingleton<IPluginRepository, PluginRepository>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
+        containerRegistry.RegisterSingleton<INavigationService, NavigationService>();
 
         containerRegistry.RegisterSingleton<IFileRespository, FileRespository>();
         containerRegistry.RegisterSingleton<IAppPackageRespository, AppPackageRespository>();

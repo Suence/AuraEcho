@@ -4,6 +4,7 @@ using PowerLab.Core.Extensions;
 using PowerLab.Core.Models;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -16,6 +17,7 @@ public class HomepageViewModel : BindableBase
 {
     private string _title = "PowerLab";
     private readonly IRegionManager _regionManager;
+    private readonly INavigationService _navigationService;
     private readonly IThemeManager _themeManager;
     private readonly ILogger _logger;
     private ObservableCollection<PluginRegistry> _plugins;
@@ -38,7 +40,7 @@ public class HomepageViewModel : BindableBase
     public DelegateCommand NavigationToDashboardCommand { get; }
     private void NavigationToDashboard()
     {
-        _regionManager.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
+        _navigationService.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
         {
             { "PluginRegistries", Plugins }
         });
@@ -47,13 +49,13 @@ public class HomepageViewModel : BindableBase
     public DelegateCommand NavigationToPluginsMarketplaceCommand { get; }
     private void NavigationToPluginsMarketplace()
     {
-        _regionManager.RequestNavigate(HostRegionNames.MainRegion, ViewNames.PluginsMarketplace);
+        _navigationService.RequestNavigate(HostRegionNames.MainRegion, ViewNames.PluginsMarketplace);
     }
 
     public DelegateCommand NavigationToSettingsCommand { get; }
     private void NavigationToSettings()
     {
-        _regionManager.RequestNavigate(HostRegionNames.MainRegion, ViewNames.Settings);
+        _navigationService.RequestNavigate(HostRegionNames.MainRegion, ViewNames.Settings);
     }
 
     public DelegateCommand LoadPluginsCommand { get; }
@@ -75,14 +77,15 @@ public class HomepageViewModel : BindableBase
         if (pluginMetadata is null)
             return;
 
-        _regionManager.RequestNavigate(
+        _navigationService.RequestNavigate(
             HostRegionNames.MainRegion,
             pluginMetadata.DefaultView);
     }
 
-    public HomepageViewModel(IRegionManager regionManager, IPluginManager pluginManager, IThemeManager themeManager, ILogger logger)
+    public HomepageViewModel(INavigationService navigationService, IRegionManager regionManager, IPluginManager pluginManager, IThemeManager themeManager, ILogger logger)
     {
         _regionManager = regionManager;
+        _navigationService = navigationService;
         _themeManager = themeManager;
         _logger = logger;
         _pluginManager = pluginManager;

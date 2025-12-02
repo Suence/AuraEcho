@@ -49,6 +49,7 @@ public partial class MainWindow : Window
     {
         e.Cancel = true;
         Hide();
+        ShowToast();
     }
 
 

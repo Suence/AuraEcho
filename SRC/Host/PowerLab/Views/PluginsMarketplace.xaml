@@ -8,25 +8,25 @@
              xmlns:models="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:ui="http://ui.powerlab.com/"
-             Background="{DynamicResource Themes.Brushes.Background}"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:PluginsMarketplaceViewModel}"
              d:DesignHeight="360"
              d:DesignWidth="570"
              d:Foreground="#EFEFEF"
              prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="{DynamicResource Themes.Brushes.Background}"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ui:BindingProxy x:Key="BindingProxy" Data="{Binding}"/>
+        <ui:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <converters:FileIdToUrlConverter x:Key="FileIdToUrl" />
         <DataTemplate x:Key="PluginTemplate" DataType="{x:Type models:AppPlugin}">
             <Button Width="140"
                     Height="180"
                     Padding="0"
-                    Command="{Binding Source={StaticResource BindingProxy}, Path=Data.NavigationToPluginDetailsCommand}"
-                    CommandParameter="{Binding}"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
+                    Command="{Binding Source={StaticResource BindingProxy}, Path=Data.NavigationToPluginDetailsCommand}"
+                    CommandParameter="{Binding}"
                     RenderTransformOrigin=".5, .5">
                 <Button.RenderTransform>
                     <ScaleTransform x:Name="PluginCardTransform" />
@@ -79,8 +79,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Margin="0,20" Orientation="Horizontal">
-            <Button Content="BACK" Padding="16, 4" Margin="0, 0, 8, 0" Command="{Binding BackToHomeCommand}"/>
+        <StackPanel Grid.Row="0"
+                    Margin="0,20"
+                    Orientation="Horizontal">
             <TextBlock FontSize="20" Text="PLUGINS MARKETPLACE" />
         </StackPanel>
         <ItemsControl Grid.Row="1"

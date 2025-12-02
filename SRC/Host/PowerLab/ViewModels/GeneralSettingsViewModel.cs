@@ -165,7 +165,6 @@ public class GeneralSettingsViewModel : BindableBase
         _hostSettingsProvider.SaveHostSettings(settings);
     }
 
-
     public GeneralSettingsViewModel(IEventAggregator eventAggregator, IThemeManager themeManager, IHostSettingsProvider hostSettingsProvider)
     {
         _hostSettingsProvider = hostSettingsProvider;

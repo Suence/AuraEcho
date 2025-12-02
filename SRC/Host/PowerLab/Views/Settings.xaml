@@ -45,10 +45,6 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0, 16">
             <StackPanel Orientation="Horizontal">
-                <Button Margin="0,0,8,0"
-                        Padding="16,4"
-                        Command="{Binding BackToHomeCommand}"
-                        Content="BACK" />
                 <TextBlock Margin="8,0"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"

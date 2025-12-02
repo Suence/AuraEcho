@@ -22,7 +22,6 @@ public class FishyTimeHomeViewModel : BindableBase
     #region private members
     private readonly IPathProvider _pathProvider;
     private readonly IEventAggregator _eventAggregator;
-    private readonly IRegionManager _regionManager;
 
     private FishyTimeConfig _fishyTimeConfig;
     private const string FishyTimeConfigFileName = "FishyTimeConfig.json";
@@ -51,12 +50,6 @@ public class FishyTimeHomeViewModel : BindableBase
     {
         get => _fishyTimeConfig;
         set => SetProperty(ref _fishyTimeConfig, value);
-    }
-
-    public DelegateCommand BackToHomeCommand { get; }
-    private void BackToHome()
-    {
-        _regionManager.Regions[HostRegionNames.MainRegion].RemoveAll();
     }
 
     public DelegateCommand<IntPtr?> AddWin32WindowCommand { get; }
@@ -131,15 +124,13 @@ public class FishyTimeHomeViewModel : BindableBase
         File.WriteAllText(FishyTimeConfigFilePath, configJson);
     }
 
-    public FishyTimeHomeViewModel(IRegionManager regionManager, IPathProvider pathProvider, IEventAggregator eventAggregator)
+    public FishyTimeHomeViewModel(IPathProvider pathProvider, IEventAggregator eventAggregator)
     {
         _pathProvider = pathProvider ?? throw new ArgumentNullException(nameof(pathProvider));
         _eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
-        _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
         _eventAggregator.GetEvent<AppLanguageChangedEvent>().Subscribe(AppLanguageChanged);
 
         Win32Windows = [];
-        BackToHomeCommand = new DelegateCommand(BackToHome);
         AddWin32WindowCommand = new DelegateCommand<nint?>(AddWin32Window);
         RemoveWin32WindowCommand = new DelegateCommand<Win32Window>(RemoveWin32Window);
 
