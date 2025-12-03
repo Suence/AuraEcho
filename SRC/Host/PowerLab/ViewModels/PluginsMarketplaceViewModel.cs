@@ -18,7 +18,7 @@ namespace PowerLab.ViewModels;
 
 public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
 {
-    private readonly IPluginRespository _pluginRespository;
+    private readonly IRemotePluginRepository _pluginRespository;
     private readonly INavigationService _navigationService;
 
     private ObservableCollection<AppPlugin> _plugins;
@@ -51,7 +51,7 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
             });
     }
 
-    public PluginsMarketplaceViewModel(INavigationService navigationService, IPluginRespository pluginRespository)
+    public PluginsMarketplaceViewModel(INavigationService navigationService, IRemotePluginRepository pluginRespository)
     {
         _pluginRespository = pluginRespository;
         _navigationService = navigationService;

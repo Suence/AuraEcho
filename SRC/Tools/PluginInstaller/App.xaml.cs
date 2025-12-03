@@ -50,7 +50,7 @@ public partial class App : PrismApplication
         //        .Options;
         //    return new PluginDbContext(options);
         //});
-        containerRegistry.Register<IPluginRepository, PluginRepository>();
+        containerRegistry.Register<ILocalPluginRepository, LocalPluginRepository>();
     }
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

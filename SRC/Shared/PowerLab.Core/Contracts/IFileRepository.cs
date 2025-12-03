@@ -2,7 +2,7 @@
 
 namespace PowerLab.Core.Contracts;
 
-public interface IFileRespository
+public interface IFileRepository
 {
     Task<List<UploadedFile>> GetUploadedFilesAsync();
     Task<string> UploadFileAsync(string filePath, string type);

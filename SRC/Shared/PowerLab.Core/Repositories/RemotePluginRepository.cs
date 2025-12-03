@@ -9,11 +9,11 @@ using PowerLab.Core.Tools;
 
 namespace PowerLab.Core.Repositories;
 
-public class PluginRespository : IPluginRespository
+public class RemotePluginRepository : IRemotePluginRepository
 {
     private readonly HttpClient _client;
 
-    public PluginRespository()
+    public RemotePluginRepository()
     {
         _client = new HttpClient();
     }

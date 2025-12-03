@@ -22,7 +22,7 @@ public class InstallingViewModel : BindableBase, INavigationAware
 {
     #region private members
     private readonly IRegionManager _regionManager;
-    private readonly IPluginRepository _pluginRepository;
+    private readonly ILocalPluginRepository _pluginRepository;
     private readonly ILogger _logger;
     private readonly IContainerProvider _containerProvider;
 
@@ -116,7 +116,7 @@ public class InstallingViewModel : BindableBase, INavigationAware
     /// <param name="regionManager"></param>
     /// <param name="logger"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public InstallingViewModel(IRegionManager regionManager, IContainerProvider containerProvider, IPluginRepository pluginRepository, ILogger logger)
+    public InstallingViewModel(IRegionManager regionManager, IContainerProvider containerProvider, ILocalPluginRepository pluginRepository, ILogger logger)
     {
         _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
         _pluginRepository = pluginRepository ?? throw new ArgumentNullException(nameof(pluginRepository));

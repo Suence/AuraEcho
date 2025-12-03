@@ -61,13 +61,13 @@ public partial class App
         containerRegistry.RegisterSingleton<IPluginManager, PluginManager>();
         containerRegistry.RegisterSingleton<IThemeManager, ThemeManager>();
         containerRegistry.RegisterSingleton<IHostSettingsProvider, HostSettingsProvider>();
-        containerRegistry.RegisterSingleton<IPluginRepository, PluginRepository>();
+        containerRegistry.RegisterSingleton<ILocalPluginRepository, LocalPluginRepository>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
         containerRegistry.RegisterSingleton<INavigationService, NavigationService>();
 
-        containerRegistry.RegisterSingleton<IFileRespository, FileRespository>();
-        containerRegistry.RegisterSingleton<IAppPackageRespository, AppPackageRespository>();
-        containerRegistry.RegisterSingleton<IPluginRespository, PluginRespository>();
+        containerRegistry.RegisterSingleton<IFileRepository, FileRepository>();
+        containerRegistry.RegisterSingleton<IAppPackageRepository, AppPackageRepository>();
+        containerRegistry.RegisterSingleton<IRemotePluginRepository, RemotePluginRepository>();
 
         containerRegistry.RegisterForNavigation<Homepage>();
         containerRegistry.RegisterForNavigation<PluginsDashboard>();

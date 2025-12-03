@@ -2,7 +2,7 @@
 
 namespace PowerLab.Core.Contracts;
 
-public interface IAppPackageRespository
+public interface IAppPackageRepository
 {
     Task<string> CreatePackageAsync(string fileId, string name, string version);
     Task<List<AppPackageDetail>> GetUploadedPackagesAsync();

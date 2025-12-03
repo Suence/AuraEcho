@@ -22,7 +22,7 @@ public class PluginManager : IPluginManager
     private readonly string _pluginRegistryPath;
     private readonly IModuleManager _moduleManager;
     private readonly IModuleCatalog _moduleCatalog;
-    private readonly IPluginRepository _pluginRepository;
+    private readonly ILocalPluginRepository _pluginRepository;
     private readonly ILogger _logger;
     private readonly List<PluginLoadContext> _pluginLoadContexts = [];
 
@@ -32,7 +32,7 @@ public class PluginManager : IPluginManager
         get => _isInitialized ? _plugins : [];
     }
 
-    public PluginManager(IModuleManager moduleManager, IModuleCatalog moduleCatalog, IPluginRepository pluginRepository, ILogger logger)
+    public PluginManager(IModuleManager moduleManager, IModuleCatalog moduleCatalog, ILocalPluginRepository pluginRepository, ILogger logger)
     {
         _moduleManager = moduleManager;
         _moduleCatalog = moduleCatalog;

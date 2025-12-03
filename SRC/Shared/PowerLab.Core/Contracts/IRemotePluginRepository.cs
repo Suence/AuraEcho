@@ -2,7 +2,7 @@
 
 namespace PowerLab.Core.Contracts;
 
-public interface IPluginRespository
+public interface IRemotePluginRepository
 {
     Task<List<AppPlugin>> GetPluginsAsync();
     Task<string> CreatePluginAsync(CreatePluginRequest req);

@@ -11,7 +11,7 @@ namespace PowerLab.ViewModels;
 public class PluginsDashboardViewModel : BindableBase, INavigationAware
 {
     #region private members
-    private readonly IPluginRepository _pluginRepository;
+    private readonly ILocalPluginRepository _pluginRepository;
     private ObservableCollection<PluginRegistry> _pluginRegistries = [];
     #endregion
 
@@ -100,7 +100,7 @@ public class PluginsDashboardViewModel : BindableBase, INavigationAware
     /// <summary>
     /// 构造函数
     /// </summary>
-    public PluginsDashboardViewModel(IPluginRepository pluginRepository)
+    public PluginsDashboardViewModel(ILocalPluginRepository pluginRepository)
     {
         _pluginRepository = pluginRepository;
 

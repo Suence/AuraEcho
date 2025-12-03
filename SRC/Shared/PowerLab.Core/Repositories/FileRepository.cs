@@ -9,11 +9,11 @@ using PowerLab.Core.Tools;
 
 namespace PowerLab.Core.Repositories;
 
-public class FileRespository : IFileRespository
+public class FileRepository : IFileRepository
 {
     private readonly HttpClient _client;
 
-    public FileRespository()
+    public FileRepository()
     {
         _client = new HttpClient();
     }

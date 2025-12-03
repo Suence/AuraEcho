@@ -9,11 +9,11 @@ using PowerLab.Core.Tools;
 
 namespace PowerLab.Core.Repositories;
 
-public class AppPackageRespository : IAppPackageRespository
+public class AppPackageRepository : IAppPackageRepository
 {
     private readonly HttpClient _client;
 
-    public AppPackageRespository()
+    public AppPackageRepository()
     {
         _client = new HttpClient();
     }

@@ -26,7 +26,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddHostedService<Worker>();
         services.AddSingleton<IFileRespository, FileRespository>();
-        services.AddSingleton<IPackageRespository, PackageRespository>();
+        services.AddSingleton<IPackageRepository, PackageRepository>();
     })
     .UseSerilog()
     .Build();

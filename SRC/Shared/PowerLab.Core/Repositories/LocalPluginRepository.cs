@@ -4,10 +4,10 @@ using PowerLab.Core.Models;
 
 namespace PowerLab.Core.Repositories;
 
-public class PluginRepository : IPluginRepository
+public class LocalPluginRepository : ILocalPluginRepository
 {
     private readonly PowerLabDbContext _dbContext;
-    public PluginRepository(PowerLabDbContext dbContext) 
+    public LocalPluginRepository(PowerLabDbContext dbContext) 
     { 
         _dbContext = dbContext;
     }

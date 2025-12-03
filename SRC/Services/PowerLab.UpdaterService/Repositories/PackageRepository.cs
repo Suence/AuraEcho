@@ -5,7 +5,7 @@ using PowerLab.UpdaterService.Tools;
 
 namespace PowerLab.UpdaterService.Services
 {
-    public class PackageRespository : IPackageRespository
+    public class PackageRepository : IPackageRepository
     {
         public async Task<bool> DownloadLatestAsync(string build, string outputPath, IProgress<double> progress)
         {

@@ -2,7 +2,7 @@
 
 namespace PowerLab.Core.Contracts;
 
-public interface IPluginRepository
+public interface ILocalPluginRepository
 {
     /// <summary>
     /// 获取插件信息列表

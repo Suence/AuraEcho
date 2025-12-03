@@ -8,9 +8,9 @@ namespace PowerLab.UpdaterService
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IPackageRespository _packageRespository;
+        private readonly IPackageRepository _packageRespository;
         private readonly string _tempDownloadPath;
-        public Worker(ILogger<Worker> logger, IPackageRespository packageRespository)
+        public Worker(ILogger<Worker> logger, IPackageRepository packageRespository)
         {
             _logger = logger;
             _packageRespository = packageRespository;

@@ -2,7 +2,7 @@
 
 namespace PowerLab.UpdaterService.Contracts
 {
-    public interface IPackageRespository
+    public interface IPackageRepository
     {
         Task<AppVersionInfo> GetLatestAsync();
         Task<bool> DownloadLatestAsync(string build, string outputPath, IProgress<double> progress);

@@ -12,7 +12,7 @@ namespace PowerLab.ViewModels
 {
     public class MarketplacePluginDetailsViewModel : BindableBase, INavigationAware, IRegionMemberLifetime
     {
-        private readonly IPluginRespository _pluginRespository;
+        private readonly IRemotePluginRepository _pluginRespository;
 
         public AppPlugin Plugin
         {
@@ -33,7 +33,7 @@ namespace PowerLab.ViewModels
 
             LatestVersionInfo = result;
         }
-        public MarketplacePluginDetailsViewModel(IPluginRespository pluginRespository)
+        public MarketplacePluginDetailsViewModel(IRemotePluginRepository pluginRespository)
         {
             _pluginRespository = pluginRespository;
         }
