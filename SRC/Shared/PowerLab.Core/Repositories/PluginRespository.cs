@@ -101,7 +101,7 @@ public class PluginRespository : IPluginRespository
     public async Task<PluginPackage> GetLatestAsync(string pluginId)
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<PluginPackage>($"{Urls.ServerUrl}/api/plugin/latest&pluginId={pluginId}");
+        var result = await httpHelper.GetAsync<PluginPackage>($"{Urls.ServerUrl}/api/plugin/latest?pluginId={pluginId}");
         return result;
     }
 
