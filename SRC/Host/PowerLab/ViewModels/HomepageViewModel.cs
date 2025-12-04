@@ -1,13 +1,16 @@
 ﻿using PowerLab.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Events;
 using PowerLab.Core.Extensions;
 using PowerLab.Core.Models;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -18,6 +21,7 @@ public class HomepageViewModel : BindableBase
     private string _title = "PowerLab";
     private readonly IRegionManager _regionManager;
     private readonly INavigationService _navigationService;
+    private readonly IEventAggregator _eventAggregator;
     private readonly IThemeManager _themeManager;
     private readonly ILogger _logger;
     private ObservableCollection<PluginRegistry> _plugins;
@@ -82,10 +86,17 @@ public class HomepageViewModel : BindableBase
             pluginMetadata.DefaultView);
     }
 
-    public HomepageViewModel(INavigationService navigationService, IRegionManager regionManager, IPluginManager pluginManager, IThemeManager themeManager, ILogger logger)
+    public HomepageViewModel(
+        INavigationService navigationService, 
+        IRegionManager regionManager, 
+        IEventAggregator eventAggregator,
+        IPluginManager pluginManager, 
+        IThemeManager themeManager, 
+        ILogger logger)
     {
         _regionManager = regionManager;
         _navigationService = navigationService;
+        _eventAggregator = eventAggregator;
         _themeManager = themeManager;
         _logger = logger;
         _pluginManager = pluginManager;
@@ -96,6 +107,13 @@ public class HomepageViewModel : BindableBase
         NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         NavigationToPluginsMarketplaceCommand = new DelegateCommand(NavigationToPluginsMarketplace);
 
+        _eventAggregator.GetEvent<PluginInstalledEvent>().Subscribe(AddNewPlugin);
+
         LoadPlugins();
+    }
+
+    private void AddNewPlugin(PluginRegistry registry)
+    {
+        Plugins.Add(registry);
     }
 }

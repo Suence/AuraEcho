@@ -1,7 +1,9 @@
-﻿namespace PowerLab.Core.Contracts
+﻿using PowerLab.Core.Models;
+
+namespace PowerLab.Core.Contracts
 {
     public interface IPluginInstallService
     {
-        public Task<bool> InstallAsync(string filePath);
+        public Task<PluginRegistry> InstallAsync(string filePath);
     }
 }

@@ -53,81 +53,88 @@ public class PluginManager : IPluginManager
             return _plugins;
         }
 
-        List<PluginRegistry> pluginRegistries = _pluginRepository.GetPluginRegistries();
-
-        foreach (var pluginRegistry in pluginRegistries.ToList())
+        _plugins = [];
+        foreach (var pluginRegistry in _pluginRepository.GetPluginRegistries())
         {
-            if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
-            {
-                if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
-                {
-                    if (Directory.Exists(pluginRegistry.PluginFolder))
-                    {
-                        Directory.Delete(pluginRegistry.PluginFolder, true);
-                    }
-                    _pluginRepository.RemovePluginRegistry(pluginRegistry.Id);
-                    _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
-                    continue;
-                }
-
-                pluginRegistry.Status = pluginRegistry.PlanStatus switch
-                {
-                    PluginPlanStatus.EnablePending => PluginStatus.Enabled,
-                    PluginPlanStatus.DisablePending => PluginStatus.Disabled,
-                    _ => pluginRegistry.Status
-                };
-                pluginRegistry.PlanStatus = PluginPlanStatus.None;
-                _pluginRepository.UpdatePluginRegistry(pluginRegistry);
-            }
-
-            if (pluginRegistry.Status == PluginStatus.Disabled)
-            {
-                _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被禁用，跳过加载。");
-                continue;
-            }
-
-            string entryAssemblyPath = Path.Combine(ApplicationPaths.GetPluginPath(pluginRegistry.Manifest.Id), pluginRegistry.Manifest.EntryAssemblyName);
-
-            if (!File.Exists(entryAssemblyPath))
-            {
-                _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
-                continue;
-            }
-
-            var alc = new PluginLoadContext(entryAssemblyPath);
-            _pluginLoadContexts.Add(alc);
-            Assembly pluginAssembly;
-            try
-            {
-                pluginAssembly = alc.LoadFromAssemblyPath(entryAssemblyPath);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"加载插件程序集失败：{pluginRegistry.Manifest.PluginName}，异常：{ex.Message}");
-                continue;
-            }
-
-            PluginDefaultViewAttribute defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
-            if (defaultView is null)
-            {
-                _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 没有指定默认视图。");
-                continue;
-            }
-
-            IPlugin pluginContext = LoadPluginByAssembly(pluginAssembly);
-            pluginRegistry.PluginContext = pluginContext;
+            LoadPlugin(pluginRegistry);
         }
+        _logger.Debug($"已加载 {_plugins.Count} 个插件。");
 
-        _logger.Debug($"已加载 {pluginRegistries.Count} 个插件。");
-
-        _plugins = pluginRegistries;
         _isInitialized = true;
-        return pluginRegistries;
+        return _plugins;
     }
     public Task<List<PluginRegistry>> LoadPluginsAsync()
     {
         return Task.Run(LoadPlugins);
     }
+
+    public bool LoadPlugin(PluginRegistry pluginRegistry)
+    {
+        if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
+        {
+            if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
+            {
+                if (Directory.Exists(pluginRegistry.PluginFolder))
+                {
+                    Directory.Delete(pluginRegistry.PluginFolder, true);
+                }
+                _pluginRepository.RemovePluginRegistry(pluginRegistry.Id);
+                _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
+                return false;
+            }
+
+            pluginRegistry.Status = pluginRegistry.PlanStatus switch
+            {
+                PluginPlanStatus.EnablePending => PluginStatus.Enabled,
+                PluginPlanStatus.DisablePending => PluginStatus.Disabled,
+                _ => pluginRegistry.Status
+            };
+            pluginRegistry.PlanStatus = PluginPlanStatus.None;
+            _pluginRepository.UpdatePluginRegistry(pluginRegistry);
+        }
+
+        if (pluginRegistry.Status == PluginStatus.Disabled)
+        {
+            _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被禁用，跳过加载。");
+            return false;
+        }
+
+        string entryAssemblyPath = Path.Combine(ApplicationPaths.GetPluginPath(pluginRegistry.Manifest.Id), pluginRegistry.Manifest.EntryAssemblyName);
+
+        if (!File.Exists(entryAssemblyPath))
+        {
+            _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
+            return false;
+        }
+
+        var alc = new PluginLoadContext(entryAssemblyPath);
+        _pluginLoadContexts.Add(alc);
+        Assembly pluginAssembly;
+        try
+        {
+            pluginAssembly = alc.LoadFromAssemblyPath(entryAssemblyPath);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"加载插件程序集失败：{pluginRegistry.Manifest.PluginName}，异常：{ex.Message}");
+            return false;
+        }
+
+        PluginDefaultViewAttribute defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
+        if (defaultView is null)
+        {
+            _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 没有指定默认视图。");
+            return false;
+        }
+
+        IPlugin pluginContext = LoadPluginByAssembly(pluginAssembly);
+        pluginRegistry.PluginContext = pluginContext;
+
+        _plugins.Add(pluginRegistry);
+        return true;
+    }
+    public Task<bool> LoadPluginAsync(PluginRegistry pluginRegistry)
+        => Task.Run(() => LoadPlugin(pluginRegistry));
 
     private IPlugin LoadPluginByAssembly(Assembly pluginAssembly)
     {

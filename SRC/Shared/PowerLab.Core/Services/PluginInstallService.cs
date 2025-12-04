@@ -25,7 +25,7 @@ namespace PowerLab.Core.Services
             _logger = logger;
         }
 
-        private bool InstallCore(string filePath)
+        private PluginRegistry InstallCore(string filePath)
         {
             // 解压插件到临时目录
             var extractPath = Path.Combine(ApplicationPaths.Temp, "PluginInstall_" + Guid.NewGuid());
@@ -62,13 +62,13 @@ namespace PowerLab.Core.Services
             catch (Exception ex)
             {
                 _logger.Error($"加载插件程序集失败：{manifest.PluginName}，异常：{ex.Message}");
-                return false;
+                return null;
             }
             string defaultView = GetPluginDefaultView(pluginAssembly);
 
             IPluginSetup pluginDatabaseInitializer = GetPluginDatabaseInitializer(pluginAssembly);
             pluginDatabaseInitializer?.Setup(_containerProvider);
-            _localPluginRepository.AddPluginRegistry(new PluginRegistry
+            var pluginRegistry = new PluginRegistry
             {
                 Id = Guid.NewGuid().ToString(),
                 PlanStatus = PluginPlanStatus.None,
@@ -76,8 +76,9 @@ namespace PowerLab.Core.Services
                 PluginFolder = ApplicationPaths.GetPluginPath(manifest.Id),
                 Status = PluginStatus.Enabled,
                 DefaultView = defaultView
-            });
-            return true;
+            };
+            _localPluginRepository.AddPluginRegistry(pluginRegistry);
+            return pluginRegistry;
 
             IPluginSetup GetPluginDatabaseInitializer(Assembly pluginAssembly)
             {
@@ -97,7 +98,7 @@ namespace PowerLab.Core.Services
             }
         }
 
-        public Task<bool> InstallAsync(string filePath)
+        public Task<PluginRegistry> InstallAsync(string filePath)
             => Task.Run(() => InstallCore(filePath));
     }
 }

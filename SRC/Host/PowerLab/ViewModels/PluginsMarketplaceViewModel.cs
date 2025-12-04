@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using PowerLab.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
@@ -20,6 +21,7 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
 {
     private readonly IRemotePluginRepository _pluginRespository;
     private readonly INavigationService _navigationService;
+    private readonly IPluginManager _pluginManager;
 
     private ObservableCollection<AppPlugin> _plugins;
     public ObservableCollection<AppPlugin> Plugins
@@ -28,12 +30,18 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
         set => SetProperty(ref _plugins, value);
     }
 
-
     public DelegateCommand LoadPluginsCommand { get; }
     private async void LoadPlugins()
     {
         var result = await _pluginRespository.GetPluginsAsync();
         if (result is null) return;
+
+        var installedPluginIds = _pluginManager.Plugins.Select(p => p.Manifest.Id).ToList();
+
+        foreach (var plugin in result)
+        {
+            plugin.IsInstalled = installedPluginIds.Contains(plugin.Id);
+        }
 
         Plugins = [.. result];
     }
@@ -51,10 +59,11 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
             });
     }
 
-    public PluginsMarketplaceViewModel(INavigationService navigationService, IRemotePluginRepository pluginRespository)
+    public PluginsMarketplaceViewModel(IPluginManager pluginManager, INavigationService navigationService, IRemotePluginRepository pluginRespository)
     {
         _pluginRespository = pluginRespository;
         _navigationService = navigationService;
+        _pluginManager = pluginManager;
 
         LoadPluginsCommand = new DelegateCommand(LoadPlugins);
         NavigationToPluginDetailsCommand = new DelegateCommand<AppPlugin>(NavigationToPluginDetails);

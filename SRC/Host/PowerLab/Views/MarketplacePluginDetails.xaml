@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:PowerLab.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:ui="http://ui.powerlab.com/"
@@ -16,15 +17,13 @@
              Foreground="#EFEFEF"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ui:BindingProxy x:Key="BindingProxy"
-                         Data="{Binding}" />
+        <ui:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <converters:FileIdToUrlConverter x:Key="FileIdToUrl" />
     </UserControl.Resources>
     <Grid>
         <ScrollViewer Padding="32">
             <StackPanel MaxWidth="1200">
-                <DockPanel Margin="0,0,0,16"
-                           LastChildFill="True">
+                <DockPanel Margin="0,0,0,16" LastChildFill="True">
                     <Border Width="80"
                             Height="80"
                             Margin="0,0,16,0"
@@ -36,26 +35,56 @@
                     </Border>
                     <StackPanel>
                         <TextBlock Margin="0,0,0,4"
-                                   FontSize="24"
                                    d:Text="Plugin Name"
+                                   FontSize="24"
                                    Text="{Binding Plugin.DisplayName}" />
-                        <TextBlock FontSize="16"
-                                   d:Text="Plugin author"
+                        <TextBlock d:Text="Plugin author"
+                                   FontSize="16"
                                    Text="{Binding Plugin.Author}" />
                     </StackPanel>
                 </DockPanel>
                 <TextBlock Margin="0,0,0,16"
                            FontSize="14"
                            Text="{Binding Plugin.Description}" />
-                <Button Width="200"
-                        Height="48"
-                        Margin="0,0,0,24"
-                        Padding="16,0"
-                        HorizontalAlignment="Left"
-                        HorizontalContentAlignment="Left"
-                        Content="INSTALL"
-                        FontSize="16"
-                        Style="{DynamicResource PrimaryButtonStyle}" />
+
+                <Grid Width="200"
+                      Height="48"
+                      Margin="0,0,0,24"
+                      HorizontalAlignment="Left">
+                    <i:Interaction.Triggers>
+                        <i:DataTrigger Binding="{Binding Plugin.IsInstalled}" Value="True">
+                            <i:ChangePropertyAction PropertyName="Visibility"
+                                                    TargetName="InstallButton"
+                                                    Value="{x:Static Visibility.Hidden}" />
+                            <i:ChangePropertyAction PropertyName="Visibility"
+                                                    TargetName="OpenButton"
+                                                    Value="{x:Static Visibility.Visible}" />
+                        </i:DataTrigger>
+                        <i:DataTrigger Binding="{Binding Plugin.IsInstalled}" Value="False">
+                            <i:ChangePropertyAction PropertyName="Visibility"
+                                                    TargetName="InstallButton"
+                                                    Value="{x:Static Visibility.Visible}" />
+                            <i:ChangePropertyAction PropertyName="Visibility"
+                                                    TargetName="OpenButton"
+                                                    Value="{x:Static Visibility.Hidden}" />
+                        </i:DataTrigger>
+                    </i:Interaction.Triggers>
+                    <Button x:Name="InstallButton"
+                            Padding="16,0"
+                            HorizontalContentAlignment="Left"
+                            Command="{Binding InstallCommand}"
+                            Content="INSTALL"
+                            FontSize="16"
+                            Style="{DynamicResource PrimaryButtonStyle}" />
+                    <Button x:Name="OpenButton"
+                            Padding="16,0"
+                            HorizontalContentAlignment="Left"
+                            Command="{Binding OpenPluginCommand}"
+                            Content="OPEN"
+                            FontSize="16"
+                            Style="{DynamicResource PrimaryButtonStyle}" />
+                </Grid>
+
                 <Border Margin="0,0,0,16"
                         Background="{DynamicResource Themes.Brushes.SecondaryContainer}"
                         CornerRadius="4">
@@ -70,13 +99,12 @@
                               Y1="0"
                               Y2="0" />
                         <TextBlock Margin="16"
-                                   Text="{Binding Plugin.Description}"
-                                   d:Text="这是此扩展的描述文本" />
+                                   d:Text="这是此扩展的描述文本"
+                                   Text="{Binding Plugin.Description}" />
                     </StackPanel>
                 </Border>
 
-                <Border Background="{DynamicResource Themes.Brushes.SecondaryContainer}"
-                        CornerRadius="4">
+                <Border Background="{DynamicResource Themes.Brushes.SecondaryContainer}" CornerRadius="4">
                     <StackPanel>
                         <TextBlock Margin="16"
                                    FontSize="14"
@@ -87,8 +115,7 @@
                               X2="1"
                               Y1="0"
                               Y2="0" />
-                        <WrapPanel Margin="16"
-                                   Orientation="Horizontal">
+                        <WrapPanel Margin="16" Orientation="Horizontal">
                             <DockPanel Width="200"
                                        Margin="0,0,0,24"
                                        LastChildFill="True">
@@ -97,77 +124,63 @@
                                         Margin="0,0,12,0"
                                         VerticalAlignment="Top"
                                         DockPanel.Dock="Left">
-                                    <Path Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L10.11,5.22L16,8.61L17.96,7.5L12,4.15M6.04,7.5L12,10.85L13.96,9.75L8.08,6.35L6.04,7.5M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z"
-                                          Fill="{DynamicResource Themes.Brushes.OnSurface}" />
+                                    <Path Data="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L10.11,5.22L16,8.61L17.96,7.5L12,4.15M6.04,7.5L12,10.85L13.96,9.75L8.08,6.35L6.04,7.5M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z" Fill="{DynamicResource Themes.Brushes.OnSurface}" />
                                 </Canvas>
                                 <StackPanel>
-                                    <TextBlock Margin="0,0,0,8"
-                                               Text="AUTHOR" />
-                                    <TextBlock Text="{Binding Plugin.Author}" d:Text="plugin author" />
+                                    <TextBlock Margin="0,0,0,8" Text="AUTHOR" />
+                                    <TextBlock d:Text="plugin author" Text="{Binding Plugin.Author}" />
                                 </StackPanel>
                             </DockPanel>
-                            <DockPanel Width="200"
-                                       LastChildFill="True">
+                            <DockPanel Width="200" LastChildFill="True">
                                 <Canvas Width="24"
                                         Height="24"
                                         Margin="0,0,12,0"
                                         VerticalAlignment="Top"
                                         DockPanel.Dock="Left">
-                                    <Path Data="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z"
-                                          Fill="{DynamicResource Themes.Brushes.OnSurface}" />
+                                    <Path Data="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z" Fill="{DynamicResource Themes.Brushes.OnSurface}" />
                                 </Canvas>
                                 <StackPanel>
-                                    <TextBlock Margin="0,0,0,8"
-                                               Text="LATEST UPDATE" />
-                                    <TextBlock Text="{Binding LatestVersionInfo.CreateTime, StringFormat={}{0:yyyy/MM/dd}}"  d:Text="1970/1/1"/>
+                                    <TextBlock Margin="0,0,0,8" Text="LATEST UPDATE" />
+                                    <TextBlock d:Text="1970/1/1" Text="{Binding LatestVersionInfo.CreateTime, StringFormat={}{0:yyyy/MM/dd}}" />
                                 </StackPanel>
                             </DockPanel>
-                            <DockPanel Width="200"
-                                       LastChildFill="True">
+                            <DockPanel Width="200" LastChildFill="True">
                                 <Canvas Width="24"
                                         Height="24"
                                         Margin="0,0,12,0"
                                         VerticalAlignment="Top"
                                         DockPanel.Dock="Left">
-                                    <Path Data="M9,7V17H11V12L13,17H15V7H13V12L11,7H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z"
-                                          Fill="{DynamicResource Themes.Brushes.OnSurface}" />
+                                    <Path Data="M9,7V17H11V12L13,17H15V7H13V12L11,7H9M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" Fill="{DynamicResource Themes.Brushes.OnSurface}" />
                                 </Canvas>
                                 <StackPanel>
-                                    <TextBlock Margin="0,0,0,8"
-                                               Text="VERSION" />
-                                    <TextBlock Text="{Binding LatestVersionInfo.Version}" d:Text="1.0.1" />
+                                    <TextBlock Margin="0,0,0,8" Text="VERSION" />
+                                    <TextBlock d:Text="1.0.1" Text="{Binding LatestVersionInfo.Version}" />
                                 </StackPanel>
                             </DockPanel>
-                            <DockPanel Width="200"
-                                       LastChildFill="True">
+                            <DockPanel Width="200" LastChildFill="True">
                                 <Canvas Width="24"
                                         Height="24"
                                         Margin="0,0,12,0"
                                         VerticalAlignment="Top"
                                         DockPanel.Dock="Left">
-                                    <Path Data="M5,4V6H19V4H5M5,14H9V20H15V14H19L12,7L5,14Z"
-                                          Fill="{DynamicResource Themes.Brushes.OnSurface}" />
+                                    <Path Data="M5,4V6H19V4H5M5,14H9V20H15V14H19L12,7L5,14Z" Fill="{DynamicResource Themes.Brushes.OnSurface}" />
                                 </Canvas>
                                 <StackPanel>
-                                    <TextBlock Margin="0,0,0,8"
-                                               Text="PUBLISH" />
-                                    <TextBlock Text="{Binding Plugin.CreateTime, StringFormat={}{0:yyyy/MM/dd}}" d:Text="1970/1/1" />
+                                    <TextBlock Margin="0,0,0,8" Text="PUBLISH" />
+                                    <TextBlock d:Text="1970/1/1" Text="{Binding Plugin.CreateTime, StringFormat={}{0:yyyy/MM/dd}}" />
                                 </StackPanel>
                             </DockPanel>
-                            <DockPanel Width="200"
-                                       LastChildFill="True">
+                            <DockPanel Width="200" LastChildFill="True">
                                 <Canvas Width="24"
                                         Height="24"
                                         Margin="0,0,12,0"
                                         VerticalAlignment="Top"
                                         DockPanel.Dock="Left">
-                                    <Path Data="M18,8H16V4H18M15,8H13V4H15M12,8H10V4H12M18,2H10L4,8V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V4A2,2 0 0,0 18,2Z"
-                                          Fill="{DynamicResource Themes.Brushes.OnSurface}" />
+                                    <Path Data="M18,8H16V4H18M15,8H13V4H15M12,8H10V4H12M18,2H10L4,8V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V4A2,2 0 0,0 18,2Z" Fill="{DynamicResource Themes.Brushes.OnSurface}" />
                                 </Canvas>
                                 <StackPanel>
-                                    <TextBlock Margin="0,0,0,8"
-                                               Text="PACKAGE SIZE" />
-                                    <TextBlock Text="{Binding LatestVersionInfo.Size, StringFormat={}{0} Byte}" d:Text="2.3 MB"/>
+                                    <TextBlock Margin="0,0,0,8" Text="PACKAGE SIZE" />
+                                    <TextBlock d:Text="2.3 MB" Text="{Binding LatestVersionInfo.Size, StringFormat={}{0} Byte}" />
                                 </StackPanel>
                             </DockPanel>
                         </WrapPanel>

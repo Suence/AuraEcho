@@ -64,6 +64,7 @@ public partial class App
         containerRegistry.RegisterSingleton<ILocalPluginRepository, LocalPluginRepository>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
         containerRegistry.RegisterSingleton<INavigationService, NavigationService>();
+        containerRegistry.RegisterSingleton<IPluginInstallService, PluginInstallService>();
 
         containerRegistry.RegisterSingleton<IFileRepository, FileRepository>();
         containerRegistry.RegisterSingleton<IAppPackageRepository, AppPackageRepository>();
@@ -99,14 +100,6 @@ public partial class App
         _startupArgs = e.Args;
         base.OnStartup(e);
 
-        StartPipeServer();
-
-        RegisterEvents();
-        LoadConfig();
-
-        _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-        _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
-
         string dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
         if (!File.Exists(dbPath))
         {
@@ -117,6 +110,15 @@ public partial class App
             pluginDbContext.Database.Migrate();
             logger.Information("End Migrate");
         }
+
+        StartPipeServer();
+
+        RegisterEvents();
+        LoadConfig();
+
+        _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+        _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
+
     }
 
     private void LoadConfig()

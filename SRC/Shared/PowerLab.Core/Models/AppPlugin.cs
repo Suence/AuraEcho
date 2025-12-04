@@ -15,6 +15,12 @@ public class AppPlugin : BindableBase
     public bool IsEnabled { get; set; } = true;
     public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
+    public bool IsInstalled
+    {
+        get => field;
+        set => SetProperty(ref field, value);
+    }
+
     private List<PluginPackage> _versions;
     public List<PluginPackage> Versions 
     {
