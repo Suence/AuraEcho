@@ -42,7 +42,7 @@ public class FileRepository : IFileRepository
                 if (totalBytes > 0)
                 {
                     double percent = totalRead * 100.0 / totalBytes;
-                    progress.Report(percent);
+                    progress?.Report(percent);
                 }
             }
             return true;
@@ -51,6 +51,13 @@ public class FileRepository : IFileRepository
         {
             return false;
         }
+    }
+
+    public async Task<UploadedFile> GetFileByIdAsync(string fileId)
+    {
+        HttpHelper httpHelper = new HttpHelper();
+        var result = await httpHelper.GetAsync<UploadedFile>($"{Urls.ServerUrl}/api/file/{fileId}");
+        return result;
     }
 
     public async Task<List<UploadedFile>> GetUploadedFilesAsync()

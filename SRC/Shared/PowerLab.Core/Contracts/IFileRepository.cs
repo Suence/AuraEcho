@@ -8,4 +8,5 @@ public interface IFileRepository
     Task<string> UploadFileAsync(string filePath, string type);
     Task<string> UploadWithChunksAsync(string filePath, string fileType, IProgress<double> progress);
     Task<bool> DownloadFileAsync(string fileId, string outputPath, IProgress<double> progress);
+    Task<UploadedFile> GetFileByIdAsync(string fileId);
 }
