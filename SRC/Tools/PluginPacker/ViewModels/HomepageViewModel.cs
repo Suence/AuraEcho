@@ -1,12 +1,15 @@
 ﻿using PluginPacker.Models;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Windows;
 
@@ -19,15 +22,46 @@ public class HomepageViewModel : BindableBase
 {
     #region private members
     private readonly IFileDialogService _fileDialogService;
+    private readonly IFileRepository _fileRepository;
+    private readonly IRemotePluginRepository _remotePluginRepository;
     private readonly ILogger _logger;
 
     private PluginFile _iconFile;
     private string _outputFolder;
     private PluginFile _entryFile;
     private PluginFolder _rootFolder;
-    private PluginManifest _pluginManifest;
     private string _manifestFileContent = string.Empty;
     #endregion
+
+    public ObservableCollection<AppPlugin> Plugins
+    {
+        get => field;
+        set => SetProperty(ref field, value);
+    }
+
+    public AppPlugin CurrentPlugin
+    {
+        get => field;
+        set
+        {
+            SetProperty(ref field, value);
+            if (value is null)
+            {
+                return;
+            }
+            _ = LoadPluginDetailsAsync(value);
+        }
+    }
+
+    public string Version
+    {
+        get => field;
+        set
+        {
+            SetProperty(ref field, value);
+            BuildPluginManifestConetnt();
+        }
+    }
 
     /// <summary>
     /// 模块清单内容
@@ -38,14 +72,6 @@ public class HomepageViewModel : BindableBase
         set => SetProperty(ref _manifestFileContent, value);
     }
 
-    /// <summary>
-    /// 模块清单
-    /// </summary>
-    public PluginManifest PluginManifest
-    {
-        get => _pluginManifest;
-        set => SetProperty(ref _pluginManifest, value);
-    }
 
     /// <summary>
     /// 模块包输出目录
@@ -59,11 +85,7 @@ public class HomepageViewModel : BindableBase
     public PluginFile EntryFile
     {
         get => _entryFile;
-        set
-        {
-            SetProperty(ref _entryFile, value);
-            PluginManifest.EntryAssemblyName = value?.Name;
-        }
+        set => SetProperty(ref _entryFile, value);
     }
 
     public PluginFolder RootFolder
@@ -140,16 +162,6 @@ public class HomepageViewModel : BindableBase
         }
     }
 
-    public DelegateCommand GenPluginIdCommand { get; }
-    /// <summary>
-    /// 生成模块 ID
-    /// </summary>
-    private void GenPluginId()
-    {
-        PluginManifest.Id = Guid.NewGuid().ToString("N").ToUpperInvariant();
-        _logger.Debug($"生成插件 ID: {PluginManifest.Id}");
-    }
-
     public DelegateCommand<PluginFile> SetEntryFileCommand { get; }
     /// <summary>
     /// 设置入口程序集
@@ -158,21 +170,7 @@ public class HomepageViewModel : BindableBase
     private void SetEntryFile(PluginFile pluginFile)
     {
         EntryFile = pluginFile;
-    }
-
-    public DelegateCommand SetIconCmmand { get; }
-    /// <summary>
-    /// 设置模块图标
-    /// </summary>
-    private void SetIcon()
-    {
-        var filePath = _fileDialogService.OpenFile("选择图像文件", "图像文件|*.jpg;*.png;*.jpeg;*.bmp");
-
-        if (filePath is null) return;
-
-        string? fileName = Path.GetFileName(filePath);
-        IconFile = new PluginFile(filePath, fileName, RootFolder);
-        PluginManifest.Icon = IconFile.Name;
+        BuildPluginManifestConetnt();
     }
 
     public DelegateCommand SetOutputFolderCommand { get; }
@@ -195,22 +193,21 @@ public class HomepageViewModel : BindableBase
     /// <returns></returns>
     private bool PackPluginCommandCanExecute()
     {
-        return !String.IsNullOrWhiteSpace(PluginManifest.Id) &&
-               !String.IsNullOrWhiteSpace(PluginManifest.PluginName) &&
-               !String.IsNullOrWhiteSpace(PluginManifest.Version) &&
-               !String.IsNullOrWhiteSpace(PluginManifest.EntryAssemblyName) &&
-               !String.IsNullOrWhiteSpace(OutputFolder) &&
-               !String.IsNullOrWhiteSpace(PluginManifest.Author) &&
-               IconFile is not null;
+        return !String.IsNullOrWhiteSpace(Version) &&
+                EntryFile is not null &&
+               !String.IsNullOrWhiteSpace(OutputFolder);
     }
 
     /// <summary>
     /// 开始打包
     /// </summary>
-    private void PackPlugin()
+    private async void PackPlugin()
     {
         _logger.Debug("开始打包");
-        string pluginPackageFilePath = Path.Combine(OutputFolder, $"{PluginManifest.Id}.plix");
+
+        await _fileRepository.DownloadFileAsync(CurrentPlugin.IconFileId, IconFile.FilePath, null);
+
+        string pluginPackageFilePath = Path.Combine(OutputFolder, $"{CurrentPlugin.Name}.plix");
 
         byte[] manifestContentBytes = Encoding.UTF8.GetBytes(ManifestFileContent);
 
@@ -221,10 +218,7 @@ public class HomepageViewModel : BindableBase
             AddFolderToArchive(RootFolder, archive, "");
 
             // 写入 IconFile（如果有单独的图标）
-            if (IconFile is not null && File.Exists(IconFile.FilePath))
-            {
-                archive.CreateEntryFromFile(IconFile.FilePath, IconFile.Name);
-            }
+            archive.CreateEntryFromFile(IconFile.FilePath, IconFile.Name);
 
             // 写入 manifest
             var entry = archive.CreateEntry("plugin.manifest.json");
@@ -262,26 +256,40 @@ public class HomepageViewModel : BindableBase
         }
     }
 
+    private async Task LoadPluginsAsync()
+    {
+        var result = await _remotePluginRepository.GetPluginsAsync();
+        if (result is null) return;
+
+        Plugins = [.. result];
+        CurrentPlugin = Plugins.FirstOrDefault();
+    }
+
+    private async Task LoadPluginDetailsAsync(AppPlugin plugin)
+    {
+        var fileInfo = await _fileRepository.GetFileByIdAsync(CurrentPlugin.IconFileId);
+        IconFile = new PluginFile(Path.Combine(ApplicationPaths.Temp, fileInfo.FileName).Replace("\\", "/"), fileInfo.FileName, RootFolder);
+
+        var latestVersionPackage = await _remotePluginRepository.GetLatestAsync(plugin.Id);
+        var latestVersion = new Version(latestVersionPackage?.Version ?? "1.0.0");
+        Version = $"{latestVersion.Major}.{latestVersion.Minor}.{latestVersion.Build + 1}";
+    }
+
     /// <summary>
     /// 构造函数
     /// </summary>
     /// <param name="fileDialogService"></param>
     /// <param name="logger"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public HomepageViewModel(IFileDialogService fileDialogService, ILogger logger)
+    public HomepageViewModel(IFileRepository fileRepository, IRemotePluginRepository remotePluginRepository, IFileDialogService fileDialogService, ILogger logger)
     {
         _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
+        _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));
+        _remotePluginRepository = remotePluginRepository ?? throw new ArgumentNullException(nameof(remotePluginRepository));
+
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         _rootFolder = new(String.Empty, null) { Name = "插件文件" };
-
-        PluginManifest = new()
-        {
-            Author = "AUTHOR",
-            PluginName = "PLUGIN NAME",
-            Version = "1.0.0"
-        };
-        PluginManifest.PropertyChanged += PluginManifestChanged;
 
         DropFilesCommand = new DelegateCommand<PluginFolder>(DropFiles);
         AddPluginFileCommand = new DelegateCommand<PluginFolder>(AddPluginFile);
@@ -289,26 +297,34 @@ public class HomepageViewModel : BindableBase
         RemoveFileCommand = new DelegateCommand<PluginFile>(RemoveFile);
         RemoveFolderCommand = new DelegateCommand<PluginFolder>(RemoveFolder);
 
-        PackPluginCommand = new DelegateCommand(PackPlugin, PackPluginCommandCanExecute);
+        PackPluginCommand =
+            new DelegateCommand(PackPlugin, PackPluginCommandCanExecute)
+                .ObservesProperty(() => OutputFolder)
+                .ObservesProperty(() => Version)
+                .ObservesProperty(() => EntryFile);
+
         SetEntryFileCommand = new DelegateCommand<PluginFile>(SetEntryFile);
         SetOutputFolderCommand = new DelegateCommand(SetOutputFolder);
-        GenPluginIdCommand = new DelegateCommand(GenPluginId);
-        SetIconCmmand = new DelegateCommand(SetIcon);
 
-        PluginManifestChanged(null, null);
+        _ = LoadPluginsAsync();
     }
 
-    /// <summary>
-    /// 模块清单信息已更改
-    /// </summary>
-    /// <param name="_"></param>
-    /// <param name="__"></param>
-    private void PluginManifestChanged(object? _, PropertyChangedEventArgs? __)
+    private void BuildPluginManifestConetnt()
     {
         string pluginManifestContent =
-            JsonSerializer.Serialize(PluginManifest, new JsonSerializerOptions
+            JsonSerializer.Serialize(new PluginManifest
             {
-                WriteIndented = true
+                Author = CurrentPlugin.Author,
+                Description = CurrentPlugin.Description,
+                EntryAssemblyName = EntryFile?.Name,
+                Icon = IconFile.Name,
+                Id = CurrentPlugin.Id,
+                PluginName = CurrentPlugin.DisplayName,
+                Version = Version
+            }, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
 
         ManifestFileContent = pluginManifestContent;

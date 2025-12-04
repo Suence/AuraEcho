@@ -1,6 +1,7 @@
 ﻿using PluginPacker.Constants;
 using PluginPacker.Views;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
 using PowerLab.PluginContracts.Interfaces;
 using PowerLab.UIToolkit.RegionDialog;
@@ -28,6 +29,9 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<ILogger, SerilogService>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
+
+        containerRegistry.RegisterSingleton<IFileRepository, FileRepository>();
+        containerRegistry.RegisterSingleton<IRemotePluginRepository, RemotePluginRepository>();
     }
 
     protected override void OnInitialized()
