@@ -61,6 +61,7 @@ public class InstallPreparationViewModel : BindableBase, INavigationAware
         }
 
         PluginManifest = manifest;
+        Directory.Delete(_tempExtractPath, true);
     }
 
     public DelegateCommand BeginInstallCommand { get; }
@@ -80,8 +81,7 @@ public class InstallPreparationViewModel : BindableBase, INavigationAware
             ViewNames.Installing,
             new NavigationParameters
             {
-                { "PluginTempDir", _tempExtractPath },
-                { "PluginManifest", PluginManifest }
+                { "FilePath", _pluginInstallFilePath },
             });
     }
 

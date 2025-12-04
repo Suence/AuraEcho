@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace PluginInstaller.Tools;
+namespace PowerLab.Core.Tools;
 
 /// <summary>
 /// 目录操作工具类

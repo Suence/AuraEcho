@@ -36,20 +36,14 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
+        containerRegistry.RegisterSingleton<IPluginInstallService, PluginInstallService>();
 
         containerRegistry.RegisterForNavigation<InstallPreparation>();
         containerRegistry.RegisterForNavigation<Installing>();
         containerRegistry.RegisterForNavigation<InstallCompleted>();
         containerRegistry.RegisterForNavigation<PickPluginInstallFile>();
         containerRegistry.RegisterForNavigation<ConfirmDialog>();
-        //containerRegistry.Register<PluginDbContext>(provider =>
-        //{
-        //    var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
-        //    var options = new DbContextOptionsBuilder<PluginDbContext>()
-        //        .UseSqlite($"Data Source={dbPath}")
-        //        .Options;
-        //    return new PluginDbContext(options);
-        //});
+
         containerRegistry.Register<ILocalPluginRepository, LocalPluginRepository>();
     }
 
