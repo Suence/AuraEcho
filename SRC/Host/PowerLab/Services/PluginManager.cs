@@ -19,7 +19,6 @@ namespace PowerLab.Services;
 public class PluginManager : IPluginManager
 {
     private bool _isInitialized;
-    private readonly string _pluginRegistryPath;
     private readonly IModuleManager _moduleManager;
     private readonly IModuleCatalog _moduleCatalog;
     private readonly ILocalPluginRepository _pluginRepository;
@@ -38,8 +37,6 @@ public class PluginManager : IPluginManager
         _moduleCatalog = moduleCatalog;
         _pluginRepository = pluginRepository;
         _logger = logger;
-
-        _pluginRegistryPath = Path.Combine(ApplicationPaths.Data, "plugin.registry.json");
     }
 
     /// <summary>
@@ -68,7 +65,7 @@ public class PluginManager : IPluginManager
                     {
                         Directory.Delete(pluginRegistry.PluginFolder, true);
                     }
-                    pluginRegistries.Remove(pluginRegistry);
+                    _pluginRepository.RemovePluginRegistry(pluginRegistry.Id);
                     _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
                     continue;
                 }
@@ -80,6 +77,7 @@ public class PluginManager : IPluginManager
                     _ => pluginRegistry.Status
                 };
                 pluginRegistry.PlanStatus = PluginPlanStatus.None;
+                _pluginRepository.UpdatePluginRegistry(pluginRegistry);
             }
 
             if (pluginRegistry.Status == PluginStatus.Disabled)
@@ -120,7 +118,6 @@ public class PluginManager : IPluginManager
             pluginRegistry.PluginContext = pluginContext;
         }
 
-        SavePluginRegistry(pluginRegistries);
         _logger.Debug($"已加载 {pluginRegistries.Count} 个插件。");
 
         _plugins = pluginRegistries;
@@ -130,11 +127,6 @@ public class PluginManager : IPluginManager
     public Task<List<PluginRegistry>> LoadPluginsAsync()
     {
         return Task.Run(LoadPlugins);
-    }
-    private void SavePluginRegistry(List<PluginRegistry> pluginRegistries)
-    {
-        string pluginRegistriesJson = JsonSerializer.Serialize(pluginRegistries, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(_pluginRegistryPath, pluginRegistriesJson);
     }
 
     private IPlugin LoadPluginByAssembly(Assembly pluginAssembly)
