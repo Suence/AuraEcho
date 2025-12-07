@@ -11,10 +11,11 @@
 		<None Remove="Assets\Images\web.png" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.8" >
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135">
 			<ExcludeAssets>runtime</ExcludeAssets>
@@ -25,9 +26,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj">
-			<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>-->
+			<PrivateAssets>false</PrivateAssets>
+			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>
 		<ProjectReference Include="..\PowerLab.ExternalTools.Themes\PowerLab.ExternalTools.Themes.csproj" />
 	</ItemGroup>
@@ -37,16 +37,16 @@
 		<Resource Include="Assets\Images\web.png" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Compile Update="Strings\ExternalToolsStrings.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>ExternalToolsStrings.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Strings\ExternalToolsStrings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ExternalToolsStrings.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Update="Strings\ExternalToolsStrings.resx">
-	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <LastGenOutput>ExternalToolsStrings.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Strings\ExternalToolsStrings.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>ExternalToolsStrings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 </Project>

@@ -14,16 +14,17 @@
     <Grid>
         <Border Width="400"
                 Height="300"
-                Background="#EFEFEF">
+                CornerRadius="8"
+                Background="{DynamicResource Themes.Brushes.Background}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <TextBlock Margin="8"
+                    <TextBlock Margin="16, 8"
                                HorizontalAlignment="Left"
-                               FontSize="24"
+                               FontSize="16"
                                Text="ADD EXTERNAL TOOL" />
                     <Line Margin="0,0,0,12"
                           Stretch="Fill"
@@ -34,19 +35,19 @@
                           X2="1"
                           Y1="0"
                           Y2="0" />
-                    <StackPanel Margin="8,0,0,0">
+                    <StackPanel Margin="16,0">
                         <TextBlock Margin="0,0,0,4" Text="NAME" />
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 0, 8"/>
 
                         <TextBlock Margin="0,0,0,4" Text="COMMAND" />
-                        <TextBox Text="{Binding Command, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Text="{Binding Command, UpdateSourceTrigger=PropertyChanged}" Margin="0, 0, 0, 8"/>
 
                         <TextBlock Margin="0,0,0,4" Text="ARGUMENTS" />
                         <TextBox Text="{Binding Arguments, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Row="1"
-                            Margin="4"
+                            Margin="16"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
                     <Button Margin="4"

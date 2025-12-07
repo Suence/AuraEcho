@@ -8,6 +8,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:PowerLab.ExternalTools.Models"
              xmlns:prism="http://prismlibrary.com/"
+             Background="{DynamicResource Themes.Brushes.Background}"
              xmlns:utils="clr-namespace:PowerLab.ExternalTools.Utils"
              xmlns:viewmodels="clr-namespace:PowerLab.ExternalTools.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:ExternalToolsHomeViewModel}"
@@ -103,11 +104,10 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid>
-        <StackPanel Margin="24">
+        <StackPanel Margin="24, 36, 24, 24">
             <TextBlock Margin="0,0,0,12"
                        HorizontalAlignment="Left"
                        FontSize="24"
-                       Foreground="{DynamicResource ExternalTools.Brand}"
                        Text="{Binding Source={x:Static utils:ExternalToolsResources.Current}, Path=Strings.PluginName}" />
             <Line Margin="0,0,0,12"
                   Stretch="Fill"

@@ -3,8 +3,6 @@
 		<TargetFramework>net10.0-windows10.0.18362.0</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
-		<Configurations>Debug;Release;PLUGIN_DEBUG</Configurations>
-		<LangVersion>12</LangVersion>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
@@ -23,22 +21,22 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj" >
 			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-			<Private>false</Private>
+			<PrivateAssets>all</PrivateAssets>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>
-	  <ProjectReference Include="..\PowerLab.FishyTime.Themes\PowerLab.FishyTime.Themes.csproj" />
+		<ProjectReference Include="..\PowerLab.FishyTime.Themes\PowerLab.FishyTime.Themes.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Compile Update="Strings\FishyTimeStrings.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>FishyTimeStrings.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Strings\FishyTimeStrings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>FishyTimeStrings.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Update="Strings\FishyTimeStrings.resx">
-	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <LastGenOutput>FishyTimeStrings.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Strings\FishyTimeStrings.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>FishyTimeStrings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 </Project>
