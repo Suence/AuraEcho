@@ -1,4 +1,5 @@
 ﻿using PowerLab.Core.Models;
+using PowerLab.Core.Models.Api;
 
 namespace PowerLab.Core.Contracts;
 

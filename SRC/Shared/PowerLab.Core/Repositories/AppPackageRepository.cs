@@ -1,10 +1,9 @@
 ﻿using System.IO;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.Core.Models.Api;
 using PowerLab.Core.Tools;
 
 namespace PowerLab.Core.Repositories;
@@ -19,12 +18,10 @@ public class AppPackageRepository : IAppPackageRepository
     }
     public async Task<string> CreatePackageAsync(string fileId, string name, string version)
     {
-        var dto = new { Name = name, Version = version, FileId = fileId };
-        var resp = await _client.PostAsJsonAsync($"{Urls.ServerUrl}/api/package/create", dto);
-        resp.EnsureSuccessStatusCode();
-
-        var json = await resp.Content.ReadFromJsonAsync<JsonElement>();
-        return json.GetProperty("packageId").GetString()!;
+        HttpHelper httpHelper = new HttpHelper();
+        var request = new CreatePackageRequest { Name = name, Version = version, FileId = fileId };
+        var response = await httpHelper.PostAsync<CreatePackageResponse>($"{Urls.ServerUrl}/api/package/create", request);
+        return response?.PackageId;
     }
 
     public async Task<bool> DeleteAsync(string packageId)
@@ -79,15 +76,37 @@ public class AppPackageRepository : IAppPackageRepository
     public async Task<AppVersionInfo> GetLatestAsync()
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<AppVersionInfo>($"{Urls.ServerUrl}/api/package/latest");
-        return result;
+        var result = await httpHelper.GetAsync<GetLatestVersionResponse>($"{Urls.ServerUrl}/api/package/latest");
+        if (result is null) return null;
+
+        return new AppVersionInfo
+        {
+            FileId = result.FileId,
+            Version = result.Version,
+            FileName = result.FileName,
+            FileSize = result.FileSize,
+            ReleaseDate = result.ReleaseDate,
+        };
     }
 
     public async Task<List<AppPackageDetail>> GetUploadedPackagesAsync()
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<List<AppPackageDetail>>($"{Urls.ServerUrl}/api/package/list");
-        return result;
+        var result = await httpHelper.GetAsync<ListPackagesResponse>($"{Urls.ServerUrl}/api/package/list");
+        if (result is null) return null;
+
+        List<AppPackageDetail> packages =
+            result.Packages.Select(p => new AppPackageDetail
+            {
+                FileName = p.FileName,
+                CreateTime = p.CreateTime,
+                FileId = p.FileId,
+                Id = p.Id,
+                Name = p.Name,
+                Size = p.Size,
+                Version = p.Version,
+            }).ToList();
+        return packages;
     }
 }
 

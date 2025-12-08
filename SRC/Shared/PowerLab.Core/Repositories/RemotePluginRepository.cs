@@ -1,10 +1,9 @@
 ﻿using System.IO;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.Core.Models.Api;
 using PowerLab.Core.Tools;
 
 namespace PowerLab.Core.Repositories;
@@ -19,20 +18,20 @@ public class RemotePluginRepository : IRemotePluginRepository
     }
     public async Task<string> CreatePluginAsync(CreatePluginRequest req)
     {
-        var resp = await _client.PostAsJsonAsync($"{Urls.ServerUrl}/api/plugin/create", req);
-        resp.EnsureSuccessStatusCode();
+        var helper = new HttpHelper();
+        var resp = await helper.PostAsync<CreatePluginResponse>($"{Urls.ServerUrl}/api/plugin/create", req);
+        if (resp is null) return null;
 
-        var json = await resp.Content.ReadFromJsonAsync<JsonElement>();
-        return json.GetProperty("pluginId").GetString()!;
+        return resp.PluginId;
     }
 
     public async Task<string> CreateVersionAsync(CreatePluginVersionRequest req)
     {
-        var resp = await _client.PostAsJsonAsync($"{Urls.ServerUrl}/api/plugin/createVersion", req);
-        resp.EnsureSuccessStatusCode();
+        var helper = new HttpHelper();
+        var resp = await helper.PostAsync<CreatePluginVersionResponse>($"{Urls.ServerUrl}/api/plugin/createVersion", req);
+        if (resp is null) return null;
 
-        var json = await resp.Content.ReadFromJsonAsync<JsonElement>();
-        return json.GetProperty("packageId").GetString()!;
+        return resp.PackageId;
     }
 
     public async Task<bool> DeleteAsync(string pluginId)
@@ -101,22 +100,65 @@ public class RemotePluginRepository : IRemotePluginRepository
     public async Task<PluginPackage> GetLatestAsync(string pluginId)
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<PluginPackage>($"{Urls.ServerUrl}/api/plugin/latest?pluginId={pluginId}");
-        return result;
+        var result = await httpHelper.GetAsync<GetPluginLatestVersionResponse>($"{Urls.ServerUrl}/api/plugin/latest?pluginId={pluginId}");
+        if (result is null) return null;
+
+        return new PluginPackage
+        {
+            PluginId = result.PluginId,
+            FileName = result.FileName,
+            FileId = result.FileId,
+            CreateTime = result.CreateTime,
+            Id = result.Id,
+            Size = result.Size,
+            Version = result.Version
+        };
     }
 
     public async Task<List<AppPlugin>> GetPluginsAsync()
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<List<AppPlugin>>($"{Urls.ServerUrl}/api/plugin/list");
-        return result;
+        var result = await httpHelper.GetAsync<ListPluginsResponse>($"{Urls.ServerUrl}/api/plugin/list");
+        if (result is null) return null;
+
+        List<AppPlugin> plugins =
+            result.Plugins
+                  .Select(p => new AppPlugin
+                  {
+                      Author = p.Author,
+                      Name = p.Name,
+                      CreateTime = p.CreateTime,
+                      Id = p.Id,
+                      Description = p.Description,
+                      DisplayName = p.DisplayName,
+                      IconFileId = p.IconFileId,
+                      IsEnabled = p.IsEnabled
+                  })
+                  .ToList();
+
+        return plugins;
     }
 
     public async Task<List<PluginPackage>> GetVersionsAsync(string pluginId)
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<List<PluginPackage>>($"{Urls.ServerUrl}/api/plugin/versions?pluginId={pluginId}");
-        return result;
+        var result = await httpHelper.GetAsync<GetPluginVersionsResponse>($"{Urls.ServerUrl}/api/plugin/versions?pluginId={pluginId}");
+        if (result is null) return null;
+
+        var pluginVersions =
+            result.Versions
+                  .Select(v => new PluginPackage
+                  {
+                      CreateTime = v.CreateTime,
+                      Id = v.Id,
+                      Version = v.Version,
+                      FileId = v.FileId,
+                      FileName = v.FileName,
+                      PluginId = v.PluginId,
+                      Size = v.Size
+                  })
+                  .ToList();
+        return pluginVersions;
     }
 }
 

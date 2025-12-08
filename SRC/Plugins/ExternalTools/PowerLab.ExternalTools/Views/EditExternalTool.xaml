@@ -56,6 +56,7 @@
                             Content="CANCEL" />
                     <Button Margin="4"
                             Padding="16,4"
+                            Style="{DynamicResource PrimaryButtonStyle}"
                             Command="{Binding SubmitCommand}"
                             Content="CONFIRM"
                             IsDefault="True" />

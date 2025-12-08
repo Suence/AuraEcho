@@ -74,6 +74,74 @@ namespace PowerLab.Core.Tools
         }
 
         /// <summary>
+        /// 统一 POST JSON 请求
+        /// </summary>
+        public async Task<T?> PostAsync<T>(string url, HttpContent data)
+        {
+            try
+            {
+                var response = await _client.PostAsync(url, data);
+                return await HandleResponse<T>(response);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+                return default;
+            }
+        }
+
+        /// <summary>
+        /// 统一 POST JSON 请求
+        /// </summary>
+        public async Task<bool> PostAsync(string url, object data)
+        {
+            try
+            {
+                var response = await _client.PostAsJsonAsync(url, data, _jsonOptions);
+
+                // 只要 200-299 都算成功
+                if (response.IsSuccessStatusCode)
+                    return true;
+
+                // 如果有统一错误处理
+                await HandleResponse(response);
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 统一 POST JSON 请求
+        /// </summary>
+        public async Task<bool> PostAsync(string url, HttpContent data)
+        {
+            try
+            {
+                var response = await _client.PostAsync(url, data);
+
+                // 只要 200-299 都算成功
+                if (response.IsSuccessStatusCode)
+                    return true;
+
+                // 如果有统一错误处理
+                await HandleResponse(response);
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+                return false;
+            }
+        }
+
+
+        /// <summary>
         /// POST 表单请求
         /// </summary>
         public async Task<string?> PostFormAsync(string url, Dictionary<string, string> formData)

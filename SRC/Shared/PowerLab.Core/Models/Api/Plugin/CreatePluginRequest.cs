@@ -1,4 +1,4 @@
-﻿namespace PowerLab.Core.Models;
+﻿namespace PowerLab.Core.Models.Api;
 
 public class CreatePluginRequest
 {

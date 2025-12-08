@@ -7,6 +7,7 @@
              xmlns:viewmodels="clr-namespace:PowerLab.ExternalTools.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:AddExternalToolViewModel}"
              d:DesignHeight="600"
+             d:Foreground="#EFEFEF"
              d:DesignWidth="855"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="#80000000"
@@ -56,6 +57,7 @@
                             Content="CANCEL" />
                     <Button Margin="4"
                             Padding="16,4"
+                            Style="{DynamicResource PrimaryButtonStyle}"
                             Command="{Binding SubmitCommand}"
                             Content="CONFIRM" />
                 </StackPanel>
