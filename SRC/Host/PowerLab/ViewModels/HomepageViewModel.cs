@@ -20,6 +20,7 @@ public class HomepageViewModel : BindableBase
 {
     private string _title = "PowerLab";
     private readonly IRegionManager _regionManager;
+    private readonly ILocalPluginRepository _localPluginRepository;
     private readonly INavigationService _navigationService;
     private readonly IEventAggregator _eventAggregator;
     private readonly IThemeManager _themeManager;
@@ -39,7 +40,6 @@ public class HomepageViewModel : BindableBase
         get => _title;
         set => SetProperty(ref _title, value);
     }
-
 
     public DelegateCommand NavigationToDashboardCommand { get; }
     private void NavigationToDashboard()
@@ -75,6 +75,22 @@ public class HomepageViewModel : BindableBase
         NavigationToDashboard();
     }
 
+    public DelegateCommand<PluginRegistry> PluginPlanUninstallCommand { get; }
+    private void PluginPlanUninstall(PluginRegistry plugin)
+    {
+        plugin.PlanStatus = PluginPlanStatus.UninstallPending;
+        _localPluginRepository.UpdatePluginRegistry(plugin);
+    }
+
+    public DelegateCommand<PluginRegistry> CancelPluginPlanUninstallCommand { get; }
+    private void CancelPluginPlanUninstall(PluginRegistry plugin)
+    {
+        if (plugin.PlanStatus != PluginPlanStatus.UninstallPending) return;
+
+        plugin.PlanStatus = PluginPlanStatus.None;
+        _localPluginRepository.UpdatePluginRegistry(plugin);
+    }
+
     public DelegateCommand<PluginRegistry> SwitchPluginCommand { get; }
     private void SwitchPlugin(PluginRegistry pluginMetadata)
     {
@@ -89,6 +105,7 @@ public class HomepageViewModel : BindableBase
     public HomepageViewModel(
         INavigationService navigationService, 
         IRegionManager regionManager, 
+        ILocalPluginRepository localPluginRepository,
         IEventAggregator eventAggregator,
         IPluginManager pluginManager, 
         IThemeManager themeManager, 
@@ -96,6 +113,7 @@ public class HomepageViewModel : BindableBase
     {
         _regionManager = regionManager;
         _navigationService = navigationService;
+        _localPluginRepository = localPluginRepository;
         _eventAggregator = eventAggregator;
         _themeManager = themeManager;
         _logger = logger;
@@ -106,6 +124,8 @@ public class HomepageViewModel : BindableBase
         NavigationToSettingsCommand = new DelegateCommand(NavigationToSettings);
         NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         NavigationToPluginsMarketplaceCommand = new DelegateCommand(NavigationToPluginsMarketplace);
+        PluginPlanUninstallCommand = new DelegateCommand<PluginRegistry>(PluginPlanUninstall);
+        CancelPluginPlanUninstallCommand = new DelegateCommand<PluginRegistry>(CancelPluginPlanUninstall);
 
         _eventAggregator.GetEvent<PluginInstalledEvent>().Subscribe(AddNewPlugin);
 
