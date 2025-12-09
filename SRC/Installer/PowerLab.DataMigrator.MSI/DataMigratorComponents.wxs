@@ -4,6 +4,7 @@
 		<Component Id="FilesComponent" Guid="D408A01D-73DB-4E57-91DD-D32605B5D2ED">
 			<File Id="PowerLab.DataMigrator.exe" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.exe" />
 			<File Id="PowerLab.DataMigrator.dll" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.dll" />
+			<File Id="FSharp.Core.dll" Source="$(var.PowerLab.DataMigrator.TargetDir)FSharp.Core.dll" />
 			<File Id="PowerLab.DataMigrator.runtimeconfig.json" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.runtimeconfig.json" />
 			<File Id="PowerLab.DataMigrator.deps.json" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.deps.json" />
 		</Component>

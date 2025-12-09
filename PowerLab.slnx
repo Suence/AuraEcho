@@ -50,7 +50,7 @@
   <Folder Name="/SRC/Tools/">
     <Project Path="SRC/Tools/PluginInstaller/PluginInstaller.csproj" />
     <Project Path="SRC/Tools/PluginPacker/PluginPacker.csproj" />
-    <Project Path="SRC/Tools/PowerLab.DataMigrator/PowerLab.DataMigrator.csproj" Id="f0defa8d-407c-4110-9a42-1c5b04a025ea" />
+    <Project Path="SRC/Tools/PowerLab.DataMigrator/PowerLab.DataMigrator.fsproj" Id="cbb40445-b602-44f8-b27f-9a3ca89b7b21" />
   </Folder>
   <Folder Name="/TEST/">
     <Project Path="TEST/PowerLab.Control.Tests/PowerLab.Control.Tests.csproj" />

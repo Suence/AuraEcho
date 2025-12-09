@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel;
-using PowerLab.Constants;
-using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;

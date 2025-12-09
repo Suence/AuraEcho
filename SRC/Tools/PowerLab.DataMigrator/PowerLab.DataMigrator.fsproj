@@ -3,14 +3,16 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0-windows10.0.18362.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-		<SatelliteResourceLanguages>zh-Hans;en-us</SatelliteResourceLanguages>
+		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
+		<Compile Include="Program.fs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
 	</ItemGroup>
 
 </Project>
