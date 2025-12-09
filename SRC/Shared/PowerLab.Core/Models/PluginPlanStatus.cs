@@ -9,16 +9,6 @@ public enum PluginPlanStatus
     /// 无
     /// </summary>
     None,
-    
-    /// <summary>
-    /// 启用挂起
-    /// </summary>
-    EnablePending,
-    
-    /// <summary>
-    /// 禁用挂起
-    /// </summary>
-    DisablePending,
 
     /// <summary>
     /// 卸载挂起

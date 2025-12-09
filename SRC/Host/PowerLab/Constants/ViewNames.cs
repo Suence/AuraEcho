@@ -8,11 +8,6 @@ public static class ViewNames
     public const string Homepage = nameof(Views.Homepage);
     
     /// <summary>
-    /// 仪表盘
-    /// </summary>
-    public const string PluginsDashboard = nameof(Views.PluginsDashboard);
-
-    /// <summary>
     /// 设置
     /// </summary>
     public const string Settings = nameof(Views.Settings);

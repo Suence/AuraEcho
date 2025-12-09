@@ -71,7 +71,6 @@ public partial class App
         containerRegistry.RegisterSingleton<IRemotePluginRepository, RemotePluginRepository>();
 
         containerRegistry.RegisterForNavigation<Homepage>();
-        containerRegistry.RegisterForNavigation<PluginsDashboard>();
         containerRegistry.RegisterForNavigation<Settings>();
         containerRegistry.RegisterForNavigation<GeneralSettings>();
         containerRegistry.RegisterForNavigation<ConfirmDialog>();

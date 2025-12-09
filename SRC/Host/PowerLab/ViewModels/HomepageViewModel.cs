@@ -41,15 +41,6 @@ public class HomepageViewModel : BindableBase
         set => SetProperty(ref _title, value);
     }
 
-    public DelegateCommand NavigationToDashboardCommand { get; }
-    private void NavigationToDashboard()
-    {
-        _navigationService.RequestNavigate(HostRegionNames.HomeContentRegion, ViewNames.PluginsDashboard, new NavigationParameters
-        {
-            { "PluginRegistries", Plugins }
-        });
-    }
-
     public DelegateCommand NavigationToPluginsMarketplaceCommand { get; }
     private void NavigationToPluginsMarketplace()
     {
@@ -71,8 +62,6 @@ public class HomepageViewModel : BindableBase
         _themeManager.AttachPluginThemes(
             pluginRegistries.Select(p => p.PluginContext)
                             .Where(p => p is not null));
-
-        NavigationToDashboard();
     }
 
     public DelegateCommand<PluginRegistry> PluginPlanUninstallCommand { get; }
@@ -122,7 +111,6 @@ public class HomepageViewModel : BindableBase
         LoadPluginsCommand = new DelegateCommand(LoadPlugins);
         SwitchPluginCommand = new DelegateCommand<PluginRegistry>(SwitchPlugin);
         NavigationToSettingsCommand = new DelegateCommand(NavigationToSettings);
-        NavigationToDashboardCommand = new DelegateCommand(NavigationToDashboard);
         NavigationToPluginsMarketplaceCommand = new DelegateCommand(NavigationToPluginsMarketplace);
         PluginPlanUninstallCommand = new DelegateCommand<PluginRegistry>(PluginPlanUninstall);
         CancelPluginPlanUninstallCommand = new DelegateCommand<PluginRegistry>(CancelPluginPlanUninstall);

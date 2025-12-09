@@ -14,15 +14,4 @@ public partial class Homepage : UserControl
     {
         InitializeComponent();
     }
-
-    private void EnabledPluginsFilter(object sender, System.Windows.Data.FilterEventArgs e)
-    {
-        if (e.Item is not PluginRegistry plugin)
-        {
-            e.Accepted = false;
-            return;
-        }
-
-        e.Accepted = plugin.Status == PluginStatus.Enabled;
-    }
 }

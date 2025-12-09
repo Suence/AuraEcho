@@ -70,32 +70,14 @@ public class PluginManager : IPluginManager
 
     public bool LoadPlugin(PluginRegistry pluginRegistry)
     {
-        if (pluginRegistry.PlanStatus != PluginPlanStatus.None)
+        if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
         {
-            if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
+            if (Directory.Exists(pluginRegistry.PluginFolder))
             {
-                if (Directory.Exists(pluginRegistry.PluginFolder))
-                {
-                    Directory.Delete(pluginRegistry.PluginFolder, true);
-                }
-                _pluginRepository.RemovePluginRegistry(pluginRegistry.Id);
-                _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
-                return false;
+                Directory.Delete(pluginRegistry.PluginFolder, true);
             }
-
-            pluginRegistry.Status = pluginRegistry.PlanStatus switch
-            {
-                PluginPlanStatus.EnablePending => PluginStatus.Enabled,
-                PluginPlanStatus.DisablePending => PluginStatus.Disabled,
-                _ => pluginRegistry.Status
-            };
-            pluginRegistry.PlanStatus = PluginPlanStatus.None;
-            _pluginRepository.UpdatePluginRegistry(pluginRegistry);
-        }
-
-        if (pluginRegistry.Status == PluginStatus.Disabled)
-        {
-            _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被禁用，跳过加载。");
+            _pluginRepository.RemovePluginRegistry(pluginRegistry.Id);
+            _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
             return false;
         }
 

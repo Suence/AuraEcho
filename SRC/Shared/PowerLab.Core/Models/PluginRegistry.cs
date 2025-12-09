@@ -12,16 +12,6 @@ public class PluginRegistry : BindableBase
 {
     public string Id { get; set; }
 
-    private PluginStatus _status;
-    /// <summary>
-    /// 当前状态
-    /// </summary>
-    public PluginStatus Status
-    {
-        get => _status;
-        set => SetProperty(ref _status, value);
-    }
-
     private PluginPlanStatus _planStatus;
     /// <summary>
     /// 计划状态

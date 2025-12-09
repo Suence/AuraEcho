@@ -74,7 +74,6 @@ namespace PowerLab.Core.Services
                 PlanStatus = PluginPlanStatus.None,
                 Manifest = manifest,
                 PluginFolder = ApplicationPaths.GetPluginPath(manifest.Id),
-                Status = PluginStatus.Enabled,
                 DefaultView = defaultView
             };
             _localPluginRepository.AddPluginRegistry(pluginRegistry);

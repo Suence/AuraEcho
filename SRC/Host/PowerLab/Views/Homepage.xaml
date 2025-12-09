@@ -19,10 +19,6 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <powerlab:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
-        <CollectionViewSource x:Key="EnabledPluginsView"
-                              Filter="EnabledPluginsFilter"
-                              IsLiveSortingRequested="True"
-                              Source="{Binding Plugins}" />
         <DataTemplate x:Key="PluginTemplate" DataType="{x:Type cm:PluginRegistry}">
 
             <Button Width="120"
