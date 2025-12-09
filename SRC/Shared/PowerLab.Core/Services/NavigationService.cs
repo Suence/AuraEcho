@@ -17,7 +17,7 @@ namespace PowerLab.Core.Services
             RaisePropertyChanged(nameof(CanGoBack));
         }
 
-        public bool CanGoBack => _stack.Count > 1;
+        public bool CanGoBack => _stack.Count > 0;
 
         public void GoBack()
         {
