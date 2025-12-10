@@ -16,6 +16,8 @@ public class NotifyIconViewModel
     private IRegionManager _regionManager;
     #endregion
 
+    public static bool ShutdownRequested { get; private set; }
+
     public ICommand ShowWindowCommand { get; }
     private void ShowWindow()
     {
@@ -23,7 +25,11 @@ public class NotifyIconViewModel
     }
 
     public ICommand ExitApplicationCommand { get; }
-    private void ExitApplication() => Application.Current.Shutdown();
+    private void ExitApplication()
+    {
+        ShutdownRequested = true;
+        Application.Current.Shutdown();
+    }
 
     public DelegateCommand<string> GoToTargetViewCommand { get; }
     private void GoToTargetView(string viewName)

@@ -2,6 +2,7 @@
 using Microsoft.Toolkit.Uwp.Notifications;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Events;
+using PowerLab.ViewModels;
 using Prism.Events;
 namespace PowerLab.Views;
 
@@ -47,6 +48,8 @@ public partial class MainWindow : Window
     /// <param name="e"></param>
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
+        if (NotifyIconViewModel.ShutdownRequested) return;
+
         e.Cancel = true;
         Hide();
         ShowToast();
@@ -88,7 +91,6 @@ public partial class MainWindow : Window
     private void CloseWindowButton_Click(object sender, RoutedEventArgs e)
     {
         Hide();
-
         ShowToast();
     }
 
