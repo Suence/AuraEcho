@@ -8,8 +8,8 @@ namespace PowerLab.Core.Constants;
 public static class ApplicationPaths
 {
     public static string BasePath => Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "PowerLab");
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "PowerLab", "Client");
 
     public static string Plugins => Path.Combine(BasePath, "plugins");
     public static string Logs => Path.Combine(BasePath, "logs");
