@@ -9,18 +9,24 @@ namespace PowerLab.UpdaterService
     {
         private readonly ILogger<Worker> _logger;
         private readonly IPackageRepository _packageRespository;
-        private readonly string _tempDownloadPath;
+        private readonly string _basePath;
+        private readonly string _appPackageCachePath;
+        private readonly string _pluginPackageCachePath;
+        private AppUpdateInfo _cachedAppUpdateInfo;
+
         public Worker(ILogger<Worker> logger, IPackageRepository packageRespository)
         {
             _logger = logger;
             _packageRespository = packageRespository;
-
-            _tempDownloadPath = Path.Combine(
+            _basePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                "PowerLab",
-                "UpdaterService",
-                "Temp");
-            Directory.CreateDirectory(_tempDownloadPath);
+                "PowerLab", "UpdaterService", "Download");
+
+            _appPackageCachePath = Path.Combine(_basePath, "PackageCache");
+            _pluginPackageCachePath = Path.Combine(_basePath, "PluginCache");
+            Directory.CreateDirectory(_basePath);
+            Directory.CreateDirectory(_appPackageCachePath);
+            Directory.CreateDirectory(_pluginPackageCachePath);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,51 +34,89 @@ namespace PowerLab.UpdaterService
             _logger.LogInformation("ExecuteAsync");
             while (!stoppingToken.IsCancellationRequested)
             {
-                Version currentVersion = GetInstalledVersion();
-                _logger.LogInformation("当前版本: {version}", currentVersion);
-                var newestVersion = await GetLastestVersionAsync();
-                _logger.LogInformation("最新版本: {version}", newestVersion.Version);
-                if (new Version(newestVersion.Version) <= currentVersion)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-                    continue;
-                }
-                _logger.LogInformation("正在下载新版本安装包");
-                var targetPath = Path.Combine(_tempDownloadPath, newestVersion.FileName);
-                var progress = new Progress<double>(p => { });
-                bool result = await _packageRespository.DownloadLatestAsync(
-                    "stable",
-                    targetPath,
-                    progress);
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
 
-                if (!result)
-                {
-                    _logger.LogError("下载失败，稍后重试。");
-                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-                    continue;
-                }
-                _logger.LogInformation("下载完成：{setup_path}, 准备安装。", targetPath);
+                await DownloadPackage();
 
-                await WaitAppExit();
+                if (IsAppRunning()) continue;
 
-                var processStartInfo = new ProcessStartInfo
-                {
-                    FileName = targetPath,
-                    Arguments = "/quiet",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using Process? process = Process.Start(processStartInfo);
-                if (process is not null)
-                {
-                    await process.WaitForExitAsync(stoppingToken);
-                    _logger.LogInformation("安装程序已退出，等待应用程序启动。");
-                    await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
-                    _logger.LogInformation("继续检测更新。");
-                    continue;
-                }
+                await InstallPackage();
             }
         }
+
+        private async Task DownloadPackage()
+        {
+            await DownloadAppPackage();
+            await DownloadPluginPackage();
+        }
+
+        private async Task DownloadPluginPackage()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+        }
+
+        private async Task DownloadAppPackage()
+        {
+            _logger.LogInformation("开始检测客户端版本信息...");
+
+            Version currentVersion = GetInstalledVersion();
+            var newestVersion = await GetLastestVersionAsync();
+            _logger.LogInformation("当前版本: {0}, 最新版本: {1}", currentVersion, newestVersion.Version);
+
+            var newestVer = new Version(newestVersion.Version);
+            var cachedVer = new Version(_cachedAppUpdateInfo?.Version ?? "0.0.0");
+            if (newestVer <= currentVersion || newestVer <= cachedVer)
+            {
+                _logger.LogInformation("未检测到新版本");
+                return;
+            }
+
+            _logger.LogInformation("正在下载新版本安装包");
+            var targetPath = Path.Combine(_appPackageCachePath, newestVersion.FileName);
+            var progress = new Progress<double>(p => { });
+            bool result = await _packageRespository.DownloadLatestAsync("stable", targetPath, progress);
+            _cachedAppUpdateInfo = new AppUpdateInfo(newestVersion.Version, targetPath);
+        }
+
+        private async Task InstallPackage()
+        {
+            await InstallPluginPackage();
+            await InstallAppPackage();
+        }
+
+        private async Task InstallAppPackage()
+        {
+            if (_cachedAppUpdateInfo is null)
+            {
+                _logger.LogInformation("没有新版本需要安装");
+                return;
+            }
+
+            _logger.LogInformation("开始启动客户端安装程序");
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = _cachedAppUpdateInfo.FilePath,
+                Arguments = "/quiet",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using Process? process = Process.Start(processStartInfo);
+            if (process is not null)
+            {
+                await process.WaitForExitAsync();
+                _logger.LogInformation("客户端安装程序执行完成，继续检测更新。");
+                _cachedAppUpdateInfo = null;
+                return;
+            }
+            _logger.LogInformation("客户端安装程序启动失败");
+        }
+
+        private async Task InstallPluginPackage()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+        }
+
+
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("StopAsync");
@@ -107,25 +151,25 @@ namespace PowerLab.UpdaterService
             return latestVersion ?? new AppVersionInfo { Version = "1.0.0" };
         }
 
-        private async Task WaitAppExit()
+        private static bool IsAppRunning()
         {
             List<Process> allProcesses =
             [.. Process.GetProcessesByName("PowerLab"),
              .. Process.GetProcessesByName("PlixInstaller")];
 
-            if (allProcesses.Count <= 0) return;
+            if (allProcesses.Count <= 0) return false;
 
             string? installFolder = Path.GetDirectoryName(GetInstallPath());
             List<Process> runningProcesses =
                 [.. allProcesses.Where(p => Path.GetDirectoryName(p.MainModule.FileName) == installFolder)];
 
-            if (runningProcesses.Count <= 0) return;
+            if (runningProcesses.Count <= 0) return false;
 
-            foreach (Process process in runningProcesses)
-            {
-                _logger.LogInformation("正在等待 {processName} 进程退出", process.ProcessName);
-                await process.WaitForExitAsync();
-            }
+            return runningProcesses.Any(p => !p.HasExited);
         }
     }
+
+    public record AppUpdateInfo(string Version, string FilePath);
+
+    public record PluginUpdateInfo(string PluginId, string Version, string FilePath);
 }
