@@ -25,6 +25,13 @@ namespace PowerLab.Core.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// 安装插件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <remarks>TODO: 优化升级逻辑</remarks>
         private PluginRegistry InstallCore(string filePath)
         {
             // 解压插件到临时目录

@@ -14,6 +14,7 @@ using PowerLab.UIToolkit.RegionDialog;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -24,6 +25,7 @@ namespace PluginInstaller;
 /// </summary>
 public partial class App : PrismApplication
 {
+    private bool _isNoWindowMode;
     protected override Window CreateShell()
     {
         LoggingAttribute.Logger = Container.Resolve<ILogger>();
@@ -53,12 +55,22 @@ public partial class App : PrismApplication
 
     protected override void OnInitialized()
     {
+        if (_isNoWindowMode) return;
+
         base.OnInitialized();
+    }
+
+    private async Task QuietInstallPluginAsync(string pluginFile)
+    {
+        await Container.Resolve<IPluginInstallService>().InstallAsync(pluginFile);
+        Shutdown();
     }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         GlobalObjectHolder.StartupArgs = e.Args;
+        _isNoWindowMode = GlobalObjectHolder.StartupArgs.Contains("--nowindow");
+
         base.OnStartup(e);
 
         var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
@@ -67,6 +79,18 @@ public partial class App : PrismApplication
             using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
             pluginDbContext.Database.Migrate();
         }
+
+        if (!_isNoWindowMode) return;
+
+        var pluginFilePath = GlobalObjectHolder.StartupArgs.FirstOrDefault();
+        if (!File.Exists(pluginFilePath))
+        {
+            Container.Resolve<ILogger>().Error($"File not found: {pluginFilePath}");
+            Shutdown();
+            return;
+        }
+
+        _ = QuietInstallPluginAsync(pluginFilePath);
     }
 
     /// <summary>
