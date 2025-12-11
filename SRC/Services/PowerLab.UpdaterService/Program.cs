@@ -1,8 +1,6 @@
-using System.Diagnostics;
+using PowerLab.Core.Contracts;
+using PowerLab.Core.Repositories;
 using PowerLab.UpdaterService;
-using PowerLab.UpdaterService.Constants;
-using PowerLab.UpdaterService.Contracts;
-using PowerLab.UpdaterService.Services;
 using Serilog;
 
 var logDir = Path.Combine(
@@ -25,8 +23,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddHostedService<Worker>();
-        services.AddSingleton<IFileRespository, FileRespository>();
-        services.AddSingleton<IPackageRepository, PackageRepository>();
+        services.AddSingleton<IFileRepository, FileRepository>();
+        services.AddSingleton<IAppPackageRepository, AppPackageRepository>();
     })
     .UseSerilog()
     .Build();

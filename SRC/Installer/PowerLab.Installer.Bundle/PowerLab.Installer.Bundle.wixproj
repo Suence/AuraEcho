@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Cultures>zh-CN;</Cultures>
-    <DefineConstants>BundleVersion=1.1.42;</DefineConstants>
+    <DefineConstants>BundleVersion=1.2.42;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\PowerLab.ico" />

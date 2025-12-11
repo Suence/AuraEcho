@@ -4,6 +4,27 @@
 			<Files Include="$(var.PowerLab.UpdaterService.TargetDir)**">
 				<Exclude Files="*.pdb"/>
 				<Exclude Files="PowerLabUpdaterService.exe"/>
+
+				<Exclude Files="SQLitePCLRaw.batteries_v2.dll"/>
+				<Exclude Files="SQLitePCLRaw.core.dll"/>
+				<Exclude Files="SQLitePCLRaw.provider.e_sqlite3.dll"/>
+				<Exclude Files="Prism.dll"/>
+				<Exclude Files="Prism.Wpf.dll"/>
+				<Exclude Files="Rougamo.dll"/>
+				<Exclude Files="Microsoft.WindowsAPICodePack.dll"/>
+				<Exclude Files="Microsoft.WindowsAPICodePack.Shell.dll"/>
+				<Exclude Files="Microsoft.Xaml.Behaviors.dll"/>
+				<Exclude Files="PowerLab.Core.dll"/>
+				<Exclude Files="PowerLab.PluginContracts.dll"/>
+				<Exclude Files="Microsoft.Extensions.DependencyModel.dll"/>
+				<Exclude Files="e_sqlite3.dll"/>
+				<Exclude Files="Microsoft.Data.Sqlite.dll"/>
+				<Exclude Files="Microsoft.EntityFrameworkCore.Abstractions.dll"/>
+				<Exclude Files="Microsoft.EntityFrameworkCore.dll"/>
+				<Exclude Files="Microsoft.EntityFrameworkCore.Relational.dll"/>
+				<Exclude Files="Microsoft.EntityFrameworkCore.Sqlite.dll"/>
+				<Exclude Files="Microsoft.Extensions.Caching.Abstractions.dll"/>
+				<Exclude Files="Microsoft.Extensions.Caching.Memory.dll"/>
 			</Files>
 
 			<Component Id="ProductComponent" Guid="1577B0BC-EFED-4FC6-AD98-68DE350FACBC">

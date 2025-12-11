@@ -1,20 +1,20 @@
 using System.Diagnostics;
 using Microsoft.Win32;
-using PowerLab.UpdaterService.Contracts;
-using PowerLab.UpdaterService.Models;
+using PowerLab.Core.Contracts;
+using PowerLab.Core.Models.Api;
 
 namespace PowerLab.UpdaterService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IPackageRepository _packageRespository;
+        private readonly IAppPackageRepository _packageRespository;
         private readonly string _basePath;
         private readonly string _appPackageCachePath;
         private readonly string _pluginPackageCachePath;
         private AppUpdateInfo _cachedAppUpdateInfo;
 
-        public Worker(ILogger<Worker> logger, IPackageRepository packageRespository)
+        public Worker(ILogger<Worker> logger, IAppPackageRepository packageRespository)
         {
             _logger = logger;
             _packageRespository = packageRespository;
@@ -105,6 +105,7 @@ namespace PowerLab.UpdaterService
             {
                 await process.WaitForExitAsync();
                 _logger.LogInformation("客户端安装程序执行完成，继续检测更新。");
+                File.Delete(_cachedAppUpdateInfo.FilePath);
                 _cachedAppUpdateInfo = null;
                 return;
             }
