@@ -1,17 +1,20 @@
-﻿using PluginPacker.Models;
-using PowerLab.Core.Constants;
-using PowerLab.Core.Contracts;
-using PowerLab.Core.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Windows;
+using PluginPacker.Models;
+using PowerLab.Core.Constants;
+using PowerLab.Core.Contracts;
+using PowerLab.Core.Models;
+using PowerLab.Core.Tools;
+using PowerLab.PluginContracts.Attributes;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace PluginPacker.ViewModels;
 
@@ -25,23 +28,18 @@ public class HomepageViewModel : BindableBase
     private readonly IFileRepository _fileRepository;
     private readonly IRemotePluginRepository _remotePluginRepository;
     private readonly ILogger _logger;
-
-    private PluginFile _iconFile;
-    private string _outputFolder;
-    private PluginFile _entryFile;
     private PluginFolder _rootFolder;
-    private string _manifestFileContent = string.Empty;
     #endregion
 
     public ObservableCollection<AppPlugin> Plugins
     {
-        get => field;
+        get;
         set => SetProperty(ref field, value);
     }
 
     public AppPlugin CurrentPlugin
     {
-        get => field;
+        get;
         set
         {
             SetProperty(ref field, value);
@@ -55,7 +53,7 @@ public class HomepageViewModel : BindableBase
 
     public string Version
     {
-        get => field;
+        get;
         set
         {
             SetProperty(ref field, value);
@@ -68,24 +66,29 @@ public class HomepageViewModel : BindableBase
     /// </summary>
     public string ManifestFileContent
     {
-        get => _manifestFileContent;
-        set => SetProperty(ref _manifestFileContent, value);
-    }
-
+        get;
+        set => SetProperty(ref field, value);
+    } = string.Empty;
 
     /// <summary>
     /// 模块包输出目录
     /// </summary>
     public string OutputFolder
     {
-        get => _outputFolder;
-        set => SetProperty(ref _outputFolder, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public PluginFile EntryFile
     {
-        get => _entryFile;
-        set => SetProperty(ref _entryFile, value);
+        get;
+        set => SetProperty(ref field, value);
+    }
+
+    public string? DefaultViewName
+    {
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public PluginFolder RootFolder
@@ -99,8 +102,8 @@ public class HomepageViewModel : BindableBase
     /// </summary>
     public PluginFile IconFile
     {
-        get => _iconFile;
-        set => SetProperty(ref _iconFile, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public DelegateCommand<PluginFolder> DropFilesCommand { get; }
@@ -170,6 +173,7 @@ public class HomepageViewModel : BindableBase
     private void SetEntryFile(PluginFile pluginFile)
     {
         EntryFile = pluginFile;
+        DefaultViewName = GetDefaultViewNameOfPluginFile(pluginFile);
         BuildPluginManifestConetnt();
     }
 
@@ -194,7 +198,8 @@ public class HomepageViewModel : BindableBase
     private bool PackPluginCommandCanExecute()
     {
         return !String.IsNullOrWhiteSpace(Version) &&
-                EntryFile is not null &&
+               EntryFile is not null &&
+               !String.IsNullOrWhiteSpace(DefaultViewName) &&
                !String.IsNullOrWhiteSpace(OutputFolder);
     }
 
@@ -264,7 +269,23 @@ public class HomepageViewModel : BindableBase
         Plugins = [.. result];
         CurrentPlugin = Plugins.FirstOrDefault();
     }
-
+    private string? GetDefaultViewNameOfPluginFile(PluginFile pluginFile)
+    {
+        var alc = new PluginLoadContext(pluginFile.FilePath);
+        Assembly pluginAssembly = null;
+        try
+        {
+            pluginAssembly = alc.LoadFromAssemblyPath(pluginFile.FilePath);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"加载插件程序集失败：{pluginFile.Name}，异常：{ex.Message}");
+            return null;
+        }
+        var targetAttribute = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
+        alc.Unload();
+        return targetAttribute?.ViewName;
+    }
     private async Task LoadPluginDetailsAsync(AppPlugin plugin)
     {
         var fileInfo = await _fileRepository.GetFileByIdAsync(CurrentPlugin.IconFileId);
@@ -301,7 +322,8 @@ public class HomepageViewModel : BindableBase
             new DelegateCommand(PackPlugin, PackPluginCommandCanExecute)
                 .ObservesProperty(() => OutputFolder)
                 .ObservesProperty(() => Version)
-                .ObservesProperty(() => EntryFile);
+                .ObservesProperty(() => EntryFile)
+                .ObservesProperty(() => DefaultViewName);
 
         SetEntryFileCommand = new DelegateCommand<PluginFile>(SetEntryFile);
         SetOutputFolderCommand = new DelegateCommand(SetOutputFolder);
@@ -320,7 +342,8 @@ public class HomepageViewModel : BindableBase
                 Icon = IconFile.Name,
                 Id = CurrentPlugin.Id,
                 PluginName = CurrentPlugin.DisplayName,
-                Version = Version
+                Version = Version,
+                DefaultViewName = DefaultViewName
             }, new JsonSerializerOptions
             {
                 WriteIndented = true,

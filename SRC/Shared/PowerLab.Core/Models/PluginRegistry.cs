@@ -12,34 +12,22 @@ public class PluginRegistry : BindableBase
 {
     public string Id { get; set; }
 
-    private PluginPlanStatus _planStatus;
     /// <summary>
     /// 计划状态
     /// </summary>
     public PluginPlanStatus PlanStatus
     {
-        get => _planStatus; 
-        set => SetProperty(ref _planStatus, value);
+        get; 
+        set => SetProperty(ref field, value);
     }
 
-    private PluginManifest _manifest;
     /// <summary>
     /// 清单信息
     /// </summary>
     public PluginManifest Manifest
     {
-        get => _manifest;
-        set => SetProperty(ref _manifest, value);
-    }
-
-    private string _defaultView;
-    /// <summary>
-    /// 默认视图
-    /// </summary>
-    public string DefaultView
-    {
-        get => _defaultView;
-        set => SetProperty(ref _defaultView, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     /// <summary>

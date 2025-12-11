@@ -172,6 +172,7 @@
                       Background="Transparent"
                       BorderThickness="0"
                       Drop="PluginFilesTreeView_Drop"
+                      PreviewDragOver="PluginFolder_DropOver"
                       FontSize="14"
                       ItemsSource="{Binding RootFolder.Children}">
                 <i:Interaction.Behaviors>

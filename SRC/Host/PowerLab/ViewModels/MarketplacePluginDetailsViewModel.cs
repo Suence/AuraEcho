@@ -98,7 +98,7 @@ public class MarketplacePluginDetailsViewModel : BindableBase, INavigationAware,
 
         _navigationService.RequestNavigate(
             HostRegionNames.MainRegion,
-            targetRegistry.DefaultView);
+            targetRegistry.Manifest.DefaultViewName);
     }
 
     private async Task LoadPluginDetails()

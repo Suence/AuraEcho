@@ -64,8 +64,6 @@ namespace PowerLab.Core.Services
                 _logger.Error($"加载插件程序集失败：{manifest.PluginName}，异常：{ex.Message}");
                 return null;
             }
-            string defaultView = GetPluginDefaultView(pluginAssembly);
-
             IPluginSetup pluginDatabaseInitializer = GetPluginDatabaseInitializer(pluginAssembly);
             pluginDatabaseInitializer?.Setup(_containerProvider);
             var pluginRegistry = new PluginRegistry
@@ -74,7 +72,6 @@ namespace PowerLab.Core.Services
                 PlanStatus = PluginPlanStatus.None,
                 Manifest = manifest,
                 PluginFolder = ApplicationPaths.GetPluginPath(manifest.Id),
-                DefaultView = defaultView
             };
             _localPluginRepository.AddPluginRegistry(pluginRegistry);
             return pluginRegistry;
@@ -88,12 +85,6 @@ namespace PowerLab.Core.Services
                                   .Where(t => !t.IsAbstract)
                                   .SingleOrDefault();
                 return _containerProvider.Resolve(pluginDatabaseInitializerType) as IPluginSetup;
-            }
-
-            static string GetPluginDefaultView(Assembly pluginAssembly)
-            {
-                var targetAttribute = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault() ?? throw new Exception("插件程序集没有指定 DefaultView");
-                return targetAttribute.ViewName;
             }
         }
 

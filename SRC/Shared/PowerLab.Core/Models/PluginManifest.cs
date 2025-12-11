@@ -7,21 +7,13 @@ namespace PowerLab.Core.Models;
 /// </summary>
 public class PluginManifest : BindableBase
 {
-    private string? _id;
-    private string? _pluginName;
-    private string? _version;
-    private string? _description;
-    private string? _entryAssemblyName;
-    private string? _author;
-    private string? _icon;
-
     /// <summary>
     /// Id
     /// </summary>
-    public string? Id 
+    public string? Id  
     { 
-        get => _id;
-        set => SetProperty(ref _id, value); 
+        get; 
+        set => SetProperty(ref field, value); 
     }
     
     /// <summary>
@@ -29,8 +21,8 @@ public class PluginManifest : BindableBase
     /// </summary>
     public string? Icon
     {
-        get => _icon;
-        set => SetProperty(ref _icon, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     /// <summary>
@@ -38,8 +30,8 @@ public class PluginManifest : BindableBase
     /// </summary>
     public string? Author
     {
-        get => _author;
-        set => SetProperty(ref _author, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     /// <summary>
@@ -47,8 +39,8 @@ public class PluginManifest : BindableBase
     /// </summary>
     public string? PluginName 
     { 
-        get => _pluginName;
-        set => SetProperty(ref _pluginName, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     /// <summary>
@@ -56,8 +48,8 @@ public class PluginManifest : BindableBase
     /// </summary>
     public string? Version 
     { 
-        get => _version; 
-        set => SetProperty(ref _version, value);
+        get; 
+        set => SetProperty(ref field, value);
     }
 
     /// <summary>
@@ -65,8 +57,8 @@ public class PluginManifest : BindableBase
     /// </summary>
     public string? Description 
     { 
-        get => _description; 
-        set => SetProperty(ref _description, value);
+        get; 
+        set => SetProperty(ref field, value);
     }
 
     /// <summary>
@@ -74,7 +66,16 @@ public class PluginManifest : BindableBase
     /// </summary>
     public string? EntryAssemblyName 
     { 
-        get => _entryAssemblyName; 
-        set => SetProperty(ref _entryAssemblyName, value);
+        get; 
+        set => SetProperty(ref field, value);
+    }
+
+    /// <summary>
+    /// 默认视图名称
+    /// </summary>
+    public string? DefaultViewName
+    {
+        get;
+        set => SetProperty(ref field, value);
     }
 }

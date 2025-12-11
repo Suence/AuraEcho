@@ -88,7 +88,7 @@ public class HomepageViewModel : BindableBase
 
         _navigationService.RequestNavigate(
             HostRegionNames.MainRegion,
-            pluginMetadata.DefaultView);
+            pluginMetadata.Manifest.DefaultViewName);
     }
 
     public HomepageViewModel(
