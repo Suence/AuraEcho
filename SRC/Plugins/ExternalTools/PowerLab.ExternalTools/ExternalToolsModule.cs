@@ -39,8 +39,6 @@ public class ExternalToolsModule : IPlugin
 
     public void OnInitialized(IContainerProvider containerProvider)
     {
-        using var dbContext = containerProvider.Resolve<ExternalToolsDbContext>();
-        dbContext.Database.Migrate();
     }
 
     public void RegisterTypes(IContainerRegistry containerRegistry)
