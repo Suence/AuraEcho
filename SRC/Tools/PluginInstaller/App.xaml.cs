@@ -73,8 +73,7 @@ public partial class App : PrismApplication
 
         base.OnStartup(e);
 
-        var dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
-        if (!File.Exists(dbPath))
+        if (!File.Exists(ApplicationPaths.HostDataBase))
         {
             using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
             pluginDbContext.Database.Migrate();

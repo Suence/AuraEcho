@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PowerLab.Constants;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Constants;
@@ -55,6 +56,8 @@ public partial class App
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
+        containerRegistry.Register<PowerLabDbContext>(provider => DbContextFactory.CreateDbContext());
+
         containerRegistry.RegisterSingleton<ILogger, SerilogService>();
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
@@ -97,19 +100,9 @@ public partial class App
     protected override void OnStartup(StartupEventArgs e)
     {
         _startupArgs = e.Args;
+
         base.OnStartup(e);
-
-        string dbPath = Path.Combine(ApplicationPaths.Data, "powerlab.db");
-        if (!File.Exists(dbPath))
-        {
-            using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
-
-            var logger = Container.Resolve<ILogger>();
-            logger.Information("Begin Migrate");
-            pluginDbContext.Database.Migrate();
-            logger.Information("End Migrate");
-        }
-
+        
         StartPipeServer();
 
         RegisterEvents();
@@ -117,7 +110,6 @@ public partial class App
 
         _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
         _notifyIcon.DataContext = Container.Resolve<NotifyIconViewModel>();
-
     }
 
     private void LoadConfig()
@@ -168,10 +160,23 @@ public partial class App
             return;
         }
         logger = null;
+        
+        CreateDatabaseIfNotExists();
 
         var app = new App();
         app.InitializeComponent();
         app.Run();
+    }
+
+    private static void CreateDatabaseIfNotExists()
+    {
+        if (File.Exists(ApplicationPaths.HostDataBase)) return;
+        var logger = new SerilogService();
+        using var pluginDbContext = DbContextFactory.CreateDbContext();
+
+        logger.Information("Begin Migrate");
+        pluginDbContext.Database.Migrate();
+        logger.Information("End Migrate");
     }
 
     private static void StartPipeServer()

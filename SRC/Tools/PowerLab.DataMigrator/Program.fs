@@ -1,10 +1,10 @@
-﻿open System
-open Microsoft.EntityFrameworkCore
+﻿open Microsoft.EntityFrameworkCore
 open PowerLab.Core.Data
 
 [<EntryPoint>]
 let main _ =
-    use powerLabDbContext = new PowerLabDbContext()
+
+    use powerLabDbContext = DbContextFactory.CreateDbContext()
 
     let pending = powerLabDbContext.Database.GetPendingMigrations()
 

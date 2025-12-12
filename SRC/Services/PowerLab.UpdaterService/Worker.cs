@@ -1,23 +1,28 @@
 using System.Diagnostics;
 using Microsoft.Win32;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api;
 
 namespace PowerLab.UpdaterService
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
-        private readonly IAppPackageRepository _packageRespository;
+        private ILogger<Worker> _logger;
+        private IAppPackageRepository _packageRespository;
+        private ILocalPluginRepository _localPluginRepository;
+        private IRemotePluginRepository _remotePluginRepository;
+        private readonly IServiceProvider _serviceProvider;
         private readonly string _basePath;
         private readonly string _appPackageCachePath;
         private readonly string _pluginPackageCachePath;
         private AppUpdateInfo _cachedAppUpdateInfo;
-
-        public Worker(ILogger<Worker> logger, IAppPackageRepository packageRespository)
+        private Dictionary<string, PluginUpdateInfo> _cachedPluginUpdateInfo = [];
+        public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
-            _packageRespository = packageRespository;
+            _serviceProvider = serviceProvider;
+
             _basePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "PowerLab", "UpdaterService", "Download");
@@ -32,6 +37,13 @@ namespace PowerLab.UpdaterService
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("ExecuteAsync");
+
+            using var scope = _serviceProvider.CreateScope();
+
+            _packageRespository  = scope.ServiceProvider.GetRequiredService<IAppPackageRepository>();
+            _localPluginRepository = scope.ServiceProvider.GetRequiredService<ILocalPluginRepository>();
+            _remotePluginRepository = scope.ServiceProvider.GetRequiredService<IRemotePluginRepository>();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
@@ -52,7 +64,27 @@ namespace PowerLab.UpdaterService
 
         private async Task DownloadPluginPackage()
         {
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            _logger.LogInformation("开始检测插件版本信息...");
+            List<PluginRegistry> installedPlugins = _localPluginRepository.GetPluginRegistries();
+            foreach (var plugin in installedPlugins)
+            {
+                var latestPackage = await _remotePluginRepository.GetLatestAsync(plugin.Manifest.Id);
+                var latestVersion = latestPackage is null
+                    ? new Version("0.0.0")
+                    : new Version(latestPackage.Version);
+
+                _logger.LogInformation("{0} 当前版本: {1}, 最新版本: {2}", plugin.Manifest.PluginName, plugin.Manifest.Version, latestVersion);
+                if (latestVersion <= new Version(plugin.Manifest.Version)) continue;
+
+                var targetPath = Path.Combine(_pluginPackageCachePath, latestPackage.FileName);
+                bool result = await _remotePluginRepository.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, null);
+                if (!result)
+                {
+                    _logger.LogInformation("插件安装包下载失败");
+                    continue;
+                }
+                _cachedPluginUpdateInfo[plugin.Manifest.Id] = new PluginUpdateInfo(plugin.Manifest.Id, latestPackage.Version, targetPath);
+            }
         }
 
         private async Task DownloadAppPackage()
@@ -114,7 +146,7 @@ namespace PowerLab.UpdaterService
 
         private async Task InstallPluginPackage()
         {
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            
         }
 
 

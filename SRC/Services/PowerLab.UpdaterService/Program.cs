@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Data;
 using PowerLab.Core.Repositories;
 using PowerLab.UpdaterService;
 using Serilog;
@@ -23,10 +27,14 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddHostedService<Worker>();
-        services.AddSingleton<IFileRepository, FileRepository>();
-        services.AddSingleton<IAppPackageRepository, AppPackageRepository>();
+
+        services.AddDbContext<PowerLabDbContext>(options => options.UseSqlite($"Data Source={ApplicationPaths.HostDataBase}"));
+
+        services.AddScoped<IFileRepository, FileRepository>();
+        services.AddScoped<IAppPackageRepository, AppPackageRepository>();
+        services.AddScoped<ILocalPluginRepository, LocalPluginRepository>();
+        services.AddScoped<IRemotePluginRepository, RemotePluginRepository>();
     })
     .UseSerilog()
     .Build();
-
 host.Run();
