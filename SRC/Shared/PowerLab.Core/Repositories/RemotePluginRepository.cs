@@ -86,7 +86,7 @@ public class RemotePluginRepository : IRemotePluginRepository
                 if (totalBytes > 0)
                 {
                     double percent = totalRead * 100.0 / totalBytes;
-                    progress.Report(percent);
+                    progress?.Report(percent);
                 }
             }
             return true;
