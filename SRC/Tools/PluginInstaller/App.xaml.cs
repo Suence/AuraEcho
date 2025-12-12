@@ -34,6 +34,8 @@ public partial class App : PrismApplication
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
+        containerRegistry.Register<PowerLabDbContext>(provider => DbContextFactory.CreateDbContext());
+
         containerRegistry.RegisterSingleton<ILogger, SerilogService>();
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
