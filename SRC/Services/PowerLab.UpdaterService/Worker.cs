@@ -74,7 +74,18 @@ namespace PowerLab.UpdaterService
                     : new Version(latestPackage.Version);
 
                 _logger.LogInformation("{0} 当前版本: {1}, 最新版本: {2}", plugin.Manifest.PluginName, plugin.Manifest.Version, latestVersion);
+
+                var cachedVersion = _cachedPluginUpdateInfo.ContainsKey(plugin.Manifest.Id)
+                    ? new Version(_cachedPluginUpdateInfo[plugin.Manifest.Id].Version)
+                    : new Version("0.0.0");
+
                 if (latestVersion <= new Version(plugin.Manifest.Version)) continue;
+
+                if (latestVersion <= cachedVersion)
+                {
+                    _logger.LogInformation("{0} {1}已下载未安装，跳过下载", plugin.Manifest.PluginName, cachedVersion);
+                    continue;
+                }
 
                 var targetPath = Path.Combine(_pluginPackageCachePath, latestPackage.FileName);
                 bool result = await _remotePluginRepository.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, null);
@@ -146,7 +157,38 @@ namespace PowerLab.UpdaterService
 
         private async Task InstallPluginPackage()
         {
-            
+            var cachedPluginIdList = _cachedPluginUpdateInfo.Keys.ToList();
+            string? installFolder = Path.GetDirectoryName(GetInstallPath());
+            if (installFolder is null)
+            {
+                _logger.LogInformation("找不到客户端的安装目录");
+                return;
+            }
+
+            string pluginInstallerPath = Path.Combine(installFolder, "PluginInstaller.exe");
+            foreach (var pluginId in cachedPluginIdList)
+            {
+                var pluginUpdateInfo = _cachedPluginUpdateInfo[pluginId];
+                _logger.LogInformation("开始安装插件 {0} 的新版本 {1}", pluginId, pluginUpdateInfo.Version);
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = pluginInstallerPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+                processStartInfo.ArgumentList.Add(pluginUpdateInfo.FilePath);
+                processStartInfo.ArgumentList.Add("--nowindow");
+                using Process? process = Process.Start(processStartInfo);
+                if (process is not null)
+                {
+                    await process.WaitForExitAsync();
+                    _logger.LogInformation("插件 {0} 的安装程序执行完成。", pluginId);
+                    File.Delete(pluginUpdateInfo.FilePath);
+                    _cachedPluginUpdateInfo.Remove(pluginId);
+                    continue;
+                }
+                _logger.LogInformation("插件 {0} 的安装程序启动失败。", pluginId);
+            }
         }
 
 
