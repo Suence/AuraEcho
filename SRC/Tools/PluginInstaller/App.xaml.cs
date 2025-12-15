@@ -1,4 +1,8 @@
-﻿using DryIoc;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Threading;
+using DryIoc;
 using Microsoft.EntityFrameworkCore;
 using PluginInstaller.Tools;
 using PluginInstaller.Views;
@@ -14,9 +18,6 @@ using PowerLab.UIToolkit.RegionDialog;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
-using System.Diagnostics;
-using System.IO;
-using System.Windows;
 
 namespace PluginInstaller;
 
@@ -64,7 +65,18 @@ public partial class App : PrismApplication
 
     private async Task QuietInstallPluginAsync(string pluginFile)
     {
-        await Container.Resolve<IPluginInstallService>().InstallAsync(pluginFile);
+        var logger = Container.Resolve<ILogger>();
+        logger.Debug("Installing");
+        
+        if (await Container.Resolve<IPluginInstallService>().InstallAsync(pluginFile) is null)
+        {
+            logger.Error("Install failed");
+            Shutdown();
+            return;
+        }
+
+        logger.Debug("Install finished");
+        logger.Debug("Start Shutdown");
         Shutdown();
     }
 
@@ -75,13 +87,22 @@ public partial class App : PrismApplication
 
         base.OnStartup(e);
 
+        RegisterEvents();
+
         if (!File.Exists(ApplicationPaths.HostDataBase))
         {
             using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
             pluginDbContext.Database.Migrate();
         }
 
-        if (!_isNoWindowMode) return;
+        var logger = Container.Resolve<ILogger>();
+        logger.Debug($"ARGS: {String.Join(",", e.Args)}");
+        if (!_isNoWindowMode)
+        {
+            logger.Debug("if (!_isNoWindowMode) => true");
+            return;
+        }
+
 
         var pluginFilePath = GlobalObjectHolder.StartupArgs.FirstOrDefault();
         if (!File.Exists(pluginFilePath))
@@ -119,10 +140,87 @@ public partial class App : PrismApplication
             logger.Debug("已有实例正在运行，正在退出程序。");
             return;
         }
-        logger = null;
 
         var app = new App();
         app.InitializeComponent();
         app.Run();
+    }
+
+    /// <summary>
+    /// 订阅全局异常处理事件
+    /// </summary>
+    private void RegisterEvents()
+    {
+        //Task线程内未捕获异常处理事件
+        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
+        //UI线程未捕获异常处理事件（UI主线程）
+        DispatcherUnhandledException += App_DispatcherUnhandledException;
+
+        //非UI线程未捕获异常处理事件(例如自己创建的一个子线程)
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+    }
+    /// <summary>
+    /// Task 线程异常处理
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        try
+        {
+            if (e.Exception is Exception exception)
+            {
+                HandleException(exception);
+            }
+        }
+        catch (Exception ex)
+        {
+            HandleException(ex);
+        }
+    }
+
+    /// <summary>
+    /// UI 线程异常处理
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        HandleException(e.Exception);
+    }
+
+    /// <summary>
+    /// 非 UI 线程异常处理
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        try
+        {
+            if (e.ExceptionObject is Exception exception)
+            {
+                HandleException(exception);
+            }
+        }
+        catch (Exception ex)
+        {
+            HandleException(ex);
+        }
+        finally
+        {
+
+        }
+    }
+
+    /// <summary>
+    /// 全局异常处理逻辑
+    /// </summary>
+    /// <param name="exception"></param>
+    private void HandleException(Exception exception)
+    {
+        Debug.WriteLine(exception);
+        LoggingAttribute.Logger.Debug(exception.ToString());
     }
 }
