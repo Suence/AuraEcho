@@ -73,6 +73,7 @@ public class MarketplacePluginDetailsViewModel : BindableBase, INavigationAware,
 
         InstallingMessage = "installing...";
         var pluginRegistry = await _pluginInstallService.InstallAsync(pluginInstallerFilePath);
+        File.Delete(pluginInstallerFilePath);
         if (pluginRegistry is null)
         {
             IsInstalling = false;

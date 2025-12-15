@@ -44,6 +44,7 @@ namespace PowerLab.Core.Services
             if (!File.Exists(manifestPath))
             {
                 _logger.Error("插件缺少 manifest 文件。");
+                Directory.Delete(extractPath, true);
                 return null;
             }
 
@@ -64,7 +65,7 @@ namespace PowerLab.Core.Services
                 _localPluginRepository?.RemovePluginRegistry(existingPlugin.Id);
             }
 
-            _logger.Error("加载程序集");
+            _logger.Debug("加载程序集");
             var entryAssemblyPath = Path.Combine(finalPath, manifest.EntryAssemblyName);
             var alc = new PluginLoadContext(entryAssemblyPath);
             Assembly pluginAssembly = null;
@@ -77,7 +78,7 @@ namespace PowerLab.Core.Services
                 _logger.Error($"加载插件程序集失败：{manifest.PluginName}，异常：{ex.Message}");
                 return null;
             }
-            _logger.Error("执行插件环境初始化");
+            _logger.Debug("执行插件环境初始化");
             IPluginSetup pluginDatabaseInitializer = GetPluginDatabaseInitializer(pluginAssembly);
             pluginDatabaseInitializer?.Setup(_containerProvider);
             var pluginRegistry = new PluginRegistry
@@ -88,7 +89,7 @@ namespace PowerLab.Core.Services
                 PluginFolder = ApplicationPaths.GetPluginPath(manifest.Id),
             };
             _localPluginRepository.AddPluginRegistry(pluginRegistry);
-            _logger.Error("安装成功");
+            _logger.Debug("安装成功");
             return pluginRegistry;
 
             IPluginSetup GetPluginDatabaseInitializer(Assembly pluginAssembly)
