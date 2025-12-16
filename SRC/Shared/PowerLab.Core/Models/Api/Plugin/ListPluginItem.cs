@@ -8,6 +8,5 @@ public class ListPluginItem
     public string Description { get; set; }
     public string Author { get; set; }
     public string IconFileId { get; set; }
-    public bool IsEnabled { get; set; }
     public DateTime CreateTime { get; set; }
 }

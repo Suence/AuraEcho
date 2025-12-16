@@ -132,7 +132,6 @@ public class RemotePluginRepository : IRemotePluginRepository
                       Description = p.Description,
                       DisplayName = p.DisplayName,
                       IconFileId = p.IconFileId,
-                      IsEnabled = p.IsEnabled
                   })
                   .ToList();
 
@@ -142,7 +141,7 @@ public class RemotePluginRepository : IRemotePluginRepository
     public async Task<List<PluginPackage>> GetVersionsAsync(string pluginId)
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<GetPluginVersionsResponse>($"{Urls.ServerUrl}/api/plugin/versions?pluginId={pluginId}");
+        var result = await httpHelper.GetAsync<GetPluginActivedVerionsResponse>($"{Urls.ServerUrl}/api/plugin/versions?pluginId={pluginId}");
         if (result is null) return null;
 
         var pluginVersions =
