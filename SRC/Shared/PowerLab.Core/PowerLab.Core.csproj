@@ -25,7 +25,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\Entities\" />
     <Folder Include="Native\Externals\" />
   </ItemGroup>
   <ItemGroup>

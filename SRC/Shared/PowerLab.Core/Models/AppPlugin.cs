@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 
 namespace PowerLab.Core.Models;
 

@@ -1,4 +1,5 @@
-﻿using PowerLab.Core.Models;
+﻿using PowerLab.Core.Data.Entities;
+using PowerLab.Core.Models;
 
 namespace PowerLab.Core.Contracts;
 
@@ -8,13 +9,13 @@ public interface ILocalPluginRepository
     /// 获取插件信息列表
     /// </summary>
     /// <returns></returns>
-    List<PluginRegistry> GetPluginRegistries();
+    List<PluginRegistryModel> GetPluginRegistries();
 
     /// <summary>
     /// 添加插件信息
     /// </summary>
     /// <param name="pluginRegistry"></param>
-    void AddPluginRegistry(PluginRegistry pluginRegistry);
+    void AddPluginRegistry(PluginRegistryModel pluginRegistryModel);
 
     /// <summary>
     /// 移除插件信息
@@ -26,5 +27,5 @@ public interface ILocalPluginRepository
     /// 更新插件信息
     /// </summary>
     /// <param name="pluginRegistry"></param>
-    void UpdatePluginRegistry(PluginRegistry pluginRegistry);
+    void UpdatePluginRegistry(PluginRegistryModel pluginRegistryModel);
 }

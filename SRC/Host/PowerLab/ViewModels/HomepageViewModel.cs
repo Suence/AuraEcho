@@ -1,4 +1,6 @@
-﻿using PowerLab.Constants;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using PowerLab.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Events;
 using PowerLab.Core.Extensions;
@@ -10,9 +12,6 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace PowerLab.ViewModels;
 
@@ -25,11 +24,11 @@ public class HomepageViewModel : BindableBase
     private readonly IEventAggregator _eventAggregator;
     private readonly IThemeManager _themeManager;
     private readonly ILogger _logger;
-    private ObservableCollection<PluginRegistry> _plugins;
+    private ObservableCollection<PluginRegistryModel> _plugins;
 
     private readonly IPluginManager _pluginManager;
 
-    public ObservableCollection<PluginRegistry> Plugins
+    public ObservableCollection<PluginRegistryModel> Plugins
     {
         get => _plugins ??= [];
         set => SetProperty(ref _plugins, value);
@@ -64,15 +63,15 @@ public class HomepageViewModel : BindableBase
                             .Where(p => p is not null));
     }
 
-    public DelegateCommand<PluginRegistry> PluginPlanUninstallCommand { get; }
-    private void PluginPlanUninstall(PluginRegistry plugin)
+    public DelegateCommand<PluginRegistryModel> PluginPlanUninstallCommand { get; }
+    private void PluginPlanUninstall(PluginRegistryModel plugin)
     {
         plugin.PlanStatus = PluginPlanStatus.UninstallPending;
         _localPluginRepository.UpdatePluginRegistry(plugin);
     }
 
-    public DelegateCommand<PluginRegistry> CancelPluginPlanUninstallCommand { get; }
-    private void CancelPluginPlanUninstall(PluginRegistry plugin)
+    public DelegateCommand<PluginRegistryModel> CancelPluginPlanUninstallCommand { get; }
+    private void CancelPluginPlanUninstall(PluginRegistryModel plugin)
     {
         if (plugin.PlanStatus != PluginPlanStatus.UninstallPending) return;
 
@@ -80,8 +79,8 @@ public class HomepageViewModel : BindableBase
         _localPluginRepository.UpdatePluginRegistry(plugin);
     }
 
-    public DelegateCommand<PluginRegistry> SwitchPluginCommand { get; }
-    private void SwitchPlugin(PluginRegistry pluginMetadata)
+    public DelegateCommand<PluginRegistryModel> SwitchPluginCommand { get; }
+    private void SwitchPlugin(PluginRegistryModel pluginMetadata)
     {
         if (pluginMetadata is null)
             return;
@@ -109,18 +108,18 @@ public class HomepageViewModel : BindableBase
         _pluginManager = pluginManager;
 
         LoadPluginsCommand = new DelegateCommand(LoadPlugins);
-        SwitchPluginCommand = new DelegateCommand<PluginRegistry>(SwitchPlugin);
+        SwitchPluginCommand = new DelegateCommand<PluginRegistryModel>(SwitchPlugin);
         NavigationToSettingsCommand = new DelegateCommand(NavigationToSettings);
         NavigationToPluginsMarketplaceCommand = new DelegateCommand(NavigationToPluginsMarketplace);
-        PluginPlanUninstallCommand = new DelegateCommand<PluginRegistry>(PluginPlanUninstall);
-        CancelPluginPlanUninstallCommand = new DelegateCommand<PluginRegistry>(CancelPluginPlanUninstall);
+        PluginPlanUninstallCommand = new DelegateCommand<PluginRegistryModel>(PluginPlanUninstall);
+        CancelPluginPlanUninstallCommand = new DelegateCommand<PluginRegistryModel>(CancelPluginPlanUninstall);
 
         _eventAggregator.GetEvent<PluginInstalledEvent>().Subscribe(AddNewPlugin);
 
         LoadPlugins();
     }
 
-    private void AddNewPlugin(PluginRegistry registry)
+    private void AddNewPlugin(PluginRegistryModel registry)
     {
         Plugins.Add(registry);
     }

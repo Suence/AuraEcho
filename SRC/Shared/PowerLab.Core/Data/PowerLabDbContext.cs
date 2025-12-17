@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PowerLab.Core.Models;
+using PowerLab.Core.Data.Entities;
+
 namespace PowerLab.Core.Data;
 
 public class PowerLabDbContext : DbContext
 {
-    public DbSet<PluginRegistry> PluginRegistries { get; set; }
+    public DbSet<PluginRegistryEntity> PluginRegistries { get; set; }
 
     public PowerLabDbContext(DbContextOptions<PowerLabDbContext> options) : base(options)
     {
@@ -12,6 +13,6 @@ public class PowerLabDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PluginRegistry>(pr => pr.OwnsOne(p => p.Manifest));
+        modelBuilder.Entity<PluginRegistryEntity>(pr => pr.OwnsOne(p => p.Manifest));
     }
 }

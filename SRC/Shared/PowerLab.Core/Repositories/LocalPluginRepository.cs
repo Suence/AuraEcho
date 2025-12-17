@@ -1,5 +1,6 @@
 ﻿using PowerLab.Core.Contracts;
 using PowerLab.Core.Data;
+using PowerLab.Core.Extensions;
 using PowerLab.Core.Models;
 
 namespace PowerLab.Core.Repositories;
@@ -12,15 +13,15 @@ public class LocalPluginRepository : ILocalPluginRepository
         _dbContext = dbContext;
     }
 
-    public void AddPluginRegistry(PluginRegistry pluginRegistry)
+    public void AddPluginRegistry(PluginRegistryModel pluginRegistryModel)
     {
-        _dbContext.PluginRegistries.Add(pluginRegistry);
+        _dbContext.PluginRegistries.Add(pluginRegistryModel.ToPluginRegistryEntity());
         _dbContext.SaveChanges();
     }
 
-    public List<PluginRegistry> GetPluginRegistries()
+    public List<PluginRegistryModel> GetPluginRegistries()
     {
-        return _dbContext.PluginRegistries.ToList();
+        return _dbContext.PluginRegistries.Select(PluginRegistryExtensions.ToPluginRegistryEntity).ToList();
     }
 
     public void RemovePluginRegistry(string pluginRegistryId)
@@ -33,9 +34,16 @@ public class LocalPluginRepository : ILocalPluginRepository
         }
     }
 
-    public void UpdatePluginRegistry(PluginRegistry pluginRegistry)
+    public void UpdatePluginRegistry(PluginRegistryModel pluginRegistryModel)
     {
-        _dbContext.PluginRegistries.Update(pluginRegistry);
+        var targetEntity = _dbContext.PluginRegistries.FirstOrDefault(pr => pr.Id == pluginRegistryModel.Id);
+        if (targetEntity is null)
+            throw new Exception($"EntityId not found: {pluginRegistryModel.Id}");
+
+        targetEntity.PluginFolder = pluginRegistryModel.PluginFolder;
+        targetEntity.PlanStatus = pluginRegistryModel.PlanStatus;
+
+        _dbContext.PluginRegistries.Update(targetEntity);
         _dbContext.SaveChanges();
     }
 }

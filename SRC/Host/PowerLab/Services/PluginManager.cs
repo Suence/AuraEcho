@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
@@ -25,8 +24,8 @@ public class PluginManager : IPluginManager
     private readonly ILogger _logger;
     private readonly List<PluginLoadContext> _pluginLoadContexts = [];
 
-    private List<PluginRegistry> _plugins;
-    public List<PluginRegistry> Plugins
+    private List<PluginRegistryModel> _plugins;
+    public List<PluginRegistryModel> Plugins
     {
         get => _isInitialized ? _plugins : [];
     }
@@ -43,7 +42,7 @@ public class PluginManager : IPluginManager
     /// 加载所有插件并返回插件信息
     /// </summary>
     /// <returns></returns>
-    public List<PluginRegistry> LoadPlugins()
+    public List<PluginRegistryModel> LoadPlugins()
     {
         // TODO: 线程安全
 
@@ -63,29 +62,29 @@ public class PluginManager : IPluginManager
         _isInitialized = true;
         return _plugins;
     }
-    public Task<List<PluginRegistry>> LoadPluginsAsync()
+    public Task<List<PluginRegistryModel>> LoadPluginsAsync()
     {
         return Task.Run(LoadPlugins);
     }
 
-    public bool LoadPlugin(PluginRegistry pluginRegistry)
+    public bool LoadPlugin(PluginRegistryModel pluginRegistryModel)
     {
-        if (pluginRegistry.PlanStatus == PluginPlanStatus.UninstallPending)
+        if (pluginRegistryModel.PlanStatus == PluginPlanStatus.UninstallPending)
         {
-            if (Directory.Exists(pluginRegistry.PluginFolder))
+            if (Directory.Exists(pluginRegistryModel.PluginFolder))
             {
-                Directory.Delete(pluginRegistry.PluginFolder, true);
+                Directory.Delete(pluginRegistryModel.PluginFolder, true);
             }
-            _pluginRepository.RemovePluginRegistry(pluginRegistry.Id);
-            _logger.Debug($"插件 {pluginRegistry.Manifest.PluginName} 已被卸载，跳过加载。");
+            _pluginRepository.RemovePluginRegistry(pluginRegistryModel.Id);
+            _logger.Debug($"插件 {pluginRegistryModel.Manifest.PluginName} 已被卸载，跳过加载。");
             return false;
         }
 
-        string entryAssemblyPath = Path.Combine(ApplicationPaths.GetPluginPath(pluginRegistry.Manifest.Id), pluginRegistry.Manifest.EntryAssemblyName);
+        string entryAssemblyPath = Path.Combine(ApplicationPaths.GetPluginPath(pluginRegistryModel.Manifest.Id), pluginRegistryModel.Manifest.EntryAssemblyName);
 
         if (!File.Exists(entryAssemblyPath))
         {
-            _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
+            _logger.Error($"插件 {pluginRegistryModel.Manifest.PluginName} 主程序集不存在：{entryAssemblyPath}");
             return false;
         }
 
@@ -98,25 +97,25 @@ public class PluginManager : IPluginManager
         }
         catch (Exception ex)
         {
-            _logger.Error($"加载插件程序集失败：{pluginRegistry.Manifest.PluginName}，异常：{ex.Message}");
+            _logger.Error($"加载插件程序集失败：{pluginRegistryModel.Manifest.PluginName}，异常：{ex.Message}");
             return false;
         }
 
         PluginDefaultViewAttribute defaultView = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
         if (defaultView is null)
         {
-            _logger.Error($"插件 {pluginRegistry.Manifest.PluginName} 没有指定默认视图。");
+            _logger.Error($"插件 {pluginRegistryModel.Manifest.PluginName} 没有指定默认视图。");
             return false;
         }
 
         IPlugin pluginContext = LoadPluginByAssembly(pluginAssembly);
-        pluginRegistry.PluginContext = pluginContext;
+        pluginRegistryModel.PluginContext = pluginContext;
 
-        _plugins.Add(pluginRegistry);
+        _plugins.Add(pluginRegistryModel);
         return true;
     }
-    public Task<bool> LoadPluginAsync(PluginRegistry pluginRegistry)
-        => Task.Run(() => LoadPlugin(pluginRegistry));
+    public Task<bool> LoadPluginAsync(PluginRegistryModel pluginRegistryModel)
+        => Task.Run(() => LoadPlugin(pluginRegistryModel));
 
     private IPlugin LoadPluginByAssembly(Assembly pluginAssembly)
     {

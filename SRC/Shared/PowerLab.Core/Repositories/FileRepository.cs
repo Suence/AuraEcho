@@ -54,8 +54,16 @@ public class FileRepository : IFileRepository
     public async Task<UploadedFile> GetFileByIdAsync(string fileId)
     {
         HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<UploadedFile>($"{Urls.ServerUrl}/api/file/{fileId}");
-        return result;
+        var result = await httpHelper.GetAsync<GetUploadedFileByIdResponse>($"{Urls.ServerUrl}/api/file/{fileId}");
+        if (result == null) return null;
+        return new UploadedFile
+        {
+            FileName = result.FileName,
+            Id = result.Id,
+            RelativePath = result.RelativePath,
+            Size = result.Size,
+            UploadTime = result.UploadTime
+        };
     }
     public async Task<List<UploadedFile>> GetUploadedFilesAsync()
     {

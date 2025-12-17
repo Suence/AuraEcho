@@ -1,14 +1,15 @@
-﻿using PowerLab.PluginContracts.Interfaces;
+﻿using PowerLab.Core.Models;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.Mvvm;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace PowerLab.Core.Models;
+namespace PowerLab.Core.Data.Entities;
 
 /// <summary>
 /// 模块配置信息
 /// </summary>
-public class PluginRegistry : BindableBase
+public class PluginRegistryEntity : BindableBase
 {
     public string Id { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using PowerLab.Constants;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Data.Entities;
 using PowerLab.Core.Events;
 using PowerLab.Core.Models;
 using PowerLab.Interfaces;
@@ -93,7 +94,7 @@ public class MarketplacePluginDetailsViewModel : BindableBase, INavigationAware,
     public DelegateCommand OpenPluginCommand { get; }
     private void OpenPlugin()
     {
-        PluginRegistry? targetRegistry = 
+        PluginRegistryModel? targetRegistry = 
             _pluginManager.Plugins.FirstOrDefault(p => p.Manifest.Id == Plugin.Id) 
             ?? throw new Exception();
 

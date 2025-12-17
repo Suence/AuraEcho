@@ -19,7 +19,7 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <powerlab:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
-        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type cm:PluginRegistry}">
+        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type cm:PluginRegistryModel}">
 
             <Button Width="120"
                     Height="120"

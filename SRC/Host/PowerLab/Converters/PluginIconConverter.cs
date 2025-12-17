@@ -1,9 +1,9 @@
-﻿using PowerLab.Core.Models;
-using PowerLab.UIToolkit.Converters;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
+using PowerLab.Core.Models;
+using PowerLab.UIToolkit.Converters;
 
 namespace PowerLab.Converters;
 
@@ -16,7 +16,7 @@ public class PluginIconConverter : MarkupExtension, IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not PluginRegistry pr) return null;
+        if (value is not PluginRegistryModel pr) return null;
 
         var iconPath = new PathCombineConverter().Convert([pr.PluginFolder, pr.Manifest.Icon], null, null, null);
         var imageSource = new StringToImageSourceConverter().Convert(iconPath, null, null, null);
