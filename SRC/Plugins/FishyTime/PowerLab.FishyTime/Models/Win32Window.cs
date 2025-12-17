@@ -15,26 +15,10 @@ namespace PowerLab.FishyTime.Models;
 public class Win32Window : BindableBase, IDisposable
 {
     #region private members
-    private string _name;
     private double _width;
     private double _height;
-    private double _maxWidth;
-    private double _maxHeight;
     private Point _position;
-    private nint _handle;
-    private double _opacity;
-    private bool _isTopmost;
-    private ShowWindowCommands _windowState;
-    private bool _isMouseOver;
-    private bool _isVisible = true;
-    private Drawing::Icon _icon;
-    private bool _isMasked;
-    private bool _isLoaded;
     private bool _isActivated;
-    private bool _isClosed;
-    private bool _isDisposed;
-    private bool _isEnabledMask;
-    private WindowMaskMode _maskMode;
     private List<Rect> _hotZoneRegions;
     private List<IHookManager> _hookManagers = [];
     private IWindowMask _windowMask;
@@ -95,14 +79,14 @@ public class Win32Window : BindableBase, IDisposable
 
     public string Name
     {
-        get => _name;
-        set => SetProperty(ref _name, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public Drawing::Icon Icon
     {
-        get => _icon;
-        set => SetProperty(ref _icon, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public double Width
@@ -129,14 +113,14 @@ public class Win32Window : BindableBase, IDisposable
 
     public double MaxWidth
     {
-        get => _maxWidth;
-        set => SetProperty(ref _maxWidth, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public double MaxHeight
     {
-        get => _maxHeight;
-        set => SetProperty(ref _maxHeight, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public Point Position
@@ -152,10 +136,10 @@ public class Win32Window : BindableBase, IDisposable
 
     public bool IsEnabledMask
     {
-        get => _isEnabledMask;
+        get;
         set
         {
-            if (!SetProperty(ref _isEnabledMask, value)) return;
+            if (!SetProperty(ref field, value)) return;
 
             IsEnabledMaskChanged(value);
         }
@@ -163,10 +147,10 @@ public class Win32Window : BindableBase, IDisposable
 
     public WindowMaskMode MaskMode
     {
-        get => _maskMode;
+        get;
         set
         {
-            if (!SetProperty(ref _maskMode, value)) return;
+            if (!SetProperty(ref field, value)) return;
 
             MaskModeChanged(value);
         }
@@ -174,10 +158,10 @@ public class Win32Window : BindableBase, IDisposable
 
     public bool IsLoaded
     {
-        get => _isLoaded;
+        get;
         set
         {
-            if (!SetProperty(ref _isLoaded, value)) return;
+            if (!SetProperty(ref field, value)) return;
 
             if (value) Loaded?.Invoke();
         }
@@ -191,36 +175,36 @@ public class Win32Window : BindableBase, IDisposable
 
     public bool IsClosed
     {
-        get => _isClosed;
-        private set => SetProperty(ref _isClosed, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
 
     public bool IsDisposed
     {
-        get => _isDisposed;
-        private set => SetProperty(ref _isDisposed, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
 
     public bool IsMasked
     {
-        get => _isMasked;
-        internal set => SetProperty(ref _isMasked, value);
+        get;
+        internal set => SetProperty(ref field, value);
     }
 
     public nint Handle
     {
-        get => _handle;
-        private set => SetProperty(ref _handle, value);
+        get;
+        private set => SetProperty(ref field, value);
     }
 
     public nint MaskHandle => _windowMask?.Handle ?? IntPtr.Zero;
 
     public double Opacity
     {
-        get => _opacity;
+        get;
         set
         {
-            if (!SetProperty(ref _opacity, value)) return;
+            if (!SetProperty(ref field, value)) return;
 
             ApplyOpacityToSourceWindow();
         }
@@ -228,10 +212,10 @@ public class Win32Window : BindableBase, IDisposable
 
     public bool IsTopmost
     {
-        get => _isTopmost;
+        get;
         set
         {
-            if (!SetProperty(ref _isTopmost, value)) return;
+            if (!SetProperty(ref field, value)) return;
 
             ApplyTopmostToSourceWindow();
         }
@@ -239,20 +223,20 @@ public class Win32Window : BindableBase, IDisposable
 
     public bool IsMouseOver
     {
-        get => _isMouseOver; 
-        set => SetProperty(ref _isMouseOver, value);
+        get; 
+        set => SetProperty(ref field, value);
     }
 
     public bool IsVisible
     {
-        get => _isVisible;
-        set => SetProperty(ref _isVisible, value);
-    }
+        get;
+        set => SetProperty(ref field, value);
+    } = true;
 
     public ShowWindowCommands WindowState
     {
-        get => _windowState;
-        set => SetProperty(ref _windowState, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public Rect Bounds
