@@ -3,6 +3,7 @@
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:I18N="clr-namespace:PowerLab.Core.Tools;assembly=PowerLab.Core"
                         xmlns:local="clr-namespace:PowerLab"
+                        xmlns:sys="clr-namespace:System;assembly=mscorlib"
                         xmlns:powerlab="http://ui.powerlab.com/"
                         xmlns:prism="http://prismlibrary.com/">
     <Application.Resources>

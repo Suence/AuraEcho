@@ -4,5 +4,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Light/Brushes.xaml" />
         <ResourceDictionary Source="Light/Button.xaml" />
+        <ResourceDictionary Source="Light/MenuItem.xaml" />
+        <ResourceDictionary Source="Light/ContextMenu.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

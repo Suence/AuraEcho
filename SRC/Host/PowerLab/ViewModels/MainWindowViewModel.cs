@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel;
+using PowerLab.Core.Events;
+using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 
 namespace PowerLab.ViewModels;
@@ -13,9 +16,10 @@ public class MainWindowViewModel : BindableBase
 
     public INavigationService NavigationService
     {
-        get => field;
+        get;
         private set => SetProperty(ref field, value);
     }
+    private readonly IEventAggregator _eventAggregator;
 
     /// <summary>
     /// 窗口标题
@@ -32,11 +36,19 @@ public class MainWindowViewModel : BindableBase
         NavigationService.GoBack();
     }
 
-    public MainWindowViewModel(INavigationService navigationService)
+    private void GoToTargetView(string viewName)
+    {
+        NavigationService.RequestNavigate(HostRegionNames.MainRegion, viewName);
+    }
+
+    public MainWindowViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
     {
         NavigationService = navigationService;
+        _eventAggregator = eventAggregator;
+
         GoBackCommand = new DelegateCommand(GoBack, CanGoBack);
 
+        _eventAggregator.GetEvent<RequestViewEvent>().Subscribe(GoToTargetView);
         if (NavigationService is INotifyPropertyChanged npc)
         {
             npc.PropertyChanged += (s, e) =>

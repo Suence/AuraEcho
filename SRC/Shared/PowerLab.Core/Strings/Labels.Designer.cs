@@ -61,6 +61,15 @@ namespace PowerLab.Core.Strings {
         }
         
         /// <summary>
+        ///   查找类似 退出 的本地化字符串。
+        /// </summary>
+        public static string App_Exit {
+            get {
+                return ResourceManager.GetString("App_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 英语 的本地化字符串。
         /// </summary>
         public static string AppLanguage_en_US {

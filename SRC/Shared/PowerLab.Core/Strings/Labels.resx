@@ -144,4 +144,7 @@
   <data name="PluginsMarketplace" xml:space="preserve">
     <value>插件市场</value>
   </data>
+  <data name="App_Exit" xml:space="preserve">
+    <value>退出</value>
+  </data>
 </root>
