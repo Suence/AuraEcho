@@ -12,7 +12,10 @@ namespace PowerLab.Core.Services
 
         public void RequestNavigate(string regionName, string target, NavigationParameters? navigationParameters = null)
         {
-            _stack.Push(new NavigationHistoryEntry(regionName, target, navigationParameters));
+            var entry = new NavigationHistoryEntry(regionName, target, navigationParameters);
+            if (_stack.FirstOrDefault() != entry)
+                _stack.Push(entry);
+
             _regionManager.RequestNavigate(regionName, target, navigationParameters);
             RaisePropertyChanged(nameof(CanGoBack));
         }
