@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
-using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,14 +12,12 @@ using System.Windows.Threading;
 using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using PowerLab.Constants;
 using PowerLab.Core.Attributes;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Data;
 using PowerLab.Core.Events;
-using PowerLab.Core.Native.Win32;
 using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
 using PowerLab.Core.Tools;
@@ -70,6 +67,8 @@ public partial class App
         containerRegistry.RegisterSingleton<IPluginInstallService, PluginInstallService>();
 
         containerRegistry.RegisterSingleton<IFileRepository, FileRepository>();
+        containerRegistry.RegisterSingleton<IClientSession, ClientSession>();
+        containerRegistry.RegisterSingleton<IAuthRepository, AuthRepository>();
         containerRegistry.RegisterSingleton<IAppPackageRepository, AppPackageRepository>();
         containerRegistry.RegisterSingleton<IRemotePluginRepository, RemotePluginRepository>();
 
@@ -79,6 +78,10 @@ public partial class App
         containerRegistry.RegisterForNavigation<ConfirmDialog>();
         containerRegistry.RegisterForNavigation<PluginsMarketplace>();
         containerRegistry.RegisterForNavigation<MarketplacePluginDetails>();
+        containerRegistry.RegisterForNavigation<SignIn>();
+        containerRegistry.RegisterForNavigation<SignUp>();
+
+        Container.Resolve<IRegionManager>().RegisterViewWithRegion<SignIn>(HostRegionNames.HomeRegion);
     }
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

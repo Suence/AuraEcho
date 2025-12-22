@@ -80,6 +80,7 @@ public class HomepageViewModel : BindableBase
     }
 
     public DelegateCommand<PluginRegistryModel> SwitchPluginCommand { get; }
+
     private void SwitchPlugin(PluginRegistryModel pluginMetadata)
     {
         if (pluginMetadata is null)

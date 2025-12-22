@@ -26,4 +26,12 @@ public static class ViewNames
     /// 插件市场详情页
     /// </summary>
     public const string MarketplacePluginDetails = nameof(Views.MarketplacePluginDetails);
+    /// <summary>
+    /// 登录
+    /// </summary>
+    public const string SignIn = nameof(Views.SignIn);
+    /// <summary>
+    /// 注册
+    /// </summary>
+    public const string SignUp = nameof(Views.SignUp);
 }
