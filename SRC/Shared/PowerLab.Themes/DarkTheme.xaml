@@ -9,6 +9,7 @@
         <ResourceDictionary Source="Dark/ScrollViewer.xaml" />
         <ResourceDictionary Source="Dark/Slider.xaml" />
         <ResourceDictionary Source="Dark/Textbox.xaml" />
+        <ResourceDictionary Source="Dark/PasswordBox.xaml" />
         <ResourceDictionary Source="Dark/ComboBox.xaml" />
         <ResourceDictionary Source="Dark/ProgressBar.xaml" />
         <ResourceDictionary Source="Dark/MenuItem.xaml" />

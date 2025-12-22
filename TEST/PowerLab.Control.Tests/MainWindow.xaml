@@ -188,7 +188,7 @@
                             <MenuItem Header="BBB">
                                 <MenuItem Header="B1" />
                                 <MenuItem Header="B2" />
-                                <Separator/>
+                                <Separator />
                                 <MenuItem Header="B4" />
                             </MenuItem>
                             <MenuItem Header="CCC" />
@@ -312,6 +312,12 @@
                                      Value="30" />
                     </StackPanel>
 
+                    <StackPanel Margin="4">
+                        <PasswordBox Width="200"
+                                     MinHeight="30"
+                                     HorizontalAlignment="Left"
+                                     powerlab:ControlHelper.PlaceHolder="密码" />
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
