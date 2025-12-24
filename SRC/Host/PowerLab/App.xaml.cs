@@ -60,16 +60,18 @@ public partial class App
         containerRegistry.RegisterSingleton<HttpClient>(c =>
         {
             var log = c.Resolve<LoggingHandler>();
-
+            var serverTime = c.Resolve<ServerTimeHandler>();
             var auth = c.Resolve<AuthHandler>();
-            log.InnerHandler = auth;
 
+            log.InnerHandler = serverTime;
+            serverTime.InnerHandler = auth;
             auth.InnerHandler = new HttpClientHandler();
 
             return new HttpClient(log);
         });
 
         containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+        containerRegistry.RegisterSingleton<IClock, ServerClock>();
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
         containerRegistry.RegisterSingleton<IPluginManager, PluginManager>();

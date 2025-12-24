@@ -12,9 +12,11 @@ public class ClientSession : BindableBase, IClientSession
 {
     private readonly HttpClient _httpClient;
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private readonly IClock _clock;
 
-    public ClientSession()
+    public ClientSession(IClock clock)
     {
+        _clock = clock;
         _httpClient = new HttpClient();
     }
 
@@ -30,7 +32,7 @@ public class ClientSession : BindableBase, IClientSession
 
     private bool IsExpired()
     {
-        return DateTime.UtcNow <= AppToken.ExpiresAt;
+        return _clock.UtcNow <= AppToken.ExpiresAt;
     }
 
     public void UpdateToken(AppToken appToken)
