@@ -2,6 +2,7 @@
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api;
+using PowerLab.Core.Models.Api.Auth;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.Views;
 using Prism.Commands;
@@ -44,7 +45,7 @@ public class SignUpViewModel : BindableBase, IRegionMemberLifetime
 
     private async void SignUp()
     {
-        var result = await _authRepository.SignUpAsync(new SignUpRequest
+        SignUpResponse? result = await _authRepository.SignUpAsync(new SignUpRequest
         {
             UserName = UserName.Trim(),
             Password = Password.Trim()
@@ -52,10 +53,11 @@ public class SignUpViewModel : BindableBase, IRegionMemberLifetime
 
         if (result is null) return;
 
-        _clientSession.SignIn(result.AccessToken, new UserProfile
-        {
-            Id = result.User.UserId,
-            UserName = result.User.UserName
+        _clientSession.SignIn(new AppToken
+        { 
+            AccessToken = result.AccessToken,
+            RefreshToken = result.RefreshToken,
+            ExpiresAt = result.ExpiresAt
         });
         _regionManager.RequestNavigate(HostRegionNames.HomeRegion, nameof(Homepage));
     }

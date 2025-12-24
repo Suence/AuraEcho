@@ -47,7 +47,7 @@ public class SignInViewModel : BindableBase, IRegionMemberLifetime
 
     private async void SignIn()
     {
-        var result = await _authRepository.SignInAsync(new SignInRequest
+        SignInResponse? result = await _authRepository.SignInAsync(new SignInRequest
         {
             UserName = UserName.Trim(),
             Password = Password.Trim()
@@ -55,10 +55,11 @@ public class SignInViewModel : BindableBase, IRegionMemberLifetime
 
         if (result is null) return;
 
-        _clientSession.SignIn(result.AccessToken, new UserProfile
-        {
-            Id = result.User.UserId,
-            UserName = result.User.UserName
+        _clientSession.SignIn(new AppToken
+        { 
+            AccessToken = result.AccessToken,
+            RefreshToken = result.RefreshToken,
+            ExpiresAt = result.ExpiresAt
         });
         _regionManager.RequestNavigate(HostRegionNames.HomeRegion, nameof(Homepage));
     }

@@ -5,10 +5,10 @@ namespace PowerLab.Core.Contracts;
 public interface IClientSession
 {
     bool IsSignedIn { get; }
-    string? AccessToken { get; }
+    AppToken? AppToken { get; }
 
     UserProfile? CurrentUser { get; }
-    
-    void SignIn(string accessToken, UserProfile userProfile);
+    Task<bool> TryRefreshTokenAsync();
+    void SignIn(AppToken appToken);
     void SignOut();
 }

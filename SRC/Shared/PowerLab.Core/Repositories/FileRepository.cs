@@ -10,11 +10,10 @@ namespace PowerLab.Core.Repositories;
 
 public class FileRepository : IFileRepository
 {
-    private readonly HttpClient _client;
-
-    public FileRepository()
+    private HttpHelper _httpHelper;
+    public FileRepository(HttpHelper httpHelper)
     {
-        _client = new HttpClient();
+        _httpHelper = httpHelper;
     }
 
     public async Task<bool> DownloadFileAsync(string fileId, string outputPath, IProgress<double> progress)
@@ -22,7 +21,7 @@ public class FileRepository : IFileRepository
         try
         {
             using var client = new HttpClient();
-            using var response = await client.GetAsync($"{Urls.ServerUrl}/api/file/download?fileId={fileId}", HttpCompletionOption.ResponseHeadersRead);
+            using var response = await _httpHelper.GetAsync($"{Urls.ServerUrl}/api/file/download?fileId={fileId}", HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
@@ -53,8 +52,7 @@ public class FileRepository : IFileRepository
     }
     public async Task<UploadedFile> GetFileByIdAsync(string fileId)
     {
-        HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<GetUploadedFileByIdResponse>($"{Urls.ServerUrl}/api/file/{fileId}");
+        var result = await _httpHelper.GetAsync<GetUploadedFileByIdResponse>($"{Urls.ServerUrl}/api/file/{fileId}");
         if (result == null) return null;
         return new UploadedFile
         {
@@ -67,8 +65,7 @@ public class FileRepository : IFileRepository
     }
     public async Task<List<UploadedFile>> GetUploadedFilesAsync()
     {
-        HttpHelper httpHelper = new HttpHelper();
-        var response = await httpHelper.GetAsync<UploadFileListResponse>($"{Urls.ServerUrl}/api/file/UploadFileList");
+        var response = await _httpHelper.GetAsync<UploadFileListResponse>($"{Urls.ServerUrl}/api/file/UploadFileList");
         if (response is null) return null;
 
         var result = response.Files.Select(f => new UploadedFile
@@ -91,8 +88,8 @@ public class FileRepository : IFileRepository
         var streamContent = new StreamContent(fs);
         form.Add(streamContent, "file", Path.GetFileName(filePath));
         form.Add(new StringContent(type), "type");
-        var helper = new HttpHelper();
-        var response = await helper.PostAsync<UploadFileResponse>($"{Urls.ServerUrl}/api/file/upload", form);
+
+        var response = await _httpHelper.PostAsync<UploadFileResponse>($"{Urls.ServerUrl}/api/file/upload", form);
         if (response is null) return null;
 
         return response.FileId;
@@ -104,7 +101,6 @@ public class FileRepository : IFileRepository
         int chunkSize = 2 * 1024 * 1024;
         int totalChunks = (int)Math.Ceiling((double)fi.Length / chunkSize);
 
-        var helper = new HttpHelper();
         // init
         var initForm = new MultipartFormDataContent
         {
@@ -114,13 +110,13 @@ public class FileRepository : IFileRepository
             { new StringContent(totalChunks.ToString()), "totalChunks" }
         };
 
-        var initResp = await helper.PostAsync<UploadInitResponse>($"{Urls.ServerUrl}/api/file/uploadinit", initForm);
+        var initResp = await _httpHelper.PostAsync<UploadInitResponse>($"{Urls.ServerUrl}/api/file/uploadinit", initForm);
         if (initResp is null) return null;
 
         var uploadId = initResp.UploadId;
 
         // try get already uploaded chunks (in case resume)
-        var uploadedResp = await helper.GetAsync<UploadedChunksResponse>($"{Urls.ServerUrl}/api/file/uploadedChunks?uploadId={uploadId}");
+        var uploadedResp = await _httpHelper.GetAsync<UploadedChunksResponse>($"{Urls.ServerUrl}/api/file/uploadedChunks?uploadId={uploadId}");
         var uploadedSet = new HashSet<int>(uploadedResp?.ChunkParts ?? []);
 
         long uploadedBytes = (long)uploadedSet.Count * chunkSize;
@@ -139,7 +135,7 @@ public class FileRepository : IFileRepository
                 { new StringContent(i.ToString()), "chunkIndex" },
                 { new StreamContent(new MemoryStream(buffer, 0, read)), "chunk", $"chunk{i}" }
             };
-            var uploadResult = await helper.PostAsync($"{Urls.ServerUrl}/api/file/uploadchunk", content);
+            var uploadResult = await _httpHelper.PostAsync($"{Urls.ServerUrl}/api/file/uploadchunk", content);
             if (!uploadResult) return null;
 
             uploadedBytes += read;
@@ -149,7 +145,7 @@ public class FileRepository : IFileRepository
         // merge
         var mergeForm = new MultipartFormDataContent { { new StringContent(uploadId), "uploadId" } };
 
-        var mergeResp = await helper.PostAsync<UploadMergeResponse>($"{Urls.ServerUrl}/api/file/uploadMerge", mergeForm);
+        var mergeResp = await _httpHelper.PostAsync<UploadMergeResponse>($"{Urls.ServerUrl}/api/file/uploadMerge", mergeForm);
         if (mergeResp is null) return null;
 
         return mergeResp.FileId;

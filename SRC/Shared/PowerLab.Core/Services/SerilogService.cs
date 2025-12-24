@@ -9,7 +9,7 @@ namespace PowerLab.Core.Services;
 /// <summary>
 /// Serilog 日志服务
 /// </summary>
-public class SerilogService : PowerLab.Core.Contracts.ILogger
+public class SerilogService : Contracts.ILogger
 {
     #region private members
     private static string LogFilePath(string LogEvent)

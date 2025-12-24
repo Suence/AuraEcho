@@ -10,32 +10,22 @@ namespace PowerLab.Core.Repositories;
 
 public class AppPackageRepository : IAppPackageRepository
 {
-    private readonly HttpClient _client;
-
-    public AppPackageRepository()
+    private readonly HttpHelper _httpHelper;
+    public AppPackageRepository(HttpHelper httpHelper)
     {
-        _client = new HttpClient();
+        _httpHelper = httpHelper;
     }
     public async Task<string> CreatePackageAsync(string fileId, string name, string version)
     {
-        HttpHelper httpHelper = new HttpHelper();
         var request = new CreatePackageRequest { Name = name, Version = version, FileId = fileId };
-        var response = await httpHelper.PostAsync<CreatePackageResponse>($"{Urls.ServerUrl}/api/package/create", request);
+        var response = await _httpHelper.PostAsync<CreatePackageResponse>($"{Urls.ServerUrl}/api/package/create", request);
         return response?.PackageId;
     }
 
     public async Task<bool> DeleteAsync(string packageId)
     {
-        try
-        {
-            var resp = await _client.DeleteAsync($"{Urls.ServerUrl}/api/package/delete/{packageId}");
-            resp.EnsureSuccessStatusCode();
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        bool result = await _httpHelper.DeleteAsync($"{Urls.ServerUrl}/api/package/delete/{packageId}");
+        return result;
     }
 
     public async Task<bool> DownloadLatestAsync(string build, string outputPath, IProgress<double> progress)
@@ -75,8 +65,7 @@ public class AppPackageRepository : IAppPackageRepository
 
     public async Task<AppVersionInfo> GetLatestAsync()
     {
-        HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<GetLatestVersionResponse>($"{Urls.ServerUrl}/api/package/latest");
+        var result = await _httpHelper.GetAsync<GetLatestVersionResponse>($"{Urls.ServerUrl}/api/package/latest");
         if (result is null) return null;
 
         return new AppVersionInfo
@@ -91,8 +80,7 @@ public class AppPackageRepository : IAppPackageRepository
 
     public async Task<List<AppPackageDetail>> GetUploadedPackagesAsync()
     {
-        HttpHelper httpHelper = new HttpHelper();
-        var result = await httpHelper.GetAsync<ListPackagesResponse>($"{Urls.ServerUrl}/api/package/list");
+        var result = await _httpHelper.GetAsync<ListPackagesResponse>($"{Urls.ServerUrl}/api/package/list");
         if (result is null) return null;
 
         List<AppPackageDetail> packages =

@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using PowerLab.Core.Constants;
 
 namespace PowerLab.Core.Tools;
 
@@ -16,7 +17,7 @@ public class HttpHelper
         WriteIndented = false
     };
 
-    public HttpHelper(HttpClient? client = null)
+    public HttpHelper(HttpClient client)
     {
         _client = client ?? new HttpClient();
     }
@@ -54,6 +55,11 @@ public class HttpHelper
             HandleException(ex);
             return default;
         }
+    }
+
+    public Task<HttpResponseMessage> GetAsync(string url, HttpCompletionOption option)
+    {
+        return _client.GetAsync(url, option);
     }
 
     /// <summary>
@@ -156,6 +162,20 @@ public class HttpHelper
         {
             HandleException(ex);
             return null;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(string url)
+    {
+        try
+        {
+            var resp = await _client.DeleteAsync(url);
+            resp.EnsureSuccessStatusCode();
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,7 @@ using PowerLab.Core.Events;
 using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
 using PowerLab.Core.Tools;
+using PowerLab.Core.Tools.HttpClientPipelines;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
@@ -54,6 +56,18 @@ public partial class App
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         containerRegistry.Register<PowerLabDbContext>(provider => DbContextFactory.CreateDbContext());
+
+        containerRegistry.RegisterSingleton<HttpClient>(c =>
+        {
+            var log = c.Resolve<LoggingHandler>();
+
+            var auth = c.Resolve<AuthHandler>();
+            log.InnerHandler = auth;
+
+            auth.InnerHandler = new HttpClientHandler();
+
+            return new HttpClient(log);
+        });
 
         containerRegistry.RegisterSingleton<ILogger, SerilogService>();
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();

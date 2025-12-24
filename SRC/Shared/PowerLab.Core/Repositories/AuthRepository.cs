@@ -9,33 +9,42 @@ namespace PowerLab.Core.Repositories;
 public class AuthRepository : IAuthRepository
 {
     private readonly IClientSession _clientSession;
-    public AuthRepository(IClientSession clientSession)
+    private HttpHelper _httpHelper;
+
+    public AuthRepository(IClientSession clientSession, HttpHelper httpHelper)
     {
         _clientSession = clientSession;
+        _httpHelper = httpHelper;
     }
 
     public async Task<MeResponse> GetCurrentUserAsync()
     {
-        var apiHelper = new HttpHelper();
-        apiHelper.SetToken(_clientSession.AccessToken ?? string.Empty);
+        _httpHelper.SetToken(_clientSession.AppToken?.AccessToken ?? String.Empty);
 
-        var result = await apiHelper.GetAsync<MeResponse>($"{Urls.ServerUrl}/api/auth/me");
+        var result = await _httpHelper.GetAsync<MeResponse>($"{Urls.ServerUrl}/api/auth/me");
+
+        return result;
+    }
+
+    public async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest request)
+    {
+        var result = await _httpHelper.PostAsync<RefreshTokenResponse>($"{Urls.ServerUrl}/api/auth/refresh", request);
 
         return result;
     }
 
     public async Task<SignInResponse> SignInAsync(SignInRequest request)
     {
-        var apiHelper = new HttpHelper();
-        var result = await apiHelper.PostAsync<SignInResponse>($"{Urls.ServerUrl}/api/auth/signin", request);
+        var result = await _httpHelper.PostAsync<SignInResponse>($"{Urls.ServerUrl}/api/auth/signin", request);
 
         return result;
     }
 
     public async Task<SignUpResponse> SignUpAsync(SignUpRequest request)
     {
-        var apiHelper = new HttpHelper();
-        var result = await apiHelper.PostAsync<SignUpResponse>($"{Urls.ServerUrl}/api/auth/signup", request);
+        var result = await _httpHelper.PostAsync<SignUpResponse>($"{Urls.ServerUrl}/api/auth/signup", request);
         return result;
     }
+
+
 }
