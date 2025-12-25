@@ -4,6 +4,8 @@ using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api.Auth;
+using PowerLab.Core.Tools.HttpClientPipelines;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.Mvvm;
 
 namespace PowerLab.Core.Services;
@@ -14,10 +16,12 @@ public class ClientSession : BindableBase, IClientSession
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private readonly IClock _clock;
 
-    public ClientSession(IClock clock)
+    public ClientSession(IClock clock, IAppLogger logger)
     {
         _clock = clock;
-        _httpClient = new HttpClient();
+        var logHandler = new LoggingHandler(logger);
+        logHandler.InnerHandler = new HttpClientHandler();
+        _httpClient = new HttpClient(logHandler);
     }
 
     public bool IsSignedIn => AppToken is not null;
@@ -32,7 +36,7 @@ public class ClientSession : BindableBase, IClientSession
 
     private bool IsExpired()
     {
-        return _clock.UtcNow <= AppToken.ExpiresAt;
+        return _clock.UtcNow >= AppToken.ExpiresAt;
     }
 
     public void UpdateToken(AppToken appToken)

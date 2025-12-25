@@ -1,4 +1,4 @@
-﻿using PowerLab.Core.Contracts;
+﻿using PowerLab.PluginContracts.Interfaces;
 using Rougamo;
 using Rougamo.Context;
 
@@ -12,7 +12,7 @@ public class LoggingAttribute : MoAttribute
     /// <summary>
     /// 日志记录器
     /// </summary>
-    public static ILogger Logger { get; set; }
+    public static IAppLogger Logger { get; set; }
 
     /// <summary>
     /// 方法元数据缓存

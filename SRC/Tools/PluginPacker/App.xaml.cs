@@ -1,5 +1,6 @@
 ﻿using PluginPacker.Constants;
 using PluginPacker.Views;
+using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Repositories;
 using PowerLab.Core.Services;
@@ -26,7 +27,7 @@ public partial class App : PrismApplication
     {
         containerRegistry.RegisterForNavigation<Homepage>();
 
-        containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+        containerRegistry.RegisterInstance(new Serilogger(ApplicationPaths.Logs));
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
 

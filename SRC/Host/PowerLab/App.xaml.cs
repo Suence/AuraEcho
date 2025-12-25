@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
@@ -47,9 +46,10 @@ public partial class App
 
     private string[] _startupArgs;
     private TaskbarIcon _notifyIcon;
+    private static IAppLogger _logger;
     protected override Window CreateShell()
     {
-        LoggingAttribute.Logger = Container.Resolve<ILogger>();
+        LoggingAttribute.Logger = Container.Resolve<IAppLogger>();
         return Container.Resolve<MainWindow>();
     }
 
@@ -70,7 +70,7 @@ public partial class App
             return new HttpClient(log);
         });
 
-        containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+        containerRegistry.RegisterInstance(_logger);
         containerRegistry.RegisterSingleton<IClock, ServerClock>();
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
@@ -157,12 +157,12 @@ public partial class App
     [STAThread]
     static void Main()
     {
-        var logger = new SerilogService();
-        logger.Debug("程序已启动");
+        _logger = new Serilogger(ApplicationPaths.Logs);
+        _logger.Debug("程序已启动");
 
         if (Mutex.TryOpenExisting(MutexNames.INSTALLER_MUTEX_ID, out var _))
         {
-            logger.Debug("检测到安装程序正在运行，正在退出程序。");
+            _logger.Debug("检测到安装程序正在运行，正在退出程序。");
             return;
         }
 
@@ -175,13 +175,12 @@ public partial class App
             writer.WriteLine(NamedPipeMessages.ShowWindow);
             writer.Flush();
 
-            logger.Debug("已有实例正在运行，正在退出程序。");
+            _logger.Debug("已有实例正在运行，正在退出程序。");
             return;
         }
-        logger = null;
         
         CreateDatabaseIfNotExists();
-
+        
         var app = new App();
         app.InitializeComponent();
         app.Run();
@@ -190,12 +189,12 @@ public partial class App
     private static void CreateDatabaseIfNotExists()
     {
         if (File.Exists(ApplicationPaths.HostDataBase)) return;
-        var logger = new SerilogService();
+        
         using var pluginDbContext = DbContextFactory.CreateDbContext();
 
-        logger.Information("Begin Migrate");
+        _logger.Information("Begin Migrate");
         pluginDbContext.Database.Migrate();
-        logger.Information("End Migrate");
+        _logger.Information("End Migrate");
     }
 
     private static void StartPipeServer()
@@ -314,7 +313,6 @@ public partial class App
     /// <param name="exception"></param>
     private void HandleException(Exception exception)
     {
-        Debug.WriteLine(exception);
-        LoggingAttribute.Logger.Debug(exception.ToString());
+        _logger.Debug(exception.ToString());
     }
 }

@@ -3,12 +3,13 @@ using Microsoft.Win32;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api;
+using PowerLab.PluginContracts.Interfaces;
 
 namespace PowerLab.UpdaterService;
 
 public class Worker : BackgroundService
 {
-    private ILogger<Worker> _logger;
+    private IAppLogger _logger;
     private IAppPackageRepository _packageRespository;
     private ILocalPluginRepository _localPluginRepository;
     private IRemotePluginRepository _remotePluginRepository;
@@ -18,7 +19,7 @@ public class Worker : BackgroundService
     private readonly string _pluginPackageCachePath;
     private AppUpdateInfo _cachedAppUpdateInfo;
     private Dictionary<string, PluginUpdateInfo> _cachedPluginUpdateInfo = [];
-    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
+    public Worker(IAppLogger logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
@@ -36,7 +37,7 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("ExecuteAsync");
+        _logger.Information("ExecuteAsync");
 
         using var scope = _serviceProvider.CreateScope();
 
@@ -64,7 +65,7 @@ public class Worker : BackgroundService
 
     private async Task DownloadPluginPackage()
     {
-        _logger.LogInformation("开始检测插件版本信息...");
+        _logger.Information("开始检测插件版本信息...");
         List<PluginRegistryModel> installedPlugins = _localPluginRepository.GetPluginRegistries();
         foreach (var plugin in installedPlugins)
         {
@@ -73,7 +74,7 @@ public class Worker : BackgroundService
                 ? new Version("0.0.0")
                 : new Version(latestPackage.Version);
 
-            _logger.LogInformation("{0} 当前版本: {1}, 最新版本: {2}", plugin.Manifest.PluginName, plugin.Manifest.Version, latestVersion);
+            _logger.Information($"{plugin.Manifest.PluginName} 当前版本: {plugin.Manifest.Version}, 最新版本: {latestVersion}");
 
             var cachedVersion = _cachedPluginUpdateInfo.ContainsKey(plugin.Manifest.Id)
                 ? new Version(_cachedPluginUpdateInfo[plugin.Manifest.Id].Version)
@@ -83,7 +84,7 @@ public class Worker : BackgroundService
 
             if (latestVersion <= cachedVersion)
             {
-                _logger.LogInformation("{0} {1}已下载未安装，跳过下载", plugin.Manifest.PluginName, cachedVersion);
+                _logger.Information($"{plugin.Manifest.PluginName} {cachedVersion}已下载未安装，跳过下载");
                 continue;
             }
 
@@ -91,7 +92,7 @@ public class Worker : BackgroundService
             bool result = await _remotePluginRepository.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, null);
             if (!result)
             {
-                _logger.LogInformation("插件安装包下载失败");
+                _logger.Information("插件安装包下载失败");
                 continue;
             }
             _cachedPluginUpdateInfo[plugin.Manifest.Id] = new PluginUpdateInfo(plugin.Manifest.Id, latestPackage.Version, targetPath);
@@ -100,21 +101,21 @@ public class Worker : BackgroundService
 
     private async Task DownloadAppPackage()
     {
-        _logger.LogInformation("开始检测客户端版本信息...");
+        _logger.Information("开始检测客户端版本信息...");
 
         Version currentVersion = GetInstalledVersion();
         var newestVersion = await GetLastestVersionAsync();
-        _logger.LogInformation("当前版本: {0}, 最新版本: {1}", currentVersion, newestVersion.Version);
+        _logger.Information($"当前版本: {currentVersion}, 最新版本: {newestVersion.Version}");
 
         var newestVer = new Version(newestVersion.Version);
         var cachedVer = new Version(_cachedAppUpdateInfo?.Version ?? "0.0.0");
         if (newestVer <= currentVersion || newestVer <= cachedVer)
         {
-            _logger.LogInformation("未检测到新版本");
+            _logger.Information("未检测到新版本");
             return;
         }
 
-        _logger.LogInformation("正在下载新版本安装包");
+        _logger.Information("正在下载新版本安装包");
         var targetPath = Path.Combine(_appPackageCachePath, newestVersion.FileName);
         var progress = new Progress<double>(p => { });
         bool result = await _packageRespository.DownloadLatestAsync("stable", targetPath, progress);
@@ -131,11 +132,11 @@ public class Worker : BackgroundService
     {
         if (_cachedAppUpdateInfo is null)
         {
-            _logger.LogInformation("没有新版本需要安装");
+            _logger.Information("没有新版本需要安装");
             return;
         }
 
-        _logger.LogInformation("开始启动客户端安装程序");
+        _logger.Information("开始启动客户端安装程序");
         var processStartInfo = new ProcessStartInfo
         {
             FileName = _cachedAppUpdateInfo.FilePath,
@@ -147,12 +148,12 @@ public class Worker : BackgroundService
         if (process is not null)
         {
             await process.WaitForExitAsync();
-            _logger.LogInformation("客户端安装程序执行完成，继续检测更新。");
+            _logger.Information("客户端安装程序执行完成，继续检测更新。");
             File.Delete(_cachedAppUpdateInfo.FilePath);
             _cachedAppUpdateInfo = null;
             return;
         }
-        _logger.LogInformation("客户端安装程序启动失败");
+        _logger.Information("客户端安装程序启动失败");
     }
 
     private async Task InstallPluginPackage()
@@ -161,7 +162,7 @@ public class Worker : BackgroundService
         string? installFolder = Path.GetDirectoryName(GetInstallPath());
         if (installFolder is null)
         {
-            _logger.LogInformation("找不到客户端的安装目录");
+            _logger.Information("找不到客户端的安装目录");
             return;
         }
 
@@ -169,7 +170,7 @@ public class Worker : BackgroundService
         foreach (var pluginId in cachedPluginIdList)
         {
             var pluginUpdateInfo = _cachedPluginUpdateInfo[pluginId];
-            _logger.LogInformation("开始安装插件 {0} 的新版本 {1}", pluginId, pluginUpdateInfo.Version);
+            _logger.Information($"开始安装插件 {pluginId} 的新版本 {pluginUpdateInfo.Version}");
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = pluginInstallerPath,
@@ -182,24 +183,24 @@ public class Worker : BackgroundService
             if (process is not null)
             {
                 await process.WaitForExitAsync();
-                _logger.LogInformation("插件 {0} 的安装程序执行完成。", pluginId);
+                _logger.Information($"插件 {pluginId} 的安装程序执行完成。");
                 File.Delete(pluginUpdateInfo.FilePath);
                 _cachedPluginUpdateInfo.Remove(pluginId);
                 continue;
             }
-            _logger.LogInformation("插件 {0} 的安装程序启动失败。", pluginId);
+            _logger.Information($"插件 {pluginId} 的安装程序启动失败。");
         }
     }
 
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("StopAsync");
+        _logger.Information("StopAsync");
         await base.StopAsync(cancellationToken);
     }
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("StartAsync");
+        _logger.Information("StartAsync");
         await base.StartAsync(cancellationToken);
     }
     private static Version GetInstalledVersion()

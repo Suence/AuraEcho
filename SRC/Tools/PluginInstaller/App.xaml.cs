@@ -27,9 +27,10 @@ namespace PluginInstaller;
 public partial class App : PrismApplication
 {
     private bool _isNoWindowMode;
+    private static IAppLogger _logger;
     protected override Window CreateShell()
     {
-        LoggingAttribute.Logger = Container.Resolve<ILogger>();
+        LoggingAttribute.Logger = Container.Resolve<IAppLogger>();
         return Container.Resolve<MainWindow>();
     }
 
@@ -37,7 +38,7 @@ public partial class App : PrismApplication
     {
         containerRegistry.Register<PowerLabDbContext>(provider => DbContextFactory.CreateDbContext());
 
-        containerRegistry.RegisterSingleton<ILogger, SerilogService>();
+        containerRegistry.RegisterInstance(_logger);
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
@@ -65,7 +66,7 @@ public partial class App : PrismApplication
 
     private async Task QuietInstallPluginAsync(string pluginFile)
     {
-        var logger = Container.Resolve<ILogger>();
+        var logger = Container.Resolve<IAppLogger>();
         logger.Debug("Installing");
         
         if (await Container.Resolve<IPluginInstallService>().InstallAsync(pluginFile) is null)
@@ -95,7 +96,7 @@ public partial class App : PrismApplication
             pluginDbContext.Database.Migrate();
         }
 
-        var logger = Container.Resolve<ILogger>();
+        var logger = Container.Resolve<IAppLogger>();
         logger.Debug($"ARGS: {String.Join(",", e.Args)}");
         if (!_isNoWindowMode)
         {
@@ -107,7 +108,7 @@ public partial class App : PrismApplication
         var pluginFilePath = GlobalObjectHolder.StartupArgs.FirstOrDefault();
         if (!File.Exists(pluginFilePath))
         {
-            Container.Resolve<ILogger>().Error($"File not found: {pluginFilePath}");
+            Container.Resolve<IAppLogger>().Error($"File not found: {pluginFilePath}");
             Shutdown();
             return;
         }
@@ -121,12 +122,12 @@ public partial class App : PrismApplication
     [STAThread]
     static void Main()
     {
-        var logger = new SerilogService();
-        logger.Debug("程序已启动");
+        _logger = new Serilogger(ApplicationPaths.Logs);
+        _logger.Debug("程序已启动");
 
         if (Mutex.TryOpenExisting(MutexNames.INSTALLER_MUTEX_ID, out var _))
         {
-            logger.Debug("检测到安装程序正在运行，正在退出程序。");
+            _logger.Debug("检测到安装程序正在运行，正在退出程序。");
             return;
         }
 
@@ -137,7 +138,7 @@ public partial class App : PrismApplication
             if (mainWindowHandle != IntPtr.Zero)
                 Win32Helper.SetForegroundWindow(mainWindowHandle);
 
-            logger.Debug("已有实例正在运行，正在退出程序。");
+            _logger.Debug("已有实例正在运行，正在退出程序。");
             return;
         }
 
@@ -221,6 +222,6 @@ public partial class App : PrismApplication
     private void HandleException(Exception exception)
     {
         Debug.WriteLine(exception);
-        LoggingAttribute.Logger.Debug(exception.ToString());
+        _logger.Debug(exception.ToString());
     }
 }

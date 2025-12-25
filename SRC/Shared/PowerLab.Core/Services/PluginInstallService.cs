@@ -4,11 +4,11 @@ using System.Reflection;
 using System.Text.Json;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
-using PowerLab.Core.Data.Entities;
 using PowerLab.Core.Models;
 using PowerLab.Core.Tools;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Ioc;
+using Serilog;
 
 namespace PowerLab.Core.Services;
 
@@ -17,8 +17,8 @@ public class PluginInstallService : IPluginInstallService
     private const string MANIFEST_FILE_NAME = "plugin.manifest.json";
     private readonly ILocalPluginRepository _localPluginRepository;
     private readonly IContainerProvider _containerProvider;
-    private readonly ILogger _logger;
-    public PluginInstallService(ILocalPluginRepository localPluginRepository, IContainerProvider containerProvider, ILogger logger)
+    private readonly IAppLogger _logger;
+    public PluginInstallService(ILocalPluginRepository localPluginRepository, IContainerProvider containerProvider, IAppLogger logger)
     {
         _localPluginRepository = localPluginRepository;
         _containerProvider = containerProvider;

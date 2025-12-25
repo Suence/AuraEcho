@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -13,6 +12,7 @@ using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Tools;
 using PowerLab.PluginContracts.Attributes;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -27,7 +27,7 @@ public class HomepageViewModel : BindableBase
     private readonly IFileDialogService _fileDialogService;
     private readonly IFileRepository _fileRepository;
     private readonly IRemotePluginRepository _remotePluginRepository;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
     private PluginFolder _rootFolder;
     #endregion
 
@@ -302,7 +302,7 @@ public class HomepageViewModel : BindableBase
     /// <param name="fileDialogService"></param>
     /// <param name="logger"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public HomepageViewModel(IFileRepository fileRepository, IRemotePluginRepository remotePluginRepository, IFileDialogService fileDialogService, ILogger logger)
+    public HomepageViewModel(IFileRepository fileRepository, IRemotePluginRepository remotePluginRepository, IFileDialogService fileDialogService, IAppLogger logger)
     {
         _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
         _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));

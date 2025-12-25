@@ -9,7 +9,6 @@ namespace PowerLab.Core.Tools;
 public class HttpHelper
 {
     private readonly HttpClient _client;
-    private string? _token;
 
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
@@ -20,24 +19,6 @@ public class HttpHelper
     public HttpHelper(HttpClient client)
     {
         _client = client ?? new HttpClient();
-    }
-
-    /// <summary>
-    /// 设置 Bearer Token
-    /// </summary>
-    public void SetToken(string token)
-    {
-        _token = token;
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    }
-
-    /// <summary>
-    /// 清除 Token
-    /// </summary>
-    public void ClearToken()
-    {
-        _token = null;
-        _client.DefaultRequestHeaders.Authorization = null;
     }
 
     /// <summary>

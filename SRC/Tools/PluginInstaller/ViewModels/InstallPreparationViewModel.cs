@@ -1,13 +1,13 @@
-﻿using PluginInstaller.Constants;
+﻿using System.IO;
+using System.IO.Compression;
+using System.Text.Json;
+using PluginInstaller.Constants;
 using PowerLab.Core.Constants;
-using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.IO;
-using System.IO.Compression;
-using System.Text.Json;
 
 namespace PluginInstaller.ViewModels;
 
@@ -17,7 +17,7 @@ namespace PluginInstaller.ViewModels;
 public class InstallPreparationViewModel : BindableBase, INavigationAware
 {
     #region private members
-    private readonly ILogger? _logger;
+    private readonly IAppLogger? _logger;
     private readonly IRegionManager? _regionManager;
 
     private PluginManifest? _pluginManifest;
@@ -113,7 +113,7 @@ public class InstallPreparationViewModel : BindableBase, INavigationAware
     /// <param name="regionManager"></param>
     /// <param name="logger"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public InstallPreparationViewModel(IRegionManager regionManager, ILogger logger)
+    public InstallPreparationViewModel(IRegionManager regionManager, IAppLogger logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));

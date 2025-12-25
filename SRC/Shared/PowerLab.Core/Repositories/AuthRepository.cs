@@ -8,21 +8,16 @@ namespace PowerLab.Core.Repositories;
 
 public class AuthRepository : IAuthRepository
 {
-    private readonly IClientSession _clientSession;
     private HttpHelper _httpHelper;
 
-    public AuthRepository(IClientSession clientSession, HttpHelper httpHelper)
+    public AuthRepository(HttpHelper httpHelper)
     {
-        _clientSession = clientSession;
         _httpHelper = httpHelper;
     }
 
     public async Task<MeResponse> GetCurrentUserAsync()
     {
-        _httpHelper.SetToken(_clientSession.AppToken?.AccessToken ?? String.Empty);
-
         var result = await _httpHelper.GetAsync<MeResponse>($"{Urls.ServerUrl}/api/auth/me");
-
         return result;
     }
 

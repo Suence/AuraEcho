@@ -1,14 +1,16 @@
 ﻿using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
+using PowerLab.PluginContracts.Interfaces;
+using Serilog;
 using System.IO;
 using System.Text.Json;
 
 namespace PowerLab.Core.Services;
 
-public class HostSettingsProvider(ILogger logger) : IHostSettingsProvider
+public class HostSettingsProvider(IAppLogger logger) : IHostSettingsProvider
 {
-    private readonly ILogger _logger = logger;
+    private readonly IAppLogger _logger = logger;
 
     public HostSettings LoadHostSettings()
     {

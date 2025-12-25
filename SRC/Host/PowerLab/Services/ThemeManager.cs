@@ -1,20 +1,18 @@
-﻿using Microsoft.Win32;
-using PowerLab.Core.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using Microsoft.Win32;
 using PowerLab.Core.Extensions;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Interfaces;
 using PowerLab.PluginContracts.Models;
 using PowerLab.Themes;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Windows;
-
 namespace PowerLab.Services;
 
 public class ThemeManager : BindableBase, IThemeManager
 {
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
     private readonly IPluginManager _pluginManager;
     private AppTheme _currentTheme;
     private readonly List<ResourceDictionary> _themeResources = [];
@@ -35,7 +33,7 @@ public class ThemeManager : BindableBase, IThemeManager
         }
     }
 
-    public ThemeManager(ILogger logger, IPluginManager pluginManager)
+    public ThemeManager(IAppLogger logger, IPluginManager pluginManager)
     {
         _logger = logger;
         _pluginManager = pluginManager;

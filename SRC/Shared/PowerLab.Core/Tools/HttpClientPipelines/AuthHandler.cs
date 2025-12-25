@@ -35,10 +35,6 @@ namespace PowerLab.Core.Tools.HttpClientPipelines
 
             if (_clientSession.AppToken is null) return response;
 
-            var refreshTokenRequest = new RefreshTokenRequest
-            {
-                RefreshToken = _clientSession.AppToken.RefreshToken
-            };
             if (!await _clientSession.TryRefreshTokenAsync())
                 return response;
 

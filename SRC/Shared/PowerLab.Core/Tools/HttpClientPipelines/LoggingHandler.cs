@@ -1,14 +1,17 @@
-﻿using System.Net.Http;
+﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Text;
 using PowerLab.Core.Contracts;
+using PowerLab.PluginContracts.Interfaces;
+using Serilog;
 
 namespace PowerLab.Core.Tools.HttpClientPipelines;
 
 public sealed class LoggingHandler : DelegatingHandler
 {
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
 
-    public LoggingHandler(ILogger logger)
+    public LoggingHandler(IAppLogger logger)
     {
         _logger = logger;
     }
@@ -17,39 +20,67 @@ public sealed class LoggingHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        var sw = Stopwatch.StartNew();
         var response = await base.SendAsync(request, cancellationToken);
+        sw.Stop();
 
-        LogRequest(request);
-        await LogResponse(response, cancellationToken);
+        var logText = await BuildLogString(request, response, sw.Elapsed, cancellationToken);
+        _logger.Debug(logText);
 
         return response;
     }
 
-    private void LogRequest(HttpRequestMessage request)
+    private async Task<string> BuildLogString(HttpRequestMessage request, HttpResponseMessage response, TimeSpan elapsed, CancellationToken ct)
     {
-        _logger.Debug($"HTTP {request.Method} {request.RequestUri}");
+        var sb = new StringBuilder(8192);
 
-        foreach (var header in request.Headers)
-            _logger.Debug($"  {header.Key}: {string.Join(",", header.Value)}");
-    }
+        sb.AppendLine();
+        sb.AppendLine("┌─────────────────────────────────────────────────────────────────────────────");
+        sb.AppendLine($"│ API Request: [{request.Method}] {request.RequestUri}");
+        sb.AppendLine("├─────────────────────────────────────────────────────────────────────────────");
+        
+        // ========== Response ==========
+        sb.AppendLine("├─ Request");
+        foreach (var h in request.Headers)
+            sb.AppendLine($"│  {h.Key}: {string.Join(", ", h.Value)}");
 
-    private async Task LogResponse(HttpResponseMessage response, CancellationToken ct)
-    {
-        _logger.Debug($"HTTP {(int)response.StatusCode} {response.RequestMessage!.RequestUri}");
+        if (request.Content != null)
+        {
+            foreach (var h in request.Content.Headers)
+                sb.AppendLine($"│  {h.Key}: {string.Join(", ", h.Value)}");
 
-        foreach (var header in response.Headers)
-            _logger.Debug($"  {header.Key}: {string.Join(",", header.Value)}");
+            var body = await request.Content.ReadAsStringAsync(ct);
+            if (!String.IsNullOrWhiteSpace(body))
+            {
+                sb.AppendLine("│  Body: " + body.Replace("\n", "\n│  "));
+            }
+        }
+
+        sb.AppendLine("│");
+        //sb.AppendLine("├─────────────────────────────────────────────────────────────────────────────");
+
+        // ========== Response ==========
+        sb.AppendLine("├─ Response");
+        sb.AppendLine($"│  HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
+
+        foreach (var h in response.Headers)
+            sb.AppendLine($"│  {h.Key}: {string.Join(", ", h.Value)}");
 
         if (response.Content != null)
         {
-            var content = await response.Content.ReadAsStringAsync(ct);
-            _logger.Debug($"Response Body: {content}");
+            foreach (var h in response.Content.Headers)
+                sb.AppendLine($"│  {h.Key}: {string.Join(", ", h.Value)}");
 
-            response.Content = new StringContent(
-                content,
-                Encoding.UTF8,
-                response.Content.Headers.ContentType?.MediaType);
+            var body = await response.Content.ReadAsStringAsync(ct);
+            if (!String.IsNullOrWhiteSpace(body))
+            {
+                sb.AppendLine("│  Body: " + body.Replace("\n", "\n│  "));
+            }
         }
+
+        sb.AppendLine($"└─────────────────────────────────Elapsed: {elapsed.TotalMilliseconds:0000} ms─────────────────────────────");
+
+        return sb.ToString();
     }
 }
 

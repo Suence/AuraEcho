@@ -12,7 +12,6 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-
 namespace PowerLab.ViewModels;
 
 public class HomepageViewModel : BindableBase
@@ -23,7 +22,7 @@ public class HomepageViewModel : BindableBase
     private readonly INavigationService _navigationService;
     private readonly IEventAggregator _eventAggregator;
     private readonly IThemeManager _themeManager;
-    private readonly ILogger _logger;
+    private readonly IAppLogger _logger;
     private ObservableCollection<PluginRegistryModel> _plugins;
 
     private readonly IPluginManager _pluginManager;
@@ -98,7 +97,7 @@ public class HomepageViewModel : BindableBase
         IEventAggregator eventAggregator,
         IPluginManager pluginManager, 
         IThemeManager themeManager, 
-        ILogger logger)
+        IAppLogger logger)
     {
         _regionManager = regionManager;
         _navigationService = navigationService;
