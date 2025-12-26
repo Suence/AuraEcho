@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
-using PowerLab.Core.Contracts;
 using PowerLab.PluginContracts.Interfaces;
-using Serilog;
 
 namespace PowerLab.Core.Tools.HttpClientPipelines;
 
@@ -20,6 +18,8 @@ public sealed class LoggingHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        request.Headers.Add("X-Request-Id", Guid.NewGuid().ToString("N"));
+
         var sw = Stopwatch.StartNew();
         var response = await base.SendAsync(request, cancellationToken);
         sw.Stop();
