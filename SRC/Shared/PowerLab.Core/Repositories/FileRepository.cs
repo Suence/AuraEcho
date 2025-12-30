@@ -101,17 +101,26 @@ public class FileRepository : IFileRepository
         int chunkSize = 2 * 1024 * 1024;
         int totalChunks = (int)Math.Ceiling((double)fi.Length / chunkSize);
 
+        string sha256;
+        await using (var sha256fs = new FileStream(filePath, FileMode.Open))
+        {
+            sha256 = await HashHelper.ComputeSha256Async(sha256fs);
+        }
+
         // init
         var initForm = new MultipartFormDataContent
         {
             { new StringContent(fi.Name), "fileName" },
             { new StringContent(fileType), "fileType" },
             { new StringContent(fi.Length.ToString()), "totalSize" },
-            { new StringContent(totalChunks.ToString()), "totalChunks" }
+            { new StringContent(totalChunks.ToString()), "totalChunks" },
+            { new StringContent(sha256), "sha256"  }
         };
 
         var initResp = await _httpHelper.PostAsync<UploadInitResponse>($"{Urls.ServerUrl}/api/file/uploadinit", initForm);
         if (initResp is null) return null;
+
+        if (initResp.IsDuplicated) return initResp.FileId;
 
         var uploadId = initResp.UploadId;
 
