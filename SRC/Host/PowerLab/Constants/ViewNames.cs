@@ -34,4 +34,9 @@ public static class ViewNames
     /// 注册
     /// </summary>
     public const string SignUp = nameof(Views.SignUp);
+
+    /// <summary>
+    /// 登录失效
+    /// </summary>
+    public const string SignInExpired = nameof(Views.SignInExpired);
 }

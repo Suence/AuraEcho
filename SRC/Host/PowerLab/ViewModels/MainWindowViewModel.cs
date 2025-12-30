@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using PowerLab.Constants;
 using PowerLab.Core.Events;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
+using PowerLab.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -36,6 +38,10 @@ public class MainWindowViewModel : BindableBase
         NavigationService.GoBack();
     }
 
+    private void SignInExpired()
+    {
+        NavigationService.RequestNavigate(HostRegionNames.ContentDialogRegion, ViewNames.SignInExpired);
+    }
     private void GoToTargetView(string viewName)
     {
         NavigationService.RequestNavigate(HostRegionNames.MainRegion, viewName);
@@ -49,6 +55,8 @@ public class MainWindowViewModel : BindableBase
         GoBackCommand = new DelegateCommand(GoBack, CanGoBack);
 
         _eventAggregator.GetEvent<RequestViewEvent>().Subscribe(GoToTargetView);
+        _eventAggregator.GetEvent<SignInExpiredEvent>().Subscribe(SignInExpired);
+
         if (NavigationService is INotifyPropertyChanged npc)
         {
             npc.PropertyChanged += (s, e) =>

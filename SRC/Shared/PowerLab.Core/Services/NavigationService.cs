@@ -10,10 +10,10 @@ namespace PowerLab.Core.Services
         private readonly IRegionManager _regionManager = regionManager;
         private readonly Stack<NavigationHistoryEntry> _stack = new();
 
-        public void RequestNavigate(string regionName, string target, NavigationParameters? navigationParameters = null)
+        public void RequestNavigate(string regionName, string target, NavigationParameters? navigationParameters = null, bool canBack = true)
         {
             var entry = new NavigationHistoryEntry(regionName, target, navigationParameters);
-            if (_stack.FirstOrDefault() != entry)
+            if (_stack.FirstOrDefault() != entry && canBack)
                 _stack.Push(entry);
 
             _regionManager.RequestNavigate(regionName, target, navigationParameters);
@@ -44,6 +44,12 @@ namespace PowerLab.Core.Services
             }
 
             _regionManager.RequestNavigate(entry.RegionName, entry.ViewName, entry.Parameters);
+            RaisePropertyChanged(nameof(CanGoBack));
+        }
+
+        public void Reset()
+        {
+            _stack.Clear();
             RaisePropertyChanged(nameof(CanGoBack));
         }
     }

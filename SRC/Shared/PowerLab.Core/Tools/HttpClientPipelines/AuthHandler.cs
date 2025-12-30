@@ -2,16 +2,20 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Events;
+using Prism.Events;
 
 namespace PowerLab.Core.Tools.HttpClientPipelines;
 
 public class AuthHandler : DelegatingHandler
 {
     private readonly IClientSession _clientSession;
+    private readonly IEventAggregator _eventAggregator;
 
-    public AuthHandler(IClientSession clientSession)
+    public AuthHandler(IClientSession clientSession, IEventAggregator eventAggregator)
     {
         _clientSession = clientSession;
+        _eventAggregator = eventAggregator;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -31,7 +35,10 @@ public class AuthHandler : DelegatingHandler
         if (_clientSession.AppToken is null) return response;
 
         if (!await _clientSession.TryRefreshTokenAsync())
+        {
+            _eventAggregator.GetEvent<SignInExpiredEvent>().Publish();
             return response;
+        }
 
         request.Headers.Authorization =
             new AuthenticationHeaderValue("Bearer", _clientSession.AppToken.AccessToken);

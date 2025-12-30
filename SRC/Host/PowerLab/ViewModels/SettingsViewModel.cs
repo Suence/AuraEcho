@@ -3,6 +3,7 @@ using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Constants;
+using PowerLab.PluginContracts.Interfaces;
 using PowerLab.PluginContracts.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -20,6 +21,7 @@ public class SettingsViewModel : BindableBase
     private readonly IPluginManager _pluginManager;
     private readonly IAuthRepository _authRepository;
     private readonly IClientSession _clientSession;
+    private readonly INavigationService _navigationService;
 
     private ObservableCollection<AppSettingsItem> _settingsItems;
     #endregion
@@ -70,7 +72,7 @@ public class SettingsViewModel : BindableBase
     {
         if (string.IsNullOrWhiteSpace(viewName)) return;
 
-        _regionManager.RequestNavigate(HostRegionNames.SettingsContentRegion, viewName);
+        _navigationService.RequestNavigate(HostRegionNames.SettingsContentRegion, viewName, canBack: false);
     }
 
     public DelegateCommand SignOutCommand { get; }
@@ -78,14 +80,22 @@ public class SettingsViewModel : BindableBase
     {
         _clientSession.SignOut();
         _regionManager.Regions[HostRegionNames.MainRegion].RemoveAll();
-        _regionManager.RequestNavigate(HostRegionNames.HomeRegion, ViewNames.SignIn);
+
+        _navigationService.Reset();
+        _navigationService.RequestNavigate(HostRegionNames.HomeRegion, ViewNames.SignIn, canBack: false);
     }
 
-    public SettingsViewModel(IRegionManager regionManager, IPluginManager pluginManager, IAuthRepository authRepository, IClientSession clientSession)
+    public SettingsViewModel(
+        IRegionManager regionManager, 
+        IPluginManager pluginManager, 
+        IAuthRepository authRepository, 
+        IClientSession clientSession,
+        INavigationService navigationService)
     {
         _regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
         _pluginManager = pluginManager ?? throw new ArgumentNullException(nameof(pluginManager));
         _authRepository = authRepository ?? throw new ArgumentNullException(nameof(authRepository));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         _clientSession = clientSession;
 
         NavigationToSettingsItemCommand = new DelegateCommand<string>(NavigationToSettingsItem);

@@ -96,6 +96,7 @@ public partial class App
         containerRegistry.RegisterForNavigation<MarketplacePluginDetails>();
         containerRegistry.RegisterForNavigation<SignIn>();
         containerRegistry.RegisterForNavigation<SignUp>();
+        containerRegistry.RegisterForNavigation<SignInExpired>();
 
         Container.Resolve<IRegionManager>().RegisterViewWithRegion<SignIn>(HostRegionNames.HomeRegion);
     }
