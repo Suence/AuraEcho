@@ -38,7 +38,7 @@ public sealed class LoggingHandler : DelegatingHandler
         sb.AppendLine("┌─────────────────────────────────────────────────────────────────────────────");
         sb.AppendLine($"│ API Request: [{request.Method}] {request.RequestUri}");
         sb.AppendLine("├─────────────────────────────────────────────────────────────────────────────");
-        
+
         // ========== Response ==========
         sb.AppendLine("├─ Request");
         foreach (var h in request.Headers)
@@ -49,10 +49,13 @@ public sealed class LoggingHandler : DelegatingHandler
             foreach (var h in request.Content.Headers)
                 sb.AppendLine($"│  {h.Key}: {string.Join(", ", h.Value)}");
 
-            var body = await request.Content.ReadAsStringAsync(ct);
-            if (!String.IsNullOrWhiteSpace(body))
+            if (IsTextBasedContentType(request.Content))
             {
-                sb.AppendLine("│  Body: " + body.Replace("\n", "\n│  "));
+                var body = await request.Content.ReadAsStringAsync(ct);
+                if (!String.IsNullOrWhiteSpace(body))
+                {
+                    sb.AppendLine("│  Body: " + body.Replace("\n", "\n│  "));
+                }
             }
         }
 
@@ -81,6 +84,20 @@ public sealed class LoggingHandler : DelegatingHandler
         sb.AppendLine($"└─────────────────────────────────Elapsed: {elapsed.TotalMilliseconds:0000} ms─────────────────────────────");
 
         return sb.ToString();
+    }
+
+    private static bool IsTextBasedContentType(HttpContent content)
+    {
+        if (content.Headers.ContentType == null)
+            return false;
+
+        var mediaType = content.Headers.ContentType.MediaType!;
+        return mediaType.StartsWith("text/") ||
+               mediaType.Equals("application/json", StringComparison.OrdinalIgnoreCase) ||
+               mediaType.Equals("application/xml", StringComparison.OrdinalIgnoreCase) ||
+               mediaType.Equals("application/javascript", StringComparison.OrdinalIgnoreCase) ||
+               mediaType.Equals("application/xhtml+xml", StringComparison.OrdinalIgnoreCase) ||
+               mediaType.Equals("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase);
     }
 }
 
