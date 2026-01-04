@@ -1,6 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using PowerLab.Constants;
+using PowerLab.Core.Constants;
+using PowerLab.Core.Contracts;
 using PowerLab.Core.Events;
+using PowerLab.Core.Models;
+using PowerLab.Core.Models.Api;
+using PowerLab.Core.Tools;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
 using PowerLab.Views;
@@ -14,8 +20,11 @@ public class MainWindowViewModel : BindableBase
 {
     #region private members
     private string _title = "PowerLab";
+    private readonly IAuthRepository _authRepository;
+    private readonly IClientSession _clientSession;
     #endregion
 
+    private Task _autoSignInTask;
     public INavigationService NavigationService
     {
         get;
@@ -47,15 +56,30 @@ public class MainWindowViewModel : BindableBase
         NavigationService.RequestNavigate(HostRegionNames.MainRegion, viewName);
     }
 
-    public MainWindowViewModel(INavigationService navigationService, IEventAggregator eventAggregator)
+    public DelegateCommand AutoSignInCommand { get; }
+    private async void AutoSignIn()
+    {
+        await _autoSignInTask;
+        if (_clientSession.IsSignedIn)
+        {
+            NavigationService.RequestNavigate(HostRegionNames.HomeRegion, ViewNames.Homepage, canBack: false);
+            return;
+        }
+        NavigationService.RequestNavigate(HostRegionNames.HomeRegion, ViewNames.SignIn, canBack: false);
+    }
+
+    public MainWindowViewModel(INavigationService navigationService, IEventAggregator eventAggregator, IAuthRepository authRepository, IClientSession clientSession)
     {
         NavigationService = navigationService;
         _eventAggregator = eventAggregator;
+        _authRepository = authRepository;
+        _clientSession = clientSession;
 
         GoBackCommand = new DelegateCommand(GoBack, CanGoBack);
 
         _eventAggregator.GetEvent<RequestViewEvent>().Subscribe(GoToTargetView);
         _eventAggregator.GetEvent<SignInExpiredEvent>().Subscribe(SignInExpired);
+        AutoSignInCommand = new DelegateCommand(AutoSignIn);
 
         if (NavigationService is INotifyPropertyChanged npc)
         {
@@ -65,5 +89,31 @@ public class MainWindowViewModel : BindableBase
                     GoBackCommand.RaiseCanExecuteChanged();
             };
         }
+
+        _autoSignInTask = AutoSignInAsync();
+    }
+
+    private async Task AutoSignInAsync()
+    {
+        var refreshToken = SecureStore.Load(SecureStoreKeys.RefreshToken);
+        if (refreshToken is null) return;
+
+        var result = await _authRepository.RefreshTokenAsync(new RefreshTokenRequest
+        {
+            RefreshToken = refreshToken
+        });
+
+        if (result is null)
+        {
+            SecureStore.Delete(SecureStoreKeys.RefreshToken);
+            return;
+        }
+
+        _clientSession.SignIn(new AppToken
+        { 
+            AccessToken = result.AccessToken,
+            RefreshToken = result.RefreshToken,
+            ExpiresAt = result.ExpiresAt
+        });
     }
 }

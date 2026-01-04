@@ -53,7 +53,11 @@
     <i:Interaction.Behaviors>
         <powerlab:ClearFocusOnClickBehavior />
     </i:Interaction.Behaviors>
-
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding AutoSignInCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Window.InputBindings>
         <!--
             为什么不使用 Applications.NotACommand?

@@ -4,6 +4,7 @@ using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api;
+using PowerLab.Core.Tools;
 using PowerLab.Core.Tools.HttpClientPipelines;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Mvvm;
@@ -39,20 +40,17 @@ public class ClientSession : BindableBase, IClientSession
         return _clock.UtcNow >= AppToken.ExpiresAt;
     }
 
-    public void UpdateToken(AppToken appToken)
-    {
-        AppToken = appToken;
-    }
-
     public void SignIn(AppToken appToken)
     {
         AppToken = appToken;
+        SecureStore.Save(SecureStoreKeys.RefreshToken, appToken.RefreshToken);
     }
 
     public void SignOut()
     {
         CurrentUser = null;
         AppToken = null;
+        SecureStore.Delete(SecureStoreKeys.RefreshToken);
     }
 
     public async Task<bool> TryRefreshTokenAsync()
@@ -79,7 +77,7 @@ public class ClientSession : BindableBase, IClientSession
             if (token is null)
                 return false;
 
-            UpdateToken(new AppToken
+            SignIn(new AppToken
             { 
                 AccessToken = token.AccessToken,
                 RefreshToken = token.RefreshToken,

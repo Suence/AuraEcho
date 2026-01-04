@@ -97,8 +97,6 @@ public partial class App
         containerRegistry.RegisterForNavigation<SignIn>();
         containerRegistry.RegisterForNavigation<SignUp>();
         containerRegistry.RegisterForNavigation<SignInExpired>();
-
-        Container.Resolve<IRegionManager>().RegisterViewWithRegion<SignIn>(HostRegionNames.HomeRegion);
     }
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
