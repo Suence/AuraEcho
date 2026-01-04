@@ -1,7 +1,6 @@
 ﻿using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models.Api;
-using PowerLab.Core.Models.Api.Auth;
 using PowerLab.Core.Tools;
 
 namespace PowerLab.Core.Repositories;

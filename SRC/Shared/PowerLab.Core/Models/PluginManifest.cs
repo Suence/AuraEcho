@@ -10,7 +10,7 @@ public class PluginManifest : BindableBase
     /// <summary>
     /// Id
     /// </summary>
-    public string? Id  
+    public Guid Id  
     { 
         get; 
         set => SetProperty(ref field, value); 

@@ -1,4 +1,4 @@
-﻿namespace PowerLab.Core.Models.Api.Auth;
+﻿namespace PowerLab.Core.Models.Api;
 
 public class RefreshTokenRequest
 {

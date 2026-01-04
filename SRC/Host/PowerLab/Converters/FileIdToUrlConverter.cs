@@ -9,7 +9,7 @@ public class FileIdToUrlConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is string fileId && !string.IsNullOrEmpty(fileId))
+        if (value is Guid fileId)
         {
             return $"{Urls.ServerUrl}/api/file/download?fileId={fileId}";
         }

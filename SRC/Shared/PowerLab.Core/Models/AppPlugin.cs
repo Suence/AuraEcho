@@ -4,12 +4,12 @@ namespace PowerLab.Core.Models;
 
 public class AppPlugin : BindableBase
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; }
     public string DisplayName { get; set; }
     public string Description { get; set; }
     public string Author { get; set; }
-    public string IconFileId { get; set; }
+    public Guid IconFileId { get; set; }
     public bool IsEnabled { get; set; } = true;
     public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 

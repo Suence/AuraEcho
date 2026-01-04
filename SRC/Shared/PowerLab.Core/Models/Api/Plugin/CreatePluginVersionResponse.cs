@@ -2,5 +2,5 @@
 
 public class CreatePluginVersionResponse
 {
-    public string PackageId { get; set; }
+    public required Guid PackageId { get; set; }
 }

@@ -51,7 +51,7 @@ public class PluginInstallService : IPluginInstallService
         var manifest = JsonSerializer.Deserialize<PluginManifest>(manifestJson);
 
         // 拷贝到目标插件目录
-        string finalPath = Path.Combine(ApplicationPaths.Plugins, manifest.Id);
+        string finalPath = Path.Combine(ApplicationPaths.Plugins, manifest.Id.ToString());
         if (Directory.Exists(finalPath))
             Directory.Delete(finalPath, true);
 

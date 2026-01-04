@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
-using PowerLab.Core.Models.Api.Auth;
+using PowerLab.Core.Models.Api;
 using PowerLab.Core.Tools.HttpClientPipelines;
 using PowerLab.PluginContracts.Interfaces;
 using Prism.Mvvm;

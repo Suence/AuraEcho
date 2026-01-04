@@ -27,7 +27,7 @@ public partial class App : PrismApplication
     {
         containerRegistry.RegisterForNavigation<Homepage>();
 
-        containerRegistry.RegisterInstance(new Serilogger(ApplicationPaths.Logs));
+        containerRegistry.RegisterInstance<IAppLogger>(new Serilogger(ApplicationPaths.Logs));
         containerRegistry.RegisterSingleton<IFileDialogService, FileDialogService>();
         containerRegistry.RegisterSingleton<IRegionDialogService, RegionDialogService>();
 

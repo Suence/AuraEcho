@@ -2,7 +2,6 @@
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api;
-using PowerLab.Core.Models.Api.Auth;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.Views;
 using Prism.Commands;

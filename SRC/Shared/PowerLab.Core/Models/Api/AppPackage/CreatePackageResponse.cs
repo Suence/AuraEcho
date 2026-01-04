@@ -2,5 +2,5 @@
 
 public class CreatePackageResponse
 {
-    public string PackageId { get; set; }
+    public Guid PackageId { get; set; }
 }

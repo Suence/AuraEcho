@@ -284,6 +284,8 @@ public class HomepageViewModel : BindableBase
         }
         var targetAttribute = pluginAssembly.GetCustomAttributes<PluginDefaultViewAttribute>().FirstOrDefault();
         alc.Unload();
+        // TODO: GC?
+
         return targetAttribute?.ViewName;
     }
     private async Task LoadPluginDetailsAsync(AppPlugin plugin)

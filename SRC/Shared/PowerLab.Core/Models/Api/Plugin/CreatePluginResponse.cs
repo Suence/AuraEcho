@@ -2,5 +2,5 @@
 
 public class CreatePluginResponse
 {
-    public string PluginId { get; set; }
+    public Guid PluginId { get; set; }
 }

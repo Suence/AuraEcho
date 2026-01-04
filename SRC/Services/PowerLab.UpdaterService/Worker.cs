@@ -18,7 +18,7 @@ public class Worker : BackgroundService
     private readonly string _appPackageCachePath;
     private readonly string _pluginPackageCachePath;
     private AppUpdateInfo _cachedAppUpdateInfo;
-    private Dictionary<string, PluginUpdateInfo> _cachedPluginUpdateInfo = [];
+    private Dictionary<Guid, PluginUpdateInfo> _cachedPluginUpdateInfo = [];
     public Worker(IAppLogger logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
@@ -247,4 +247,4 @@ public class Worker : BackgroundService
 
 public record AppUpdateInfo(string Version, string FilePath);
 
-public record PluginUpdateInfo(string PluginId, string Version, string FilePath);
+public record PluginUpdateInfo(Guid PluginId, string Version, string FilePath);

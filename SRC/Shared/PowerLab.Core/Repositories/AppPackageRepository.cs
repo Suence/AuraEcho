@@ -15,14 +15,14 @@ public class AppPackageRepository : IAppPackageRepository
     {
         _httpHelper = httpHelper;
     }
-    public async Task<string> CreatePackageAsync(string fileId, string name, string version)
+    public async Task<Guid?> CreatePackageAsync(Guid fileId, string name, string version)
     {
         var request = new CreatePackageRequest { Name = name, Version = version, FileId = fileId };
         var response = await _httpHelper.PostAsync<CreatePackageResponse>($"{Urls.ServerUrl}/api/package/create", request);
         return response?.PackageId;
     }
 
-    public async Task<bool> DeleteAsync(string packageId)
+    public async Task<bool> DeleteAsync(Guid packageId)
     {
         bool result = await _httpHelper.DeleteAsync($"{Urls.ServerUrl}/api/package/delete/{packageId}");
         return result;

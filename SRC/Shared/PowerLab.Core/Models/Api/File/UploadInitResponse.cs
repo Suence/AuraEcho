@@ -2,7 +2,7 @@
 
 public class UploadInitResponse
 {
-    public string UploadId { get; set; }
-    public string FileId { get; set; }
+    public Guid UploadId { get; set; }
+    public Guid FileId { get; set; }
     public bool IsDuplicated { get; set; }
 }

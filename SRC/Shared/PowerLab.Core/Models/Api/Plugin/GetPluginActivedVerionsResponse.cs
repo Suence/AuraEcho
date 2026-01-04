@@ -4,4 +4,3 @@ public class GetPluginActivedVerionsResponse
 {
     public List<PluginActivedVersionsItem> Versions { get; set; }
 }
-

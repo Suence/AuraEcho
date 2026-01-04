@@ -16,7 +16,7 @@ public class FileRepository : IFileRepository
         _httpHelper = httpHelper;
     }
 
-    public async Task<bool> DownloadFileAsync(string fileId, string outputPath, IProgress<double> progress)
+    public async Task<bool> DownloadFileAsync(Guid fileId, string outputPath, IProgress<double> progress)
     {
         try
         {
@@ -50,7 +50,7 @@ public class FileRepository : IFileRepository
             return false;
         }
     }
-    public async Task<UploadedFile> GetFileByIdAsync(string fileId)
+    public async Task<UploadedFile> GetFileByIdAsync(Guid fileId)
     {
         var result = await _httpHelper.GetAsync<GetUploadedFileByIdResponse>($"{Urls.ServerUrl}/api/file/{fileId}");
         if (result == null) return null;
@@ -81,7 +81,7 @@ public class FileRepository : IFileRepository
 
     }
 
-    public async Task<string> UploadFileAsync(string filePath, string type)
+    public async Task<Guid?> UploadFileAsync(string filePath, string type)
     {
         using var form = new MultipartFormDataContent();
         using var fs = File.OpenRead(filePath);
@@ -95,7 +95,7 @@ public class FileRepository : IFileRepository
         return response.FileId;
     }
 
-    public async Task<string> UploadWithChunksAsync(string filePath, string fileType, IProgress<double> progress)
+    public async Task<Guid?> UploadWithChunksAsync(string filePath, string fileType, IProgress<double> progress)
     {
         var fi = new FileInfo(filePath);
         int chunkSize = 2 * 1024 * 1024;
@@ -140,7 +140,7 @@ public class FileRepository : IFileRepository
             if (read <= 0) break;
             using var content = new MultipartFormDataContent
             {
-                { new StringContent(uploadId), "uploadId" },
+                { new StringContent(uploadId.ToString()), "uploadId" },
                 { new StringContent(i.ToString()), "chunkIndex" },
                 { new StreamContent(new MemoryStream(buffer, 0, read)), "chunk", $"chunk{i}" }
             };
@@ -152,7 +152,7 @@ public class FileRepository : IFileRepository
         }
 
         // merge
-        var mergeForm = new MultipartFormDataContent { { new StringContent(uploadId), "uploadId" } };
+        var mergeForm = new MultipartFormDataContent { { new StringContent(uploadId.ToString()), "uploadId" } };
 
         var mergeResp = await _httpHelper.PostAsync<UploadMergeResponse>($"{Urls.ServerUrl}/api/file/uploadMerge", mergeForm);
         if (mergeResp is null) return null;

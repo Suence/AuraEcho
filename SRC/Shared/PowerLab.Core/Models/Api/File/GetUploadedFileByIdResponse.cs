@@ -2,7 +2,7 @@
 
 public class GetUploadedFileByIdResponse
 {
-    public string Id { get; set; }
+    public Guid Id { get; set; }
     public string FileName { get; set; }
     public string RelativePath { get; set; }
     public long Size { get; set; }

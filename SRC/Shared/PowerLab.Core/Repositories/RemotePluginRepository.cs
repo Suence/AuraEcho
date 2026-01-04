@@ -16,7 +16,7 @@ public class RemotePluginRepository : IRemotePluginRepository
         _httpHelper = httpHelper;
     }
 
-    public async Task<string> CreatePluginAsync(CreatePluginRequest req)
+    public async Task<Guid?> CreatePluginAsync(CreatePluginRequest req)
     {
         var resp = await _httpHelper.PostAsync<CreatePluginResponse>($"{Urls.ServerUrl}/api/plugin/create", req);
         if (resp is null) return null;
@@ -24,7 +24,7 @@ public class RemotePluginRepository : IRemotePluginRepository
         return resp.PluginId;
     }
 
-    public async Task<string> CreateVersionAsync(CreatePluginVersionRequest req)
+    public async Task<Guid?> CreateVersionAsync(CreatePluginVersionRequest req)
     {
         var resp = await _httpHelper.PostAsync<CreatePluginVersionResponse>($"{Urls.ServerUrl}/api/plugin/createVersion", req);
         if (resp is null) return null;
@@ -32,19 +32,19 @@ public class RemotePluginRepository : IRemotePluginRepository
         return resp.PackageId;
     }
 
-    public async Task<bool> DeleteAsync(string pluginId)
+    public async Task<bool> DeleteAsync(Guid pluginId)
     {
         bool result = await _httpHelper.DeleteAsync($"{Urls.ServerUrl}/api/plugin/delete/{pluginId}");
         return result;
     }
 
-    public async Task<bool> DeleteVersionAsync(string versionId)
+    public async Task<bool> DeleteVersionAsync(Guid versionId)
     {
         var result = await _httpHelper.DeleteAsync($"{Urls.ServerUrl}/api/plugin/deleteVersion/{versionId}");
         return result;
     }
 
-    public async Task<bool> DownloadLatestAsync(string pluginId, string build, string outputPath, IProgress<double> progress)
+    public async Task<bool> DownloadLatestAsync(Guid pluginId, string build, string outputPath, IProgress<double> progress)
     {
         try
         {
@@ -78,7 +78,7 @@ public class RemotePluginRepository : IRemotePluginRepository
         }
     }
 
-    public async Task<PluginPackage> GetLatestAsync(string pluginId)
+    public async Task<PluginPackage> GetLatestAsync(Guid pluginId)
     {
         var result = await _httpHelper.GetAsync<GetPluginLatestVersionResponse>($"{Urls.ServerUrl}/api/plugin/latest?pluginId={pluginId}");
         if (result is null) return null;
@@ -117,7 +117,7 @@ public class RemotePluginRepository : IRemotePluginRepository
         return plugins;
     }
 
-    public async Task<List<PluginPackage>> GetVersionsAsync(string pluginId)
+    public async Task<List<PluginPackage>> GetVersionsAsync(Guid pluginId)
     {
         var result = await _httpHelper.GetAsync<GetPluginActivedVerionsResponse>($"{Urls.ServerUrl}/api/plugin/versions?pluginId={pluginId}");
         if (result is null) return null;
