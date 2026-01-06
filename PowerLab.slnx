@@ -38,6 +38,7 @@
     <Project Path="SRC/Plugins/FishyTime/PowerLab.FishyTime/PowerLab.FishyTime.csproj" />
   </Folder>
   <Folder Name="/SRC/Services/">
+    <Project Path="SRC/Services/PowerLab.LauncherService/PowerLab.LauncherService.fsproj" Id="4daa4c66-2268-4427-8f23-d639b6a5d739" />
     <Project Path="SRC/Services/PowerLab.UpdaterService/PowerLab.UpdaterService.csproj" Id="e639c754-aeb7-4817-bde3-c6d110dbe754" />
   </Folder>
   <Folder Name="/SRC/Shared/">
