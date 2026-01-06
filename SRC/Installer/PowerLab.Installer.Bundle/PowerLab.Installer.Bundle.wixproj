@@ -18,6 +18,7 @@
     <ProjectReference Include="..\PowerLab.DataMigrator.MSI\PowerLab.DataMigrator.MSI.wixproj" />
     <ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
     <ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.LauncherService.MSI\PowerLab.LauncherService.MSI.wixproj" />
     <ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
     <ProjectReference Include="..\PowerLab.UpdaterService.MSI\PowerLab.UpdaterService.MSI.wixproj" />
   </ItemGroup>

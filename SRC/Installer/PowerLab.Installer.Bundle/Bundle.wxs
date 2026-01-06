@@ -82,6 +82,14 @@
 						SourceFile="PowerLab.UpdaterService.MSI.msi">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
+
+			<!-- Launcher Service -->
+			<MsiPackage Id="PowerLabLauncherServiceMsi"
+						Visible="no"
+						Compressed="yes"
+						SourceFile="PowerLab.LauncherService.MSI.msi">
+				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
+			</MsiPackage>
 		</Chain>
 	</Bundle>
 </Wix>
