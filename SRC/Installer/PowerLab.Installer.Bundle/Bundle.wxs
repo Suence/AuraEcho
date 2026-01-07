@@ -33,6 +33,8 @@
 			Platform="x64"
 			Variable="DOTNETDESKTOPVERSION" />
 
+		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab"/>
+
 		<Chain DisableSystemRestore="yes">
 
 			<!-- Permanent: 永久(卸载时保留) or 指定卸载参数 UninstallArguments="/uninstall /quiet /norestart" -->

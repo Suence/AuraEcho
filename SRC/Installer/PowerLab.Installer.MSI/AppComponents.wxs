@@ -68,7 +68,7 @@
 					  Arguments="/uninstall"
 					  WorkingDirectory="ProgramMenuFolder" />
 
-			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolder"/>
+			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolderMenu"/>
 			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>
 			<RegistryValue Root="HKCU"
 						   Key="Software\Suencesoft\PowerLab"

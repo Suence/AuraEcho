@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using WixToolset.BootstrapperApplicationApi;
+using ErrorEventArgs = WixToolset.BootstrapperApplicationApi.ErrorEventArgs;
 
 namespace PowerLab.Installer.Bootstrapper.WixToolset;
 
@@ -95,12 +97,14 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
 
     private void InitVariables()
     {
-        _installDirVar.Set(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "PowerLab"));
+        string installDirRowValue = engine.GetVariableString(_installDirVar.WixVariableName);
+        _installDirVar.Set(engine.FormatString(installDirRowValue));
+
         _createShortcutVar.Set(true);
         _launchOnStartupVar.Set(true);
 
         var uninstallPath =
-            System.IO.Path.Combine(
+            Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "Package Cache",
                 Engine.GetVariableString("WixBundleProviderKey"),

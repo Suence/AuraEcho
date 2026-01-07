@@ -5,7 +5,7 @@
 		</StandardDirectory>
 
 		<StandardDirectory Id="ProgramMenuFolder">
-			<Directory Id="ManufacturerFolder" Name="Suencesoft" >
+			<Directory Id="ManufacturerFolderMenu" Name="Suencesoft" >
 				<Directory Id="ProductFolder" Name="PowerLab"/>
 			</Directory>
 		</StandardDirectory>
