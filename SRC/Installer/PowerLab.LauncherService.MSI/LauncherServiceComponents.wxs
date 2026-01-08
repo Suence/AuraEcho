@@ -1,6 +1,6 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Fragment>
-    <ComponentGroup Id="FileComponents" Directory="LauncherServiceFolder">
+    <ComponentGroup Id="LauncherServiceFileComponents" Directory="LauncherServiceFolder">
 		<Files Include="$(var.PowerLab.LauncherService.TargetDir)**">
 			<Exclude Files="*.pdb"/>
 			<Exclude Files="PowerLabLauncherService.exe"/>

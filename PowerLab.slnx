@@ -30,6 +30,7 @@
     <Project Path="SRC/Installer/PowerLab.UpdaterService.MSI/PowerLab.UpdaterService.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="0504b72a-891f-4992-8688-2e151be66619">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
+    <Project Path="SRC/Installer/PowerLabInstaller.CustomAction/PowerLabInstaller.CustomAction.csproj" Id="1e37f1e2-c424-46f2-9a14-8a392ea58287" />
   </Folder>
   <Folder Name="/SRC/Plugins/" />
   <Folder Name="/SRC/Plugins/ExternalTools/">

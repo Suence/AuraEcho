@@ -1,4 +1,5 @@
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Fragment>
 		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
 		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER" >
@@ -79,15 +80,27 @@
 		</Component>
 
 		<!-- 开机自启 -->
-		<Component Id="RunAtBootComponent" Guid="*">
-			<RegistryValue
-				Root="HKCU"
-				Key="Software\Microsoft\Windows\CurrentVersion\Run"
-				Name="PowerLab"
-				Value="&quot;[INSTALLFOLDER]PowerLab.exe&quot; --boot"
-				Type="string"
-				KeyPath="yes" />
-		</Component>
+		<Binary Id="PLInstallerCADll" SourceFile="$(var.PowerLabInstaller.CustomAction.TargetDir)PowerLabInstaller.CustomAction.CA.dll" />
 
+		<CustomAction Id="SetCreateTaskData" Property="CreatePowerLabTask"
+					  Value="INSTALLFOLDER=[INSTALLFOLDER]" />
+
+		<CustomAction Id="CreatePowerLabTask"
+					  BinaryRef="PLInstallerCADll"
+					  DllEntry="CreatePowerLabAutoStartTask"
+					  Execute="deferred"
+					  Impersonate="no"
+					  Return="check" />
+		
+		<CustomAction Id="DeletePowerLabTask" 
+              BinaryRef="PLInstallerCADll" 
+              DllEntry="DeletePowerLabAutoStartTask" 
+              Execute="deferred" 
+              Impersonate="no" 
+              Return="ignore" />
+
+		<Component Id="AutoStartMarkerComponent" Guid="*">
+			<RegistryValue Root="HKLM" Key="Software\Suencesoft\PowerLab" Name="AutoStartTaskName" Type="string" Value="PowerLabAutoStart" KeyPath="yes" />
+		</Component>
 	</Fragment>
 </Wix>

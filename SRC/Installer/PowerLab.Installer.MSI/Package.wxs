@@ -18,7 +18,14 @@
 		</Feature>
 
 		<Feature Id="RunAtBoot">
-			<ComponentRef Id="RunAtBootComponent" />
+			<ComponentRef Id="AutoStartMarkerComponent" />
 		</Feature>
+		
+		<InstallExecuteSequence>
+			<Custom Action="SetCreateTaskData" After="InstallFiles" Condition="NOT Installed"/>
+			<Custom Action="CreatePowerLabTask" After="SetCreateTaskData" Condition="&amp;RunAtBoot=3"/>
+
+			<Custom Action="DeletePowerLabTask" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot;"/>
+		</InstallExecuteSequence>
 	</Package>
 </Wix>

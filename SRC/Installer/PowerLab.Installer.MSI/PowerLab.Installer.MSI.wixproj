@@ -11,5 +11,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Host\PowerLab\PowerLab.csproj" />
+    <ProjectReference Include="..\PowerLabInstaller.CustomAction\PowerLabInstaller.CustomAction.csproj" />
   </ItemGroup>
 </Project>

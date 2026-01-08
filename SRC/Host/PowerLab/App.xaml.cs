@@ -106,7 +106,7 @@ public partial class App
 
     protected override void OnInitialized()
     {
-        if (!_startupArgs.Contains("--boot"))
+        if (!_startupArgs.Contains("-hide"))
         {
             base.OnInitialized();
         }
