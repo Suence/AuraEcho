@@ -13,7 +13,7 @@ type LauncherWorker(logger : ILogger<LauncherWorker>) =
         Process.GetProcessesByName("PowerLab").Length > 0
 
     let getInstallPath() = 
-        let keyPath = @"Software\Suencesoft\PowerLab"
+        let keyPath = @"Software\PowerLab"
         use key = Registry.LocalMachine.OpenSubKey(keyPath)
         if key = null then None
         else

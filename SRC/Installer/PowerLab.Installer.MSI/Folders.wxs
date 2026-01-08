@@ -5,9 +5,7 @@
 		</StandardDirectory>
 
 		<StandardDirectory Id="ProgramMenuFolder">
-			<Directory Id="ManufacturerFolderMenu" Name="Suencesoft" >
-				<Directory Id="ProductFolder" Name="PowerLab"/>
-			</Directory>
+			<Directory Id="ProductMenuFolder" Name="PowerLab"/>
 		</StandardDirectory>
 	</Fragment>
 </Wix>

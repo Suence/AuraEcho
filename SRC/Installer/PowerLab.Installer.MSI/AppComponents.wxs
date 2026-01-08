@@ -24,20 +24,20 @@
 			</Files>
 			<Component Id="AppRegistryComponents" Guid="*">
 				<RegistryValue Root="HKLM"
-						   Key="Software\Suencesoft\PowerLab"
+						   Key="Software\PowerLab"
 						   Name="InstallPath"
 						   Type="string"
 						   Value="[INSTALLFOLDER]PowerLab.exe"
 						   KeyPath="yes"/>
 				<RegistryValue Root="HKLM"
-						   Key="Software\Suencesoft\PowerLab"
+						   Key="Software\PowerLab"
 						   Name="InstallVersion"
 						   Type="string"
 						   Value="$(var.BundleVersion)"/>
 			</Component>
 		</ComponentGroup>
 
-		<Component Id="DesktopShortcutComponent" Guid="*" Directory="ProductFolder">
+		<Component Id="DesktopShortcutComponent" Guid="*">
 			<Shortcut Id="DesktopShortcut"
 					  Directory="DesktopFolder"
 					  Name="PowerLab"
@@ -46,7 +46,7 @@
 					  Icon="PowerLab.ico"
 					  Advertise="no" />
 			<RegistryValue Root="HKCU"
-						   Key="Software\Suencesoft\PowerLab"
+						   Key="Software\PowerLab"
 						   Name="DesktopShortcutInstalled"
 						   Type="string"
 						   Value="1"
@@ -54,7 +54,7 @@
 		</Component>
 
 		<!-- 开始菜单快捷方式 -->
-		<Component Id="StartMenuShortcutComponent" Guid="*" Directory="ProductFolder" >
+		<Component Id="StartMenuShortcutComponent" Guid="*" Directory="ProductMenuFolder" >
 			<Shortcut Id="StartMenuShortcut"
 					  Name="PowerLab"
 					  Icon="PowerLab.ico"
@@ -69,10 +69,9 @@
 					  Arguments="/uninstall"
 					  WorkingDirectory="ProgramMenuFolder" />
 
-			<RemoveFolder Id="RemoveManufacturerFolder" On="uninstall" Directory="ManufacturerFolderMenu"/>
-			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductFolder"/>
+			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductMenuFolder"/>
 			<RegistryValue Root="HKCU"
-						   Key="Software\Suencesoft\PowerLab"
+						   Key="Software\PowerLab"
 						   Name="StartMenuShortcutInstalled"
 						   Type="string"
 						   Value="1"
@@ -100,7 +99,7 @@
               Return="ignore" />
 
 		<Component Id="AutoStartMarkerComponent" Guid="*">
-			<RegistryValue Root="HKLM" Key="Software\Suencesoft\PowerLab" Name="AutoStartTaskName" Type="string" Value="PowerLabAutoStart" KeyPath="yes" />
+			<RegistryValue Root="HKLM" Key="Software\PowerLab" Name="AutoStartTaskName" Type="string" Value="PowerLabAutoStart" KeyPath="yes" />
 		</Component>
 	</Fragment>
 </Wix>

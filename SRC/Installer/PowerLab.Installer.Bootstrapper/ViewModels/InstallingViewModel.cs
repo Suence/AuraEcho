@@ -73,7 +73,7 @@ public class InstallingViewModel : BindableBase, INavigationAware
 
     private static string GetInstallPath()
     {
-        const string keyPath = @"Software\Suencesoft\PowerLab";
+        const string keyPath = @"Software\PowerLab";
         using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return null;
 

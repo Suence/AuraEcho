@@ -205,7 +205,7 @@ public class Worker : BackgroundService
     }
     private static Version GetInstalledVersion()
     {
-        const string keyPath = @"Software\Suencesoft\PowerLab";
+        const string keyPath = @"Software\PowerLab";
         using RegistryKey? key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return new Version("1.0.0");
 
@@ -214,7 +214,7 @@ public class Worker : BackgroundService
     }
     private static string GetInstallPath()
     {
-        const string keyPath = @"Software\Suencesoft\PowerLab";
+        const string keyPath = @"Software\PowerLab";
         using RegistryKey? key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return null;
 
