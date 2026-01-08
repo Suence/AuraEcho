@@ -21,19 +21,30 @@ type LauncherWorker(logger : ILogger<LauncherWorker>) =
             | null -> None
             | value -> Some (value.ToString())
 
+    let launchPowerLab() =
+        logger.LogInformation("User logged in/unlocked session, launching PowerLab")
+        getInstallPath() 
+        |> Option.bind (fun path -> Some (path |> UserSessionProcessLauncher.launch))
+        |> (fun launchResult -> launchResult.Value |> sprintf "launch result %A" |> logger.LogInformation)
+
     override _.ExecuteAsync(ct : CancellationToken) =
         task {
-            logger.LogInformation("PowerLab Launcher started")
+            //Debugger.Launch() |> ignore
             
-             //订阅会话变化事件
-            SystemEvents.SessionSwitch.Add(fun args ->
-                match args.Reason with
-                | SessionSwitchReason.SessionLogon -> 
-                    logger.LogInformation("User logged in/unlocked session, launching PowerLab")
-                    getInstallPath() 
-                    |> Option.bind (fun path -> Some (path |> UserSessionProcessLauncher.launch))
-                    |> (fun launchResult -> launchResult.Value |> sprintf "launch result %A" |> logger.LogInformation)
+            logger.LogInformation("PowerLabLauncherService is started.")
+            launchPowerLab()
+            //SystemEvents.UserPreferenceChanged.Add(fun args ->
+            //    args.Category |> sprintf "UserPreferenceChanged %A" |> logger.LogInformation)
 
-                | _ -> ()
-            )
+            // //订阅会话变化事件
+            //SystemEvents.SessionSwitch.Add(fun args ->
+            //    args.Reason |> sprintf "SessionSwitch %A" |> logger.LogInformation
+            //    match args.Reason with
+            //    | SessionSwitchReason.SessionLogon -> launchPowerLab()
+            //    | _ -> ()
+            //)
         }
+    override _.StopAsync (cancellationToken: CancellationToken): Tasks.Task = 
+        logger.LogInformation "PowerLabLauncherService is stopped."
+        base.StopAsync(cancellationToken: CancellationToken)
+        
