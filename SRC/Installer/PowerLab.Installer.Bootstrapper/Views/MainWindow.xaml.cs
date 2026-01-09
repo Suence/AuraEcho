@@ -13,12 +13,6 @@ public partial class MainWindow : Window
     public MainWindow(IEventAggregator eventAggregator)
     {
         InitializeComponent();
-        //eventAggregator.GetEvent<InstallationStartedEvent>().Subscribe(InstallationStarted);
-    }
-
-    private void InstallationStarted()
-    {
-        Foreground = new SolidColorBrush(Colors.White);
     }
 
     private void Grid_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -34,5 +28,18 @@ public partial class MainWindow : Window
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         Application.Current.Properties["MainWindowHandle"] = new WindowInteropHelper(this).Handle;
+
+        // 用于在用户点击 UAC 弹窗按钮后将主窗口前置
+        BringToForeground();
+    }
+
+    /// <summary>
+    /// 使主窗口前置
+    /// </summary>
+    public void BringToForeground()
+    {
+        Topmost = true;
+        Topmost = false;
+        Focus();
     }
 }

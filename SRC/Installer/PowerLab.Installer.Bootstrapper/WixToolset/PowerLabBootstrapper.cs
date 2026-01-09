@@ -17,7 +17,8 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
     private const string PowerLabPackageId = "PowerLabInstallerMSI";
     private const string POWERLAB_BUNDLE_FILENAME = "PowerLabSetup.exe";
     private bool _isAutoPlan;
-
+    private ManualResetEventSlim _elevateLock = new(false);
+    private bool _elevateResult = false;
     public bool Downgrade { get; private set; }
     public IEngine Engine { get; private set; }
     public IBootstrapperCommand Command { get; private set; }
@@ -117,10 +118,20 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         if (Environment.GetCommandLineArgs().Contains("-debug", StringComparer.OrdinalIgnoreCase))
             Debugger.Launch();
 
+
         // 稍后要在这里添加安装流程控制。
         Engine.Log(LogLevel.Standard, "Running the PowerLab.InstallerUI.");
         try
         {
+            var elevateResult = Engine.Elevate(IntPtr.Zero);
+            
+            if (!elevateResult)
+            {
+                Engine.Log(LogLevel.Error, "Failed to elevate the PowerLab.InstallerUI.");
+                Engine.Quit(-1);
+                return;
+            }
+
             LaunchApp();
             Engine.Log(LogLevel.Standard, "Exiting the PowerLab.InstallerUI.");
             Engine.Quit(0);
@@ -138,6 +149,10 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
 
     private void LaunchApp()
     {
+        _elevateLock.Wait();
+
+        if (!_elevateResult) return;
+
         _dispatcher = Dispatcher.CurrentDispatcher;
         if (Command.Display is Display.Passive or Display.Full)
         {
@@ -203,6 +218,13 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         base.CacheComplete += CacheComplete;
         base.PlanMsiFeature += PlanMsiFeature;
         base.ExecuteMsiMessage += ExecuteMsiMessage;
+        base.ElevateComplete += PowerLabBootstrapper_ElevateComplete;
+    }
+
+    private void PowerLabBootstrapper_ElevateComplete(object? sender, ElevateCompleteEventArgs e)
+    {
+        _elevateResult = e.Status == 0;
+        _elevateLock.Set();
     }
 
     private void ExecuteMsiMessage(object? sender, ExecuteMsiMessageEventArgs e)
