@@ -1,6 +1,7 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 	 xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
 	 xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
+	
 	<Bundle Name="PowerLab"
 			Manufacturer="Suencesoft"
 			Version="$(var.BundleVersion)"
@@ -33,8 +34,9 @@
 			Platform="x64"
 			Variable="DOTNETDESKTOPVERSION" />
 
-		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab"/>
-
+		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab" />
+		<ApprovedExeForElevation Id="LaunchMainApp" Key="Software\PowerLab" Value="InstallPath" />
+		
 		<Chain DisableSystemRestore="yes">
 
 			<!-- Permanent: 永久(卸载时保留) or 指定卸载参数 UninstallArguments="/uninstall /quiet /norestart" -->
