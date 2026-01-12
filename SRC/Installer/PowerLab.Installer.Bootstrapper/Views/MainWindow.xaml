@@ -6,6 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:prism="http://prismlibrary.com/"
+        xmlns:ui="http://ui.powerlab.com/"
         xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
         Title="MainWindow"
         Width="750"
@@ -39,6 +40,7 @@
               MouseLeftButtonDown="Grid_MouseLeftButtonDown">
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button Width="40"
+                        ui:ControlHelper.CornerRadius="0"
                         Click="Button_Click"
                         Style="{DynamicResource IconButtonStyle}">
                     <Button.Content>
@@ -50,6 +52,7 @@
                     </Button.Content>
                 </Button>
                 <Button Width="40"
+                        ui:ControlHelper.CornerRadius="0"
                         Command="{Binding ExitCommand}"
                         Style="{DynamicResource IconButtonStyle}">
                     <Viewbox Width="20" Height="20">

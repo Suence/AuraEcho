@@ -131,9 +131,9 @@ public class InstallingViewModel : BindableBase, INavigationAware
     private void SubscriptionInstallEvents()
     {
         _ba.OnActionCompleted += InstallCompleted;
-        _ba.OnPlanMsiFeature += PlanMsiFeature;
-        _ba.OnExecuteMsiMessage += ExecuteMsiMessage;
-        _ba.OnProgress += UpdateProgress;
+        _ba.PlanFeature += PlanMsiFeature;
+        _ba.ExecuteMessage += ExecuteMsiMessage;
+        _ba.ProgressChanged += UpdateProgress;
     }
 
     private void ExecuteMsiMessage(object? sender, string e)
@@ -179,9 +179,9 @@ public class InstallingViewModel : BindableBase, INavigationAware
     private void UnsubscriptionInstallEvents()
     {
         _ba.OnActionCompleted -= InstallCompleted;
-        _ba.OnPlanMsiFeature -= PlanMsiFeature;
-        _ba.OnExecuteMsiMessage -= ExecuteMsiMessage;
-        _ba.OnProgress -= UpdateProgress;
+        _ba.PlanFeature -= PlanMsiFeature;
+        _ba.ExecuteMessage -= ExecuteMsiMessage;
+        _ba.ProgressChanged -= UpdateProgress;
     }
 
     private void PlanMsiFeature(object sender, PlanMsiFeatureEventArgs e)

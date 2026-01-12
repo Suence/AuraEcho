@@ -74,8 +74,8 @@ public class UninstallingViewModel : BindableBase
     private void SubscriptionInstallEvents()
     {
         _ba.OnActionCompleted += UninstallCompleted;
-        _ba.OnExecuteMsiMessage += ExecuteMsiMessage;
-        _ba.OnProgress += UpdateProgress;
+        _ba.ExecuteMessage += ExecuteMsiMessage;
+        _ba.ProgressChanged += UpdateProgress;
     }
 
     private void ExecuteMsiMessage(object? sender, string e)
@@ -102,7 +102,7 @@ public class UninstallingViewModel : BindableBase
     private void UnsubscriptionInstallEvents()
     {
         _ba.OnActionCompleted -= UninstallCompleted;
-        _ba.OnProgress -= UpdateProgress;
+        _ba.ProgressChanged -= UpdateProgress;
     }
 
 

@@ -1,14 +1,16 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using WixToolset.BootstrapperApplicationApi;
 using ErrorEventArgs = WixToolset.BootstrapperApplicationApi.ErrorEventArgs;
+using StartupEventArgs = WixToolset.BootstrapperApplicationApi.StartupEventArgs;
 
 namespace PowerLab.Installer.Bootstrapper.WixToolset;
 
-public sealed class PowerLabBootstrapper : BootstrapperApplication
+public sealed partial class PowerLabBootstrapper : BootstrapperApplication
 {
     private PowerLabBootstrapper() { }
     public static PowerLabBootstrapper Instance { get; } = new PowerLabBootstrapper();
@@ -17,6 +19,7 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
     private const string PowerLabPackageId = "PowerLabInstallerMSI";
     private const string POWERLAB_BUNDLE_FILENAME = "PowerLabSetup.exe";
     private bool _isAutoPlan;
+    private ExecuteMsiMessageEventArgs _currentAction;
     private ManualResetEventSlim _elevateLock = new(false);
     private bool _elevateResult = false;
     public bool Downgrade { get; private set; }
@@ -37,20 +40,11 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
     private WixBooleanVariable _launchOnStartupVar;
     private WixStringVariable _versionVar;
 
-    /// <inheritdoc/>
     public event EventHandler? OnActionRequested;
-
-    /// <inheritdoc/>
     public event EventHandler? OnActionCompleted;
-
-    /// <inheritdoc/>
-    public event EventHandler<int>? OnProgress;
-
-    public event EventHandler<PlanMsiFeatureEventArgs> OnPlanMsiFeature;
-
-    public event EventHandler<string>? OnExecuteMsiMessage;
-
-    /// <inheritdoc/>
+    public event EventHandler<int>? ProgressChanged;
+    public event EventHandler<PlanMsiFeatureEventArgs> PlanFeature;
+    public event EventHandler<string>? ExecuteMessage;
     public event EventHandler? OnCanceled;
 
     public string InstallDirectory
@@ -93,7 +87,6 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         _uninstallerPath = new(Engine, BundleVar.UninstallerPath);
         _versionVar = new(Engine, BundleVar.Version);
         InitVariables();
-        WireEvents();
     }
 
     private void InitVariables()
@@ -124,7 +117,7 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         try
         {
             var elevateResult = Engine.Elevate(IntPtr.Zero);
-            
+
             if (!elevateResult)
             {
                 Engine.Log(LogLevel.Error, "Failed to elevate the PowerLab.InstallerUI.");
@@ -181,142 +174,105 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         }
     }
 
-    /// <inheritdoc/>
-    public void Uninstall()
-    {
-        Plan(LaunchAction.Uninstall);
-    }
+    public void Uninstall() => Plan(LaunchAction.Uninstall);
+
+    public void Cancel() => CancelRequested = true;
 
     /// <inheritdoc/>
-    public void Cancel()
+    protected override void OnApplyBegin(ApplyBeginEventArgs args)
     {
-        CancelRequested = true;
-
+        base.OnApplyBegin(args);
+        _progressPhases = args.PhaseCount;
     }
 
-    /// <summary>
-    /// Subscribes to all necessary bootstrapper engine events with their corresponding handlers.
-    /// </summary>
-    private void WireEvents()
+    /// <inheritdoc/>
+    protected override void OnApplyComplete(ApplyCompleteEventArgs args)
     {
-        base.DetectBegin += DetectBegin;
-        base.DetectComplete += DetectComplete;
-        base.DetectRelatedBundle += DetectRelatedBundle;
-        base.DetectPackageComplete += DetectPackageComplete;
-        base.PlanBegin += PlanBegin;
-        base.PlanComplete += PlanComplete;
-        base.ApplyBegin += ApplyBegin;
-        base.Progress += Progress;
-        base.ApplyComplete += ApplyComplete;
-        base.Error += Error;
-        base.ExecuteProgress += ExecuteProgress;
-        base.PlannedPackage += PlannedPackage;
-        base.CacheAcquireProgress += CacheAcquireProgress;
-        base.CacheContainerOrPayloadVerifyProgress += CacheContainerOrPayloadVerifyProgress;
-        base.CachePayloadExtractProgress += CachePayloadExtractProgress;
-        base.CacheVerifyProgress += CacheVerifyProgress;
-        base.CacheComplete += CacheComplete;
-        base.PlanMsiFeature += PlanMsiFeature;
-        base.ExecuteMsiMessage += ExecuteMsiMessage;
-        base.ElevateComplete += PowerLabBootstrapper_ElevateComplete;
+        base.OnApplyComplete(args);
+        OnActionCompleted?.Invoke(this, EventArgs.Empty);
+
+        if (_isAutoPlan)
+        {
+            _dispatcher.InvokeShutdown();
+            return;
+        }
     }
 
-    private void PowerLabBootstrapper_ElevateComplete(object? sender, ElevateCompleteEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnCacheAcquireProgress(CacheAcquireProgressEventArgs args)
     {
-        _elevateResult = e.Status == 0;
-        _elevateLock.Set();
+        base.OnCacheAcquireProgress(args);
+        ExecuteMessage?.Invoke(this, "正在准备安装文件...");
+        lock (_syncRoot)
+        {
+            _cacheProgress = args.OverallPercentage;
+            ReportProgress();
+            args.Cancel = CancelRequested;
+        }
     }
 
-    private void ExecuteMsiMessage(object? sender, ExecuteMsiMessageEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnCacheComplete(CacheCompleteEventArgs args)
     {
-        OnExecuteMsiMessage?.Invoke(this, e.Message);
+        base.OnCacheComplete(args);
+        lock (_syncRoot)
+        {
+            _cacheProgress = 100;
+            ReportProgress();
+        }
     }
 
-    private void PlanMsiFeature(object? sender, PlanMsiFeatureEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnCacheContainerOrPayloadVerifyProgress(CacheContainerOrPayloadVerifyProgressEventArgs args)
     {
-        OnPlanMsiFeature?.Invoke(this, e);
+        base.OnCacheContainerOrPayloadVerifyProgress(args);
+
+        ExecuteMessage?.Invoke(this, "正在验证组件完整性...");
+        lock (_syncRoot)
+        {
+            _cacheProgress = args.OverallPercentage;
+            ReportProgress();
+            args.Cancel = CancelRequested;
+        }
     }
 
-    /// <summary>
-    /// Unsubscribes from all previously wired bootstrapper engine events.
-    /// </summary>
-    private void UnwireEvents()
+    /// <inheritdoc/>
+    protected override void OnCachePayloadExtractProgress(CachePayloadExtractProgressEventArgs args)
     {
-        base.DetectBegin -= DetectBegin;
-        base.DetectComplete -= DetectComplete;
-        base.DetectRelatedBundle -= DetectRelatedBundle;
-        base.DetectPackageComplete -= DetectPackageComplete;
-        base.PlanBegin -= PlanBegin;
-        base.PlanComplete -= PlanComplete;
-        base.ApplyBegin -= ApplyBegin;
-        base.Progress -= Progress;
-        base.ApplyComplete -= ApplyComplete;
-        base.Error -= Error;
-        base.ExecuteProgress -= ExecuteProgress;
-        base.PlannedPackage -= PlannedPackage;
-        base.CacheAcquireProgress -= CacheAcquireProgress;
-        base.CacheContainerOrPayloadVerifyProgress -= CacheContainerOrPayloadVerifyProgress;
-        base.CachePayloadExtractProgress -= CachePayloadExtractProgress;
-        base.CacheVerifyProgress -= CacheVerifyProgress;
-        base.CacheComplete -= CacheComplete;
+        base.OnCachePayloadExtractProgress(args);
+        lock (_syncRoot)
+        {
+            _cacheProgress = args.OverallPercentage;
+            ReportProgress();
+            args.Cancel = CancelRequested;
+        }
     }
 
-    /// <summary>
-    /// Parses the command line arguments passed to the bootstrapper and updates corresponding bundle variables.
-    /// </summary>
-    private void ParseCommandLine()
+    /// <inheritdoc/>
+    protected override void OnCacheVerifyProgress(CacheVerifyProgressEventArgs args)
     {
+        base.OnCacheVerifyProgress(args);
+        ExecuteMessage?.Invoke(this, "正在验证组件完整性...");
+        lock (_syncRoot)
+        {
+            _cacheProgress = args.OverallPercentage;
+            ReportProgress();
+            args.Cancel = CancelRequested;
+        }
     }
 
-    /// <summary>
-    /// Sets the planned action for the bootstrapper and invokes the planning phase on the engine.
-    /// </summary>
-    /// <param name="action">The <see cref="LaunchAction"/> to plan.</param>
-    private void Plan(LaunchAction action)
+    /// <inheritdoc/>
+    protected override void OnDetectBegin(DetectBeginEventArgs args)
     {
-        Engine.Plan(action);
+        base.OnDetectBegin(args);
+
+        DetectState = RegistrationType.Full == args.RegistrationType ? DetectionState.Present : DetectionState.Absent;
     }
 
-    /// <summary>
-    /// Calculates overall progress percentage from cache and execution progress and raises the <see cref="OnProgress"/> event.
-    /// </summary>
-    private void ReportProgress()
+    /// <inheritdoc/>
+    protected override void OnDetectComplete(DetectCompleteEventArgs args)
     {
-        var pct = GetProgress();
-
-        if (CancelRequested) return;
-
-        OnProgress?.Invoke(this, pct);
-    }
-
-    /// <summary>
-    /// Computes the combined progress across caching and execution phases.
-    /// </summary>
-    /// <returns>The overall progress percentage.</returns>
-    private int GetProgress()
-    {
-        return (_cacheProgress + _executeProgress) / _progressPhases;
-    }
-
-    #region Events Subscriptions
-
-    /// <summary>
-    /// Handles the beginning of package detection by setting the detection state and resetting the planned action.
-    /// </summary>
-    /// <param name="sender">The source of the detection event.</param>
-    /// <param name="e">Event arguments containing registration type.</param>
-    private void DetectBegin(object? sender, DetectBeginEventArgs e)
-    {
-        DetectState = RegistrationType.Full == e.RegistrationType ? DetectionState.Present : DetectionState.Absent;
-    }
-
-    /// <summary>
-    /// Called when detection completes; parses CLI, updates state, raises action request, and invokes automatic plans.
-    /// </summary>
-    /// <param name="sender">The source of the detection completion event.</param>
-    /// <param name="e">Event arguments containing status and resume type.</param>
-    private void DetectComplete(object? sender, DetectCompleteEventArgs e)
-    {
+        base.OnDetectComplete(args);
         if (Command.Action is not LaunchAction.Uninstall)
         {
             Downgrade = UpgradeDetectState == UpgradeDetectionState.Newer;
@@ -341,18 +297,29 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         Engine.Log(LogLevel.Error, $"意外的自动计划：{Command.Action}");
     }
 
-    /// <summary>
-    /// Processes related bundle detection, sets existing version, and computes upgrade state.
-    /// </summary>
-    /// <param name="sender">The source of the related bundle event.</param>
-    /// <param name="e">Event arguments containing related bundle details.</param>
-    private void DetectRelatedBundle(object? sender, DetectRelatedBundleEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnDetectPackageComplete(DetectPackageCompleteEventArgs args)
     {
-        ExistingVersion = e.Version;
-
-        if (e.RelationType is RelationType.Upgrade)
+        base.OnDetectPackageComplete(args);
+        if (args.PackageId.Equals(PowerLabPackageId))
         {
-            if (Engine.CompareVersions(Version, e.Version) >= 0)
+            if (args.State is PackageState.Present)
+            {
+                ExistingVersion = Version;
+            }
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnDetectRelatedBundle(DetectRelatedBundleEventArgs args)
+    {
+        base.OnDetectRelatedBundle(args);
+
+        ExistingVersion = args.Version;
+
+        if (args.RelationType is RelationType.Upgrade)
+        {
+            if (Engine.CompareVersions(Version, args.Version) >= 0)
             {
                 if (UpgradeDetectState == UpgradeDetectionState.None)
                 {
@@ -366,38 +333,134 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         }
     }
 
-    /// <summary>
-    /// Updates existing version if the core package is already present.
-    /// </summary>
-    /// <param name="sender">The source of the package complete event.</param>
-    /// <param name="e">Event arguments containing package ID and state.</param>
-    private void DetectPackageComplete(object? sender, DetectPackageCompleteEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnDetectUpdate(DetectUpdateEventArgs args)
     {
-        if (e.PackageId.Equals(PowerLabPackageId))
+        base.OnDetectUpdate(args);
+
+        // TODO: 
+    }
+
+    /// <inheritdoc/>
+    protected override void OnDetectUpdateBegin(DetectUpdateBeginEventArgs args)
+    {
+        base.OnDetectUpdateBegin(args);
+
+        // TODO: 
+    }
+
+    /// <inheritdoc/>
+    protected override void OnDetectUpdateComplete(DetectUpdateCompleteEventArgs args)
+    {
+        base.OnDetectUpdateComplete(args);
+
+        // TODO: 
+    }
+
+    /// <inheritdoc/>
+    protected override void OnElevateComplete(ElevateCompleteEventArgs args)
+    {
+        base.OnElevateComplete(args);
+
+        _elevateResult = args.Status == 0;
+        _elevateLock.Set();
+    }
+
+    /// <inheritdoc/>
+    protected override void OnError(ErrorEventArgs args)
+    {
+        base.OnError(args);
+        ExecuteMessage?.Invoke(this, $"Error: {args.ErrorMessage}");
+    }
+
+    /// <inheritdoc/>
+    protected override void OnExecuteFilesInUse(ExecuteFilesInUseEventArgs args)
+    {
+        base.OnExecuteFilesInUse(args);
+    }
+
+    /// <inheritdoc/>
+    protected override void OnExecuteMsiMessage(ExecuteMsiMessageEventArgs args)
+    {
+        base.OnExecuteMsiMessage(args);
+
+        args.Result = CancelRequested ? Result.Cancel : Result.Ok;
+
+        string formattedMessage = FormatMessage(args);
+        if (String.IsNullOrWhiteSpace(formattedMessage)) return;
+
+        ExecuteMessage?.Invoke(this, formattedMessage);
+    }
+
+    private string FormatMessage(ExecuteMsiMessageEventArgs args)
+    {
+        if (args.MessageType == InstallMessage.ActionStart && args.Data.Count > 1)
         {
-            if (e.State is PackageState.Present)
+            _currentAction = args;
+
+            string actionMessage = args.Data[1].Split(" ").First().TrimEnd('：', ':');
+            return String.IsNullOrWhiteSpace(actionMessage) ? actionMessage : $"{actionMessage}...";
+        }
+
+        if (args.MessageType == InstallMessage.ActionData)
+        {
+            if (!DataIndexRegex().IsMatch(_currentAction.Data[1])) return String.Empty;
+
+            if (!args.Message.StartsWith("1:")) return String.Empty;
+
+            string result = DataIndexRegex().Replace(_currentAction.Data[1], m =>
             {
-                ExistingVersion = Version;
-            }
+                if (int.TryParse(m.Groups[1].Value, out int index))
+                {
+                    int arrayIndex = index - 1;
+
+                    if (arrayIndex >= 0 && arrayIndex < args.Data.Count)
+                    {
+                        return args.Data[arrayIndex];
+                    }
+                }
+                return m.Value;
+            });
+            return result;
+        }
+        return String.Empty;
+    }
+
+    [GeneratedRegex(@"\[(\d+)\]")]
+    private static partial Regex DataIndexRegex();
+
+    /// <inheritdoc/>
+    protected override void OnExecuteProgress(ExecuteProgressEventArgs args)
+    {
+        base.OnExecuteProgress(args);
+
+        lock (_syncRoot)
+        {
+            _executeProgress = args.OverallPercentage;
+            ReportProgress();
+
+            var progress = GetProgress();
+
+            if (Command.Display is Display.Embedded)
+                Engine.SendEmbeddedProgress(args.ProgressPercentage, progress);
+
+            args.Cancel = CancelRequested;
         }
     }
 
-    /// <summary>
-    /// Clears the package order when planning begins.
-    /// </summary>
-    /// <param name="sender">The source of the plan begin event.</param>
-    /// <param name="e">Event arguments containing phase count.</param>
-    private void PlanBegin(object? sender, PlanBeginEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnPlanBegin(PlanBeginEventArgs args)
     {
+        base.OnPlanBegin(args);
+
+        ExecuteMessage?.Invoke(this, "正在初始化...");
     }
 
-    /// <summary>
-    /// Called when planning completes; initiates the apply phase or marks failure.
-    /// </summary>
-    /// <param name="sender">The source of the plan complete event.</param>
-    /// <param name="args">Event arguments containing plan status.</param>
-    private void PlanComplete(object? sender, PlanCompleteEventArgs args)
+    /// <inheritdoc/>
+    protected override void OnPlanComplete(PlanCompleteEventArgs args)
     {
+        base.OnPlanComplete(args);
+
         _dispatcher.Invoke(() =>
         {
             var mainWindow = Application.Current?.MainWindow ?? new Window();
@@ -406,155 +469,41 @@ public sealed class PowerLabBootstrapper : BootstrapperApplication
         });
     }
 
-    /// <summary>
-    /// Captures the total number of execution phases when apply begins.
-    /// </summary>
-    /// <param name="sender">The source of the apply begin event.</param>
-    /// <param name="e">Event arguments containing phase count.</param>
-    private void ApplyBegin(object? sender, ApplyBeginEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnPlanMsiFeature(PlanMsiFeatureEventArgs args)
     {
-        _progressPhases = e.PhaseCount;
+        base.OnPlanMsiFeature(args);
+
+        PlanFeature?.Invoke(this, args);
     }
 
-    /// <summary>
-    /// Cancels apply progress update if the operation is canceled.
-    /// </summary>
-    /// <param name="sender">The source of the progress event.</param>
-    /// <param name="e">Event arguments containing progress percentage.</param>
-    private void Progress(object? sender, ProgressEventArgs e)
+    /// <inheritdoc/>
+    protected override void OnProgress(ProgressEventArgs args)
     {
-        e.Cancel = CancelRequested;
+        base.OnProgress(args);
+
+        args.Cancel = CancelRequested;
     }
 
-    /// <summary>
-    /// Called when application completes; finalizes state, raises action completed, and optionally closes UI.
-    /// </summary>
-    /// <param name="sender">The source of the apply complete event.</param>
-    /// <param name="e">Event arguments containing apply status.</param>
-    private void ApplyComplete(object? sender, ApplyCompleteEventArgs e)
+    /// <inheritdoc/>
+    private void Plan(LaunchAction action)
     {
-        OnActionCompleted?.Invoke(this, EventArgs.Empty);
-
-        if (_isAutoPlan)
-        {
-            _dispatcher.InvokeShutdown();
-            return;
-        }
+        Engine.Plan(action);
     }
 
-    /// <summary>
-    /// Handles engine errors, determining retry or cancel behavior based on state.
-    /// </summary>
-    /// <param name="sender">The source of the error event.</param>
-    /// <param name="e">Event arguments containing error details.</param>
-    private void Error(object? sender, ErrorEventArgs e)
+    /// <inheritdoc/>
+    private void ReportProgress()
     {
+        var pct = GetProgress();
 
+        if (CancelRequested) return;
+
+        ProgressChanged?.Invoke(this, pct);
     }
 
-    /// <summary>
-    /// Updates execution progress, sends embedded progress if needed, and raises overall progress.
-    /// </summary>
-    /// <param name="sender">The source of the execute progress event.</param>
-    /// <param name="e">Event arguments containing progress percentages.</param>
-    private void ExecuteProgress(object? sender, ExecuteProgressEventArgs e)
+    /// <inheritdoc/>
+    private int GetProgress()
     {
-        lock (_syncRoot)
-        {
-            _executeProgress = e.OverallPercentage;
-            ReportProgress();
-
-            var progress = GetProgress();
-
-            if (Command.Display is Display.Embedded)
-                Engine.SendEmbeddedProgress(e.ProgressPercentage, progress);
-
-            e.Cancel = CancelRequested;
-        }
+        return (_cacheProgress + _executeProgress) / _progressPhases;
     }
-
-    /// <summary>
-    /// Records each planned package with an execution order index.
-    /// </summary>
-    /// <param name="sender">The source of the planned package event.</param>
-    /// <param name="e">Event arguments containing package ID and execute state.</param>
-    private void PlannedPackage(object? sender, PlannedPackageEventArgs e)
-    {
-
-    }
-
-    /// <summary>
-    /// Updates cache acquisition progress and raises overall progress.
-    /// </summary>
-    /// <param name="sender">The source of the cache acquire event.</param>
-    /// <param name="e">Event arguments containing overall percentage.</param>
-    private void CacheAcquireProgress(object? sender, CacheAcquireProgressEventArgs e)
-    {
-        lock (_syncRoot)
-        {
-            _cacheProgress = e.OverallPercentage;
-            ReportProgress();
-            e.Cancel = CancelRequested;
-        }
-    }
-
-    /// <summary>
-    /// Updates cache verification progress and raises overall progress.
-    /// <param name="sender">The source of the verify event.</param>
-    /// <param name="e">Event arguments containing overall percentage.</param>
-    private void CacheContainerOrPayloadVerifyProgress(object? sender, CacheContainerOrPayloadVerifyProgressEventArgs e)
-    {
-        lock (_syncRoot)
-        {
-            _cacheProgress = e.OverallPercentage;
-            ReportProgress();
-            e.Cancel = CancelRequested;
-        }
-    }
-
-    /// <summary>
-    /// Updates payload extract progress and raises overall progress.
-    /// </summary>
-    /// <param name="sender">The source of the payload extract event.</param>
-    /// <param name="e">Event arguments containing overall percentage.</param>
-    private void CachePayloadExtractProgress(object? sender, CachePayloadExtractProgressEventArgs e)
-    {
-        lock (_syncRoot)
-        {
-            _cacheProgress = e.OverallPercentage;
-            ReportProgress();
-            e.Cancel = CancelRequested;
-        }
-    }
-
-    /// <summary>
-    /// Updates cache verification progress and raises overall progress.
-    /// </summary>
-    /// <param name="sender">The source of the cache verify event.</param>
-    /// <param name="e">Event arguments containing overall percentage.</param>
-    private void CacheVerifyProgress(object? sender, CacheVerifyProgressEventArgs e)
-    {
-        lock (_syncRoot)
-        {
-            _cacheProgress = e.OverallPercentage;
-            ReportProgress();
-            e.Cancel = CancelRequested;
-        }
-    }
-
-    /// <summary>
-    /// Sets cache progress to 100% when caching completes and raises overall progress.
-    /// </summary>
-    /// <param name="sender">The source of the cache complete event.</param>
-    /// <param name="e">Event arguments for cache completion.</param>
-    private void CacheComplete(object? sender, CacheCompleteEventArgs e)
-    {
-        lock (_syncRoot)
-        {
-            _cacheProgress = 100;
-            ReportProgress();
-        }
-    }
-
-    #endregion
 }
