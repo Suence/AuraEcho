@@ -1,20 +1,27 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using PowerLab.Core.Contracts;
 using PowerLab.Core.Events;
 using Prism.Commands;
 using Prism.DryIoc;
 using Prism.Events;
+using Prism.Mvvm;
 using Prism.Regions;
 
 namespace PowerLab.ViewModels;
 
-public class NotifyIconViewModel
+public class NotifyIconViewModel : BindableBase
 {
     #region private
-    private IEventAggregator _eventAggregator;
-    private IRegionManager _regionManager;
+    private readonly IEventAggregator _eventAggregator;
     #endregion
+
+    public bool IsSignedIn
+    {
+        get => field;
+        set => SetProperty(ref field, value);
+    } = false;
 
     public static bool ShutdownRequested { get; private set; }
 
@@ -34,6 +41,8 @@ public class NotifyIconViewModel
     public DelegateCommand<string> GoToTargetViewCommand { get; }
     private void GoToTargetView(string viewName)
     {
+        if (!IsSignedIn) return;
+
         _eventAggregator.GetEvent<RequestViewEvent>().Publish(viewName);
         ShowWindow();
     }
@@ -44,8 +53,12 @@ public class NotifyIconViewModel
         ShowWindowCommand = new DelegateCommand(ShowWindow);
         GoToTargetViewCommand = new DelegateCommand<string>(GoToTargetView);
              
-        var container = (Application.Current as PrismApplication).Container;
-        _eventAggregator = container.Resolve(typeof(IEventAggregator)) as IEventAggregator;
-        _regionManager = container.Resolve(typeof(IRegionManager)) as IRegionManager;
+        var container = (Application.Current as PrismApplication)!.Container;
+        _eventAggregator = (container.Resolve(typeof(IEventAggregator)) as IEventAggregator)!;
+        _eventAggregator.GetEvent<SignedInEvent>().Subscribe(OnSignedIn, ThreadOption.UIThread);
+        _eventAggregator.GetEvent<SignedOutEvent>().Subscribe(OnSignedOut, ThreadOption.UIThread);
     }
+
+    private void OnSignedIn() => IsSignedIn = true;
+    private void OnSignedOut() => IsSignedIn = false;
 }

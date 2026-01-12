@@ -2,14 +2,17 @@
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:constants="clr-namespace:PowerLab.Constants"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:prism="http://prismlibrary.com/"
                     xmlns:tb="http://www.hardcodet.net/taskbar"
                     xmlns:tools="clr-namespace:PowerLab.Core.Tools;assembly=PowerLab.Core"
                     xmlns:vm="clr-namespace:PowerLab.ViewModels">
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     <ContextMenu x:Key="SysTrayMenu" Background="{DynamicResource Themes.Brushes.Background}">
         <MenuItem Command="{Binding GoToTargetViewCommand}"
-                  Foreground="{DynamicResource Themes.Brushes.OnBackground}" 
                   CommandParameter="{x:Static constants:ViewNames.Settings}"
+                  Foreground="{DynamicResource Themes.Brushes.OnBackground}"
+                  Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}"
                   Header="{Binding Source={x:Static tools:ApplicationResources.Current}, Path=Labels.Settings}">
             <MenuItem.Icon>
                 <Viewbox>
@@ -19,12 +22,14 @@
                 </Viewbox>
             </MenuItem.Icon>
         </MenuItem>
-        <Separator />
-        <MenuItem Foreground="{DynamicResource Themes.Brushes.OnBackground}" Command="{Binding ExitApplicationCommand}" Header="{Binding Source={x:Static tools:ApplicationResources.Current}, Path=Labels.App_Exit}">
+        <Separator Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVisibility}}"/>
+        <MenuItem Command="{Binding ExitApplicationCommand}"
+                  Foreground="{DynamicResource Themes.Brushes.OnBackground}"
+                  Header="{Binding Source={x:Static tools:ApplicationResources.Current}, Path=Labels.App_Exit}">
             <MenuItem.Icon>
                 <Viewbox>
-                    <Canvas Width="24" Height="24" >
-                        <Path Data="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" Fill="{DynamicResource Themes.Brushes.OnBackground}"/>
+                    <Canvas Width="24" Height="24">
+                        <Path Data="M19,3H5C3.89,3 3,3.89 3,5V9H5V5H19V19H5V15H3V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10.08,15.58L11.5,17L16.5,12L11.5,7L10.08,8.41L12.67,11H3V13H12.67L10.08,15.58Z" Fill="{DynamicResource Themes.Brushes.OnBackground}" />
                     </Canvas>
                 </Viewbox>
             </MenuItem.Icon>

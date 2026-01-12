@@ -2,11 +2,13 @@
 using System.Net.Http.Json;
 using PowerLab.Core.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Events;
 using PowerLab.Core.Models;
 using PowerLab.Core.Models.Api;
 using PowerLab.Core.Tools;
 using PowerLab.Core.Tools.HttpClientPipelines;
 using PowerLab.PluginContracts.Interfaces;
+using Prism.Events;
 using Prism.Mvvm;
 
 namespace PowerLab.Core.Services;
@@ -16,13 +18,16 @@ public class ClientSession : BindableBase, IClientSession
     private readonly HttpClient _httpClient;
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private readonly IClock _clock;
+    private readonly IEventAggregator _eventAggregator;
 
-    public ClientSession(IClock clock, IAppLogger logger)
+    public ClientSession(IClock clock, IAppLogger logger, IEventAggregator eventAggregator)
     {
         _clock = clock;
         var logHandler = new LoggingHandler(logger);
         logHandler.InnerHandler = new HttpClientHandler();
         _httpClient = new HttpClient(logHandler);
+
+        _eventAggregator = eventAggregator;
     }
 
     public bool IsSignedIn => AppToken is not null;
@@ -44,6 +49,8 @@ public class ClientSession : BindableBase, IClientSession
     {
         AppToken = appToken;
         SecureStore.Save(SecureStoreKeys.RefreshToken, appToken.RefreshToken);
+
+        _eventAggregator.GetEvent<SignedInEvent>().Publish();
     }
 
     public void SignOut()
@@ -51,6 +58,8 @@ public class ClientSession : BindableBase, IClientSession
         CurrentUser = null;
         AppToken = null;
         SecureStore.Delete(SecureStoreKeys.RefreshToken);
+
+        _eventAggregator.GetEvent<SignedOutEvent>().Publish();
     }
 
     public async Task<bool> TryRefreshTokenAsync()
