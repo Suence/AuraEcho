@@ -58,7 +58,6 @@ public partial class App
 
     static void Main()
     {
-        Debugger.Launch();
         ManagedBootstrapperApplication.Run(PowerLabBootstrapper.Instance);
     }
 

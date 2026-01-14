@@ -1,19 +1,20 @@
 ﻿namespace PowerLab.UpdaterService
 
-open System.IO
 open System
+open System.IO
+open System.Net.Http
+open Microsoft.EntityFrameworkCore
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
-open PowerLab.Core.Data
-open Microsoft.EntityFrameworkCore
-open PowerLab.PluginContracts.Interfaces
-open PowerLab.Core.Services
 open PowerLab.Core.Constants
-open PowerLab.Core.Tools.HttpClientPipelines
-open System.Net.Http
 open PowerLab.Core.Contracts
+open PowerLab.Core.Data
 open PowerLab.Core.Repositories
+open PowerLab.Core.Services
 open PowerLab.Core.Tools
+open PowerLab.Core.Tools.HttpClientPipelines
+open PowerLab.PluginContracts.Interfaces
+
 
 module Program =
 
@@ -36,7 +37,7 @@ module Program =
                 new HttpClient(logHandler))
             .AddScoped<HttpHelper>(fun sp ->
                 let client = sp.GetRequiredService<HttpClient>()
-                new HttpHelper(client))
+                HttpHelper(client))
             .AddScoped<IFileRepository, FileRepository>()
             .AddScoped<IAppPackageRepository, AppPackageRepository>()
             .AddScoped<ILocalPluginRepository, LocalPluginRepository>()

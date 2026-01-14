@@ -111,7 +111,6 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         if (Environment.GetCommandLineArgs().Contains("-debug", StringComparer.OrdinalIgnoreCase))
             Debugger.Launch();
 
-
         // 稍后要在这里添加安装流程控制。
         Engine.Log(LogLevel.Standard, "Running the PowerLab.InstallerUI.");
         try

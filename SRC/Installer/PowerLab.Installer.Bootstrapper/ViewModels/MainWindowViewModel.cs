@@ -32,6 +32,9 @@ public class MainWindowViewModel : BindableBase
         Application.Current.Shutdown();
     }
 
+    public DelegateCommand CloseSplashScreenCommand { get; }
+    private void CloseSplashScreen() => _ba.Engine.CloseSplashScreen();
+
     /// <summary>
     /// 构造函数
     /// </summary>
@@ -41,6 +44,7 @@ public class MainWindowViewModel : BindableBase
         _ba = ba;
         _regionManager = regionManager;
         ExitCommand = new DelegateCommand(Exit);
+        CloseSplashScreenCommand = new DelegateCommand(CloseSplashScreen);
 
         _ba.OnActionRequested += DetectCompleted;
         _ba.Engine.Detect();

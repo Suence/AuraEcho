@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\PowerLab.ico" />
+    <Content Include="Assets\Images\splash_screen.bmp" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.1" />
