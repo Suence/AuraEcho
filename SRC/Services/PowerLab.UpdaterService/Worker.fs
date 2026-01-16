@@ -11,6 +11,7 @@ open PowerLab.Core.Contracts
 open PowerLab.PluginContracts.Interfaces
 open Microsoft.Win32
 open System.Diagnostics
+open Microsoft.Data.Sqlite
 
 type AppUpdateInfo = {
     Version: string
@@ -90,7 +91,8 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
     let downloadPluginPackage (localRepo: ILocalPluginRepository, remoteRepo: IRemotePluginRepository) = async {
         logger.Information "开始检测插件版本信息..."
         let installedPlugins = localRepo.GetPluginRegistries() |> List.ofSeq
-        
+        SqliteConnection.ClearAllPools()
+
         for plugin in installedPlugins do
             let! latestPackage = remoteRepo.GetLatestAsync plugin.Manifest.Id |> Async.AwaitTask
             let latestVersion = if isNull latestPackage then Version "0.0.0" else Version latestPackage.Version
