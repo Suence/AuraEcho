@@ -17,11 +17,9 @@
              Background="{DynamicResource Themes.Brushes.Background}"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ui:BindingProxy x:Key="BindingProxy"
-                         Data="{Binding}" />
+        <ui:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <converters:FileIdToUrlConverter x:Key="FileIdToUrl" />
-        <DataTemplate x:Key="PluginTemplate"
-                      DataType="{x:Type models:AppPlugin}">
+        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type models:AppPlugin}">
             <Button Width="140"
                     Height="180"
                     Padding="0"
@@ -56,14 +54,16 @@
                         <RowDefinition Height="100" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0"
-                            CornerRadius="4, 4, 0, 0">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{Binding IconFileId, Converter={StaticResource FileIdToUrl}}" />
+                    <Border Grid.Row="0" CornerRadius="4, 4, 0, 0">
+                        <Border.Background>        
+                            <VisualBrush AlignmentY="Top" Stretch="UniformToFill">
+                                <VisualBrush.Visual>
+                                    <Image RenderOptions.BitmapScalingMode="LowQuality" Source="{Binding IconFileId, Converter={StaticResource FileIdToUrl}}" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
                         </Border.Background>
                     </Border>
-                    <Grid Grid.Row="1"
-                          Margin="6">
+                    <Grid Grid.Row="1" Margin="6">
                         <TextBlock VerticalAlignment="Top"
                                    d:Text="PLUGIN DISPLAY NAME"
                                    FontSize="16"
@@ -86,8 +86,7 @@
         <StackPanel Grid.Row="0"
                     Margin="0,20"
                     Orientation="Horizontal">
-            <TextBlock FontSize="20"
-                       Text="PLUGINS MARKETPLACE" />
+            <TextBlock FontSize="20" Text="PLUGINS MARKETPLACE" />
         </StackPanel>
         <ItemsControl Grid.Row="1"
                       d:ItemsSource="{d:SampleData ItemCount=10}"
@@ -96,14 +95,12 @@
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="{x:Type ContentPresenter}">
-                    <Setter Property="Margin"
-                            Value="4" />
+                    <Setter Property="Margin" Value="4" />
                 </Style>
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel IsItemsHost="True"
-                               Orientation="Horizontal" />
+                    <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
