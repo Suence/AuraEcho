@@ -20,7 +20,6 @@ public class FileRepository : IFileRepository
     {
         try
         {
-            using var client = new HttpClient();
             using var response = await _httpHelper.GetAsync($"{Urls.ServerUrl}/api/file/download?fileId={fileId}", HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 

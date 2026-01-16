@@ -73,11 +73,13 @@ public sealed class LoggingHandler : DelegatingHandler
         {
             foreach (var h in response.Content.Headers)
                 sb.AppendLine($"│  {h.Key}: {string.Join(", ", h.Value)}");
-
-            var body = await response.Content.ReadAsStringAsync(ct);
-            if (!String.IsNullOrWhiteSpace(body))
+            if (IsTextBasedContentType(response.Content))
             {
-                sb.AppendLine("│  Body: " + body.Replace("\n", "\n│  "));
+                var body = await response.Content.ReadAsStringAsync(ct);
+                if (!String.IsNullOrWhiteSpace(body))
+                {
+                    sb.AppendLine("│  Body: " + body.Replace("\n", "\n│  "));
+                }
             }
         }
 

@@ -32,8 +32,7 @@ public class AppPackageRepository : IAppPackageRepository
     {
         try
         {
-            using var client = new HttpClient();
-            using var response = await client.GetAsync($"{Urls.ServerUrl}/api/package/download?build={build}", HttpCompletionOption.ResponseHeadersRead);
+            using var response = await _httpHelper.GetAsync($"{Urls.ServerUrl}/api/package/download?build={build}", HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
