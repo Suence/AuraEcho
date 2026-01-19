@@ -127,7 +127,6 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
                 cachedAppUpdateInfo <- None
             else
                 logger.Information "客户端安装程序启动失败"
-            
     }
 
     let installPluginPackageCore cachedPluginIdList installFolder = task {
@@ -164,8 +163,6 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
         | None -> logger.Information "找不到客户端的安装目录"
         | Some installFolder -> do! installPluginPackageCore cachedPluginIdList installFolder |> Async.AwaitTask
     }
-
-    
 
     override _.ExecuteAsync(stoppingToken: CancellationToken) = task {
         logger.Information "ExecuteAsync 已启动"

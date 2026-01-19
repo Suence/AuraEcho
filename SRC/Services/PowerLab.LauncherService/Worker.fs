@@ -1,49 +1,76 @@
 namespace PowerLab.LauncherService
 
+open System
+open System.IO
+open System.IO.Pipes
+open System.Security.AccessControl
+open System.Security.Principal
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
-open System.Diagnostics
 open System.Threading
-open Microsoft.Win32
 
 type LauncherWorker(logger : ILogger<LauncherWorker>) =
     inherit BackgroundService()
 
-    let isRunning() =
-        Process.GetProcessesByName("PowerLab").Length > 0
+    [<Literal>]
+    let PIPE_NAME = "POWERLAB_LAUNCHER_SERVICE_PIPE"
+    
+    let createProcessInUserSession exePath =
+        match File.Exists(exePath) with
+        | true -> exePath |> UserSessionProcessLauncher.launch |> ignore
+        | false -> 
+            logger.LogWarning("Executable path {ExePath} does not exist.", exePath)
 
-    let getInstallPath() = 
-        let keyPath = @"Software\PowerLab"
-        use key = Registry.LocalMachine.OpenSubKey(keyPath)
-        if key = null then None
-        else
-            match key.GetValue("InstallPath") with
-            | null -> None
-            | value -> Some (value.ToString())
+    let createPipeSecurity = 
+        let ps = PipeSecurity()
+        ps.AddAccessRule(
+            PipeAccessRule(
+                SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null),
+                PipeAccessRights.ReadWrite,
+                AccessControlType.Allow))
+        ps
 
-    let launchPowerLab() =
-        logger.LogInformation("User logged in/unlocked session, launching PowerLab")
-        getInstallPath() 
-        |> Option.bind (fun path -> Some (path |> UserSessionProcessLauncher.launch))
-        |> (fun launchResult -> launchResult.Value |> sprintf "launch result %A" |> logger.LogInformation)
+    let createNamedPipeServer pipeSecurity =
+        NamedPipeServerStreamAcl.Create(
+            PIPE_NAME,
+            PipeDirection.In,
+            1,
+            PipeTransmissionMode.Byte,
+            PipeOptions.Asynchronous,
+            0,
+            0,
+            pipeSecurity)
 
-    override _.ExecuteAsync(ct : CancellationToken) =
-        task {
-            //Debugger.Launch() |> ignore
-            
-            logger.LogInformation("PowerLabLauncherService is started.")
-            launchPowerLab()
-            //SystemEvents.UserPreferenceChanged.Add(fun args ->
-            //    args.Category |> sprintf "UserPreferenceChanged %A" |> logger.LogInformation)
+    let pipeLoop (ct: CancellationToken) = task {
+        logger.LogInformation("Pipe server loop started.")
+        
+        while not ct.IsCancellationRequested do
+            try
+                use server = createNamedPipeServer createPipeSecurity
+                
+                do! server.WaitForConnectionAsync(ct) |> Async.AwaitTask
+                logger.LogInformation("Pipe server connected.")
+                use reader = new StreamReader(server)
+                let! cmd = reader.ReadLineAsync() |> Async.AwaitTask
+                
+                match cmd |> Option.ofObj with
+                | Some c -> createProcessInUserSession c
+                | None -> ()
+                
+                logger.LogDebug("Message processed, restarting server instance.")
+            with
+            | :? OperationCanceledException -> 
+                logger.LogInformation("Pipe server shutting down...")
+            | ex -> 
+                logger.LogError(ex, "Error in pipe loop")
+                do! Async.Sleep 1000
+    }
+    
+    override _.ExecuteAsync(ct : CancellationToken) = task {
+       logger.LogInformation("PowerLabLauncherService is started.")
+       ct |> pipeLoop |> ignore
+    }
 
-            // //订阅会话变化事件
-            //SystemEvents.SessionSwitch.Add(fun args ->
-            //    args.Reason |> sprintf "SessionSwitch %A" |> logger.LogInformation
-            //    match args.Reason with
-            //    | SessionSwitchReason.SessionLogon -> launchPowerLab()
-            //    | _ -> ()
-            //)
-        }
     override _.StopAsync (cancellationToken: CancellationToken): Tasks.Task = 
         logger.LogInformation "PowerLabLauncherService is stopped."
         base.StopAsync(cancellationToken: CancellationToken)
