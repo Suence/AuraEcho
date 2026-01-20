@@ -13,7 +13,7 @@ module UserSessionProcessLauncher =
         if ok then Ok ()
         else Error name
 
-    let launch exePath =
+    let launch (exePath, args)=
         let session = WTSGetActiveConsoleSessionId()
         if session = 0xFFFFFFFFu then false else
 
@@ -35,18 +35,22 @@ module UserSessionProcessLauncher =
                 si.lpDesktop <- INTERACTIVE_DESKTOP
 
                 let mutable pi = PROCESS_INFORMATION()
+                let commandLine = 
+                    match args with
+                    | "" -> exePath
+                    | _ -> exePath + " " + args
 
                 check "CreateProcessAsUser" (
                     CreateProcessAsUser(
                         primary,
-                        exePath,
                         null,
+                        commandLine,
                         IntPtr.Zero,
                         IntPtr.Zero,
                         false,
                         CREATE_NEW_CONSOLE ||| CREATE_UNICODE_ENVIRONMENT,
                         env,
-                        Path.GetDirectoryName exePath,
+                        exePath |> Path.GetDirectoryName,
                         &si,
                         &pi)))
 

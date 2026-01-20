@@ -8,18 +8,37 @@ open System.Security.Principal
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open System.Threading
+open System.Linq
 
 type LauncherWorker(logger : ILogger<LauncherWorker>) =
     inherit BackgroundService()
 
     [<Literal>]
     let PIPE_NAME = "POWERLAB_LAUNCHER_SERVICE_PIPE"
+
+    let resolveCommandLine (commandLine:string) =
+        let fileName = Path.GetFileName(commandLine).Split(" ").First()
+        match fileName with
+        | "" -> None
+        | _ -> 
+            let fileFullPath = Path.Combine(Path.GetDirectoryName(commandLine), fileName)
+
+            let args = Path.GetFileName(commandLine).Split(" ").Skip(1)
+
+            match args.Count() with
+            | 0 -> Some (commandLine, "")
+            | _ -> Some (fileFullPath, String.Join(" ", args))
     
-    let createProcessInUserSession exePath =
-        match File.Exists(exePath) with
-        | true -> exePath |> UserSessionProcessLauncher.launch |> ignore
-        | false -> 
-            logger.LogWarning("Executable path {ExePath} does not exist.", exePath)
+    let createProcessInUserSession commandLine =
+        match resolveCommandLine commandLine with
+        | None -> logger.LogWarning("invalid commandline")
+        | Some (exePath, args) ->
+            match File.Exists(exePath) with
+            | true -> 
+                (exePath, args) 
+                |> UserSessionProcessLauncher.launch 
+                |> (fun launchResult -> logger.LogWarning("launched file: {ExePath}, args: {args}, result: {launchResult}", exePath, args, launchResult))
+            | false -> logger.LogWarning("Executable path {ExePath} does not exist.", exePath)
 
     let createPipeSecurity = 
         let ps = PipeSecurity()
@@ -40,6 +59,7 @@ type LauncherWorker(logger : ILogger<LauncherWorker>) =
             0,
             0,
             pipeSecurity)
+
 
     let pipeLoop (ct: CancellationToken) = task {
         logger.LogInformation("Pipe server loop started.")
