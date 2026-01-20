@@ -8,6 +8,9 @@
   <Folder Name="/DOC/" />
   <Folder Name="/SRC/" />
   <Folder Name="/SRC/Host/">
+    <Project Path="SRC/Host/PowerLab.Launcher/PowerLab.Launcher.vcxproj" Id="bf3f5db7-8727-4b92-999b-72e29c7e3031">
+      <Platform Solution="*|ARM64" Project="x64" />
+    </Project>
     <Project Path="SRC/Host/PowerLab/PowerLab.csproj" />
   </Folder>
   <Folder Name="/SRC/Installer/">
