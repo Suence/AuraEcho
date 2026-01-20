@@ -1,7 +1,8 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup>
     <Cultures>zh-CN;</Cultures>
-    <DefineConstants>Version=1.0.5;</DefineConstants>
+	  <UpdaterServiceVersion Condition="'$(UpdaterServiceVersion)' == ''">1.0.0</UpdaterServiceVersion>
+	  <DefineConstants>Version=$(UpdaterServiceVersion)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Services\PowerLab.UpdaterService\PowerLab.UpdaterService.fsproj" />

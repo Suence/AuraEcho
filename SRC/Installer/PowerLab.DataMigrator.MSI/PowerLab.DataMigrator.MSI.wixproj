@@ -1,9 +1,10 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Cultures>zh-CN;</Cultures>
-    <DefineConstants>Version=1.0.3;</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Tools\PowerLab.DataMigrator\PowerLab.DataMigrator.fsproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<Cultures>zh-CN;</Cultures>
+		<DataMigratorVersion Condition="'$(DataMigratorVersion)' == ''">1.0.0</DataMigratorVersion>
+		<DefineConstants>Version=$(DataMigratorVersion)</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Tools\PowerLab.DataMigrator\PowerLab.DataMigrator.fsproj" />
+	</ItemGroup>
 </Project>

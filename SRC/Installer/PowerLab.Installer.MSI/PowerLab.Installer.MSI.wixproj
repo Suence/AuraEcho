@@ -1,7 +1,9 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup>
     <Cultures>zh-CN;</Cultures>
-    <DefineConstants>BundleVersion=1.2.42;Version=1.0.39;</DefineConstants>
+    <BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
+    <AppVersion Condition="'$(AppVersion)' == ''">1.0.0</AppVersion>
+    <DefineConstants>BundleVersion=$(BundleVersion);Version=$(AppVersion)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\PowerLab.ico" />

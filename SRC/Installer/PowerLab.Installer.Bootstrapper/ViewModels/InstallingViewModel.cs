@@ -169,7 +169,7 @@ public class InstallingViewModel : BindableBase, INavigationAware
         var dataMigratorStartupInfo = new ProcessStartInfo
         {
             FileName = dataMigratorPath,
-            CreateNoWindow = true
+            CreateNoWindow = false
         };
         var dataMigratorProcess = Process.Start(dataMigratorStartupInfo);
 

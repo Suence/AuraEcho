@@ -1,7 +1,8 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	<PropertyGroup>
 		<Cultures>zh-CN;</Cultures>
-		<DefineConstants>Version=1.0.1;</DefineConstants>
+		<LauncherServiceVersion Condition="'$(LauncherServiceVersion)' == ''">1.0.0</LauncherServiceVersion>
+		<DefineConstants>Version=$(LauncherServiceVersion)</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Services\PowerLab.LauncherService\PowerLab.LauncherService.fsproj" />
