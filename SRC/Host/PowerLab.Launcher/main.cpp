@@ -194,7 +194,10 @@ void StartApp(HWND hwndTarget) {
     std::string message = GetAppInstallPath();
     bool sendResult = SendPipeMessage(message);
 
-    if (!sendResult) return;
+    if (!sendResult) {
+        PostMessage(hwndTarget, WM_CLOSE, 0, 0);
+        return;
+    }
 
     int attempts = 0;
     while (attempts < 100) {
