@@ -1,29 +1,30 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-	<PropertyGroup>
-		<OutputType>Bundle</OutputType>
-		<OutputName>PowerLabSetup</OutputName>
-		<Cultures>zh-CN;</Cultures>
-		<BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
-		<DefineConstants>BundleVersion=$(BundleVersion)</DefineConstants>
-	</PropertyGroup>
-	<ItemGroup>
-		<Content Include="Assets\Icons\PowerLab.ico" />
-		<Content Include="Assets\Images\splash_screen.bmp" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.1" />
-		<PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\PowerLab.DataMigrator.MSI\PowerLab.DataMigrator.MSI.wixproj" />
-		<ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
-		<ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
-		<ProjectReference Include="..\PowerLab.LauncherService.MSI\PowerLab.LauncherService.MSI.wixproj" />
-		<ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
-		<ProjectReference Include="..\PowerLab.UpdaterService.MSI\PowerLab.UpdaterService.MSI.wixproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="build.ps1" />
-		<None Include="ExePackageFiles\windowsdesktop-runtime-10.0.0-win-x64.exe" />
-	</ItemGroup>
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <OutputName>PowerLabSetup</OutputName>
+    <Cultures>zh-CN;</Cultures>
+    <BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
+    <DefineConstants>BundleVersion=$(BundleVersion)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\PowerLab.ico" />
+    <Content Include="Assets\Images\splash_screen.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.1" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PowerLab.DataMigrator.MSI\PowerLab.DataMigrator.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
+    <ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.Launcher.Installer.Msi\PowerLab.Launcher.Installer.Msi.wixproj" />
+    <ProjectReference Include="..\PowerLab.LauncherService.MSI\PowerLab.LauncherService.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.UpdaterService.MSI\PowerLab.UpdaterService.MSI.wixproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build.ps1" />
+    <None Include="ExePackageFiles\windowsdesktop-runtime-10.0.0-win-x64.exe" />
+  </ItemGroup>
 </Project>

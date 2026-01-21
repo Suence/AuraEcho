@@ -1,0 +1,10 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.2">
+	<PropertyGroup>
+		<Cultures>zh-CN;</Cultures>
+		<LauncherVersion Condition="'$(LauncherVersion)' == ''">1.0.0</LauncherVersion>
+		<DefineConstants>Version=$(LauncherVersion)</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Host\PowerLab.Launcher\PowerLab.Launcher.vcxproj" />
+	</ItemGroup>
+</Project>

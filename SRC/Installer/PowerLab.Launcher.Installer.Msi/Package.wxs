@@ -1,0 +1,15 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Id="PowerLab.Launcher"
+			 Name="PowerLab.Launcher.MSI"
+			 Manufacturer="Suencesoft"
+			 Codepage="65001"
+			 Version="$(var.Version)"
+			 Scope="perMachine"
+			 UpgradeCode="F62B3FDD-781A-4C07-8DD1-D629C09AA00B">
+		<MajorUpgrade DowngradeErrorMessage="不允许降级安装" />
+		<MediaTemplate EmbedCab="yes"/>
+		<Feature Id="Main">
+			<ComponentGroupRef Id="PowerLabLauncherComponents" />
+		</Feature>
+	</Package>
+</Wix>

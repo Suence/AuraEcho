@@ -6,18 +6,11 @@
 				<File Id="PluginInstaller.dll" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.dll" />
 				<File Id="PluginInstaller.runtimeconfig.json" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.runtimeconfig.json" />
 				<File Id="PluginInstaller.deps.json" Source="$(var.PluginInstaller.TargetDir)PluginInstaller.deps.json" />
-				<File Id="PowerLabIcon" Source="Assets/Icons/PowerLab.ico" />
 			</Component>
-
-			<!--<Files Include="$(var.PluginInstaller.TargetDir)**" >
-				<Exclude Files="*.pdb"/>
-				<Exclude Files="PluginInstaller.exe"/>
-			</Files>-->
-
 		</ComponentGroup>
-		
-		<!-- 文件关联 -->
+
 		<Component Id="FileAssociations" Guid="F850DAE9-1CA8-4529-BDA4-461C4FFFEA9E">
+			<File Id="PowerLabIcon" Source="Assets/Icons/PowerLab.ico" />
 			<ProgId Id="Suence.Plix" Description="PowerLab plugin file" Icon="PowerLabIcon">
 				<Extension Id="plix" ContentType="application/plix" >
 					<Verb Id="open" Command="Open" TargetFile="PluginInstaller.exe" Argument="&quot;%1&quot;" />

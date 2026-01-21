@@ -24,6 +24,9 @@
     <Project Path="SRC/Installer/PowerLab.Installer.MSI/PowerLab.Installer.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
+    <Project Path="SRC/Installer/PowerLab.Launcher.Installer.Msi/PowerLab.Launcher.Installer.Msi.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="f57aeb9a-012e-4a03-b8b5-9cae0b08d85f">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
     <Project Path="SRC/Installer/PowerLab.LauncherService.MSI/PowerLab.LauncherService.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="a3ada3fe-b108-4f00-9352-690bb468e9bf">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>

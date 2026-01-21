@@ -1,0 +1,9 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<ComponentGroup Id="PowerLabLauncherComponents" Directory="INSTALLFOLDER">
+			<Component Id="FilesComponent" Guid="D408AB1D-73DB-4E57-91CD-D3260515D2ED">
+				<File Id="PowerLab.Launcher.exe" Source="$(var.PowerLab.Launcher.TargetDir)PowerLab.Launcher.exe" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
