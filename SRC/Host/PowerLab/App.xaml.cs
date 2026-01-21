@@ -99,20 +99,11 @@ public partial class App
         containerRegistry.RegisterForNavigation<SignInExpired>();
     }
 
-    protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
-    {
-
-    }
-
     protected override void OnInitialized()
     {
-        if (!_startupArgs.Contains("-hide"))
-        {
-            base.OnInitialized();
-        }
+        if (_startupArgs.Contains("-hide")) return;
 
-        //var regionManager = Container.Resolve<IRegionManager>();
-        //regionManager.RegisterViewWithRegion(HostRegionNames.MainRegion, typeof(Homepage));
+        base.OnInitialized();
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -120,7 +111,7 @@ public partial class App
         _startupArgs = e.Args;
 
         base.OnStartup(e);
-        
+
         StartPipeServer();
 
         RegisterEvents();
@@ -177,9 +168,9 @@ public partial class App
             _logger.Debug("已有实例正在运行，正在退出程序。");
             return;
         }
-        
+
         CreateDatabaseIfNotExists();
-        
+
         var app = new App();
         app.InitializeComponent();
         app.Run();
@@ -188,7 +179,7 @@ public partial class App
     private static void CreateDatabaseIfNotExists()
     {
         if (File.Exists(ApplicationPaths.HostDataBase)) return;
-        
+
         using var pluginDbContext = DbContextFactory.CreateDbContext();
 
         _logger.Information("Begin Migrate");
@@ -216,11 +207,16 @@ public partial class App
 
                 if (cmd == NamedPipeMessages.ShowWindow)
                 {
-                    IEventAggregator eventAggregator = (Current as App)!.Container.Resolve<IEventAggregator>();
-                    eventAggregator.GetEvent<RequestShowAppEvent>().Publish();
+                    _ = Task.Run(RequestShowApp);
                 }
             }
         });
+    }
+
+    private static void RequestShowApp()
+    {
+        IEventAggregator eventAggregator = (Current as App)!.Container.Resolve<IEventAggregator>();
+        eventAggregator.GetEvent<RequestShowAppEvent>().Publish();
     }
 
     /// <summary>

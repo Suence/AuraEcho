@@ -58,18 +58,18 @@
 			<MsiPackage Id="PowerLabInstallerMSI"
 						Visible="yes"
 						Compressed="yes"
-						EnableFeatureSelection="yes"
 						SourceFile="PowerLab.Installer.MSI.msi">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
-				<MsiProperty Name="UNINSTALLER_PATH" Value="[UNINSTALLER_PATH]"/>
 			</MsiPackage>
 			
 			<!-- PowerLab Launcher -->
 			<MsiPackage Id="PowerLabLauncherMSI"
 						Visible="yes"
 						Compressed="yes"
+						EnableFeatureSelection="yes"
 						SourceFile="PowerLab.Launcher.Installer.Msi.msi">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
+				<MsiProperty Name="UNINSTALLER_PATH" Value="[UninstallerPath]"/>
 			</MsiPackage>
 			
 			<!-- Plugin Installer -->

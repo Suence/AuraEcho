@@ -5,12 +5,17 @@
 #include <vector>
 #include <tlhelp32.h>
 #include <thread>
+#include <filesystem>
+
 #include "resource.h"
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "dwmapi.lib")
 
 using namespace Gdiplus;
+namespace fs = std::filesystem;
+
 const wchar_t* PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
+const std::string APPNAME = "PowerLab.exe";
 
 Image* LoadImageFromResource(HMODULE hMod, int resId, const wchar_t* resType) {
     HRSRC hRes = FindResource(hMod, MAKEINTRESOURCE(resId), resType);
@@ -67,6 +72,11 @@ std::string GetAppInstallPath() {
                 int size_needed = WideCharToMultiByte(CP_UTF8, 0, wPath.c_str(), (int)wPath.length(), NULL, 0, NULL, NULL);
                 result.resize(size_needed);
                 WideCharToMultiByte(CP_UTF8, 0, wPath.c_str(), (int)wPath.length(), &result[0], size_needed, NULL, NULL);
+
+                fs::path originalPath = result;
+                fs::path newPath = originalPath;
+                newPath.replace_filename(APPNAME);
+                result = newPath.string();
             }
         }
         RegCloseKey(hKey);

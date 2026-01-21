@@ -6,13 +6,9 @@
     <DefineConstants>BundleVersion=$(BundleVersion);Version=$(AppVersion)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Assets\Icons\PowerLab.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="WixToolset.Util.wixext" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Host\PowerLab\PowerLab.csproj" />
-    <ProjectReference Include="..\PowerLabInstaller.CustomAction\PowerLabInstaller.CustomAction.csproj" />
   </ItemGroup>
 </Project>

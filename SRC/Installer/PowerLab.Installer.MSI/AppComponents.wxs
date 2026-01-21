@@ -1,7 +1,6 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 	 xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Fragment>
-		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
 		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER" >
 			<Component Id="MainFile" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
 				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
@@ -22,84 +21,6 @@
 				<Exclude Files="Mono.TextTemplating.dll"/>
 				<Exclude Files="System.Composition.*.dll"/>
 			</Files>
-			<Component Id="AppRegistryComponents" Guid="*">
-				<RegistryValue Root="HKLM"
-						   Key="Software\PowerLab"
-						   Name="InstallPath"
-						   Type="string"
-						   Value="[INSTALLFOLDER]PowerLab.exe"
-						   KeyPath="yes"/>
-				<RegistryValue Root="HKLM"
-						   Key="Software\PowerLab"
-						   Name="InstallVersion"
-						   Type="string"
-						   Value="$(var.BundleVersion)"/>
-			</Component>
 		</ComponentGroup>
-
-		<Component Id="DesktopShortcutComponent" Guid="*">
-			<Shortcut Id="DesktopShortcut"
-					  Directory="DesktopFolder"
-					  Name="PowerLab"
-					  Target="[INSTALLFOLDER]PowerLab.exe"
-					  WorkingDirectory="INSTALLFOLDER"
-					  Icon="PowerLab.ico"
-					  Advertise="no" />
-			<RegistryValue Root="HKCU"
-						   Key="Software\PowerLab"
-						   Name="DesktopShortcutInstalled"
-						   Type="string"
-						   Value="1"
-						   KeyPath="yes"/>
-		</Component>
-
-		<!-- 开始菜单快捷方式 -->
-		<Component Id="StartMenuShortcutComponent" Guid="*" Directory="ProductMenuFolder" >
-			<Shortcut Id="StartMenuShortcut"
-					  Name="PowerLab"
-					  Icon="PowerLab.ico"
-					  Advertise="no"
-					  Description="PowerLab by suence"
-					  Target="[INSTALLFOLDER]PowerLab.exe"
-					  WorkingDirectory="INSTALLFOLDER"/>
-			<Shortcut Id="StartMenuUninstallShortcut"
-					  Name="卸载 PowerLab"
-				      Description="卸载 PowerLab"
-					  Target="[UNINSTALLER_PATH]"
-					  Arguments="/uninstall"
-					  WorkingDirectory="ProgramMenuFolder" />
-
-			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductMenuFolder"/>
-			<RegistryValue Root="HKCU"
-						   Key="Software\PowerLab"
-						   Name="StartMenuShortcutInstalled"
-						   Type="string"
-						   Value="1"
-						   KeyPath="yes"/>
-		</Component>
-
-		<!-- 开机自启 -->
-		<Binary Id="PLInstallerCADll" SourceFile="$(var.PowerLabInstaller.CustomAction.TargetDir)PowerLabInstaller.CustomAction.CA.dll" />
-
-		<CustomAction Id="SetCreateTaskData" Property="CreatePowerLabTask"
-					  Value="INSTALLFOLDER=[INSTALLFOLDER]" />
-
-		<CustomAction Id="CreatePowerLabTask"
-					  BinaryRef="PLInstallerCADll"
-					  DllEntry="CreatePowerLabAutoStartTask"
-					  Execute="deferred"
-					  Impersonate="no"
-					  Return="check" />
-		
-		<CustomAction Id="DeletePowerLabTask" 
-              BinaryRef="PLInstallerCADll" 
-              DllEntry="DeletePowerLabAutoStartTask" 
-              Execute="deferred" 
-              Impersonate="no" 
-              Return="ignore" />
-
-		<Component Id="AutoStartMarkerComponent" Guid="*">
-			<RegistryValue Root="HKLM" Key="Software\PowerLab" Name="AutoStartTaskName" Type="string" Value="PowerLabAutoStart" KeyPath="yes" />
-		</Component>
 	</Fragment>
 </Wix>

@@ -3,9 +3,5 @@
 		<StandardDirectory Id="ProgramFiles6432Folder">
 			<Directory Id="INSTALLFOLDER" Name="PowerLab" />
 		</StandardDirectory>
-
-		<StandardDirectory Id="ProgramMenuFolder">
-			<Directory Id="ProductMenuFolder" Name="PowerLab"/>
-		</StandardDirectory>
 	</Fragment>
 </Wix>

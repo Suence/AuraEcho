@@ -11,21 +11,6 @@
 		
 		<Feature Id="Main">
 			<ComponentGroupRef Id="AppFileComponents" />
-			<ComponentRef Id="StartMenuShortcutComponent"/>
 		</Feature>
-		<Feature Id="DesktopShortcut">
-			<ComponentRef Id="DesktopShortcutComponent"/>
-		</Feature>
-
-		<Feature Id="RunAtBoot">
-			<ComponentRef Id="AutoStartMarkerComponent" />
-		</Feature>
-		
-		<InstallExecuteSequence>
-			<Custom Action="SetCreateTaskData" After="InstallFiles" Condition="NOT Installed"/>
-			<Custom Action="CreatePowerLabTask" After="SetCreateTaskData" Condition="&amp;RunAtBoot=3"/>
-
-			<Custom Action="DeletePowerLabTask" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot;"/>
-		</InstallExecuteSequence>
 	</Package>
 </Wix>

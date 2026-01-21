@@ -17,7 +17,7 @@ namespace PowerLabInstaller.CustomAction
             {
                 // 获取安装路径，注意：在 deferred 模式下需通过 CustomActionData 获取
                 string installFolder = session.CustomActionData["INSTALLFOLDER"];
-                string exePath = System.IO.Path.Combine(installFolder, "PowerLab.exe");
+                string exePath = System.IO.Path.Combine(installFolder, "PowerLabLauncher.exe");
 
                 using (TaskService ts = new TaskService())
                 {

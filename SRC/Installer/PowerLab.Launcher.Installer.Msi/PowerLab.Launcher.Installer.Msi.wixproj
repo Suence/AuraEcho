@@ -1,10 +1,15 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
-	<PropertyGroup>
-		<Cultures>zh-CN;</Cultures>
-		<LauncherVersion Condition="'$(LauncherVersion)' == ''">1.0.0</LauncherVersion>
-		<DefineConstants>Version=$(LauncherVersion)</DefineConstants>
-	</PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\..\Host\PowerLab.Launcher\PowerLab.Launcher.vcxproj" />
-	</ItemGroup>
+  <PropertyGroup>
+    <Cultures>zh-CN;</Cultures>
+    <BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
+    <LauncherVersion Condition="'$(LauncherVersion)' == ''">1.0.0</LauncherVersion>
+    <DefineConstants>BundleVersion=$(BundleVersion);Version=$(LauncherVersion)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\PowerLab.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Host\PowerLab.Launcher\PowerLab.Launcher.vcxproj" />
+    <ProjectReference Include="..\PowerLabInstaller.CustomAction\PowerLabInstaller.CustomAction.csproj" />
+  </ItemGroup>
 </Project>
