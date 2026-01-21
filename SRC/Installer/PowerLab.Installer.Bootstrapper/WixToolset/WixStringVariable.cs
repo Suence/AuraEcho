@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WixToolset.BootstrapperApplicationApi;
+﻿using WixToolset.BootstrapperApplicationApi;
 
 namespace PowerLab.Installer.Bootstrapper.WixToolset;
 
@@ -15,7 +10,6 @@ public class WixStringVariable : WixVariable<string>
     #region Fields/Consts
 
     private readonly IEngine _engine;
-    private bool _isValueRetrieved;
     private string _value = null!;
 
     #endregion
@@ -38,13 +32,7 @@ public class WixStringVariable : WixVariable<string>
     /// <returns>The string value of the variable.</returns>
     public override string Get()
     {
-        if (!_isValueRetrieved)
-        {
-            // Retrieve the variable's value from the engine
-            _value = _engine.GetVariableString(WixVariableName);
-            _isValueRetrieved = true;
-        }
-
+        _value = _engine.GetVariableString(WixVariableName);
         return _value;
     }
 

@@ -7,7 +7,7 @@ internal static class BundleVar
     /// </summary>
     public const string InstallDirectory = "InstallFolder";
 
-    public const string UninstallerPath = "UNINSTALLER_PATH";
+    public const string UninstallerPath = "UninstallerPath";
     /// <summary>
     /// Gets the variable name for the layout directory
     /// where bundle payloads are cached.
@@ -18,6 +18,7 @@ internal static class BundleVar
     /// Gets the variable name for the bundle version.
     /// </summary>
     public const string Version = "WixBundleVersion";
+    public const string BundleElevated = "WixBundleElevated";
 
     public const string WixBundleOriginalSource = "WixBundleOriginalSource";
     /// <summary>

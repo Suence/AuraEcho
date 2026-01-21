@@ -6,7 +6,6 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using WixToolset.BootstrapperApplicationApi;
 using ErrorEventArgs = WixToolset.BootstrapperApplicationApi.ErrorEventArgs;
-using StartupEventArgs = WixToolset.BootstrapperApplicationApi.StartupEventArgs;
 
 namespace PowerLab.Installer.Bootstrapper.WixToolset;
 
@@ -21,7 +20,6 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     private bool _isAutoPlan;
     private ExecuteMsiMessageEventArgs _currentAction;
     private ManualResetEventSlim _elevateLock = new(false);
-    private bool _elevateResult = false;
     public bool Downgrade { get; private set; }
     public IEngine Engine { get; private set; }
     public IBootstrapperCommand Command { get; private set; }
@@ -39,6 +37,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     private WixBooleanVariable _createShortcutVar;
     private WixBooleanVariable _launchOnStartupVar;
     private WixStringVariable _versionVar;
+    private WixStringVariable _bundleElevated;
 
     public event EventHandler? OnActionRequested;
     public event EventHandler? OnActionCompleted;
@@ -72,6 +71,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     }
 
     public string Version => _versionVar.Get();
+    public bool IsBundleElevated => _bundleElevated.Get() is "1";
     public bool CancelRequested { get; private set; }
     protected override void OnCreate(CreateEventArgs args)
     {
@@ -86,6 +86,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         _launchOnStartupVar = new(Engine, BundleVar.LaunchOnStartup);
         _uninstallerPath = new(Engine, BundleVar.UninstallerPath);
         _versionVar = new(Engine, BundleVar.Version);
+        _bundleElevated = new(Engine, BundleVar.BundleElevated);
         InitVariables();
     }
 
@@ -111,17 +112,19 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         if (Environment.GetCommandLineArgs().Contains("-debug", StringComparer.OrdinalIgnoreCase))
             Debugger.Launch();
 
+
         // 稍后要在这里添加安装流程控制。
         Engine.Log(LogLevel.Standard, "Running the PowerLab.InstallerUI.");
+
         try
         {
-            var elevateResult = Engine.Elevate(IntPtr.Zero);
-
-            if (!elevateResult)
+            if (!IsBundleElevated)
             {
-                Engine.Log(LogLevel.Error, "Failed to elevate the PowerLab.InstallerUI.");
-                Engine.Quit(-1);
-                return;
+                Engine.Elevate(IntPtr.Zero);
+            }
+            else
+            {
+                _elevateLock.Set();
             }
 
             LaunchApp();
@@ -143,14 +146,17 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     {
         _elevateLock.Wait();
 
-        if (!_elevateResult) return;
+        if (!IsBundleElevated)
+        {
+            Engine.Log(LogLevel.Standard, "Elevated failed.");
+            return;
+        }
 
         _dispatcher = Dispatcher.CurrentDispatcher;
         if (Command.Display is Display.Passive or Display.Full)
         {
             var app = new App();
             app.InitializeComponent();
-            //Engine.Detect();
             app.Run();
             return;
         }
@@ -162,8 +168,8 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
 
     public void Install()
     {
-        if (DetectState is DetectionState.Present
-            && UpgradeDetectState is UpgradeDetectionState.None)
+        if (DetectState is DetectionState.Present &&
+            UpgradeDetectState is UpgradeDetectionState.None)
         {
             Plan(LaunchAction.Repair);
         }
@@ -361,7 +367,6 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     {
         base.OnElevateComplete(args);
 
-        _elevateResult = args.Status == 0;
         _elevateLock.Set();
     }
 
