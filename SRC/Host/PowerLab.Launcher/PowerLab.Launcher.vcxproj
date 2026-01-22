@@ -140,7 +140,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\logo.png" />
+    <Image Include="Assets\logo.ico" />
+    <Image Include="Assets\splash_screen.png" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
