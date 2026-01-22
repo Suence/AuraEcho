@@ -61,29 +61,16 @@
 						   Value="1"
 						   KeyPath="yes"/>
 		</Component>
-
+		
 		<!-- 开机自启 -->
-		<Binary Id="PLInstallerCADll" SourceFile="$(var.PowerLabInstaller.CustomAction.TargetDir)PowerLabInstaller.CustomAction.CA.dll" />
-
-		<CustomAction Id="SetCreateTaskData" Property="CreatePowerLabTask"
-					  Value="INSTALLFOLDER=[INSTALLFOLDER]" />
-
-		<CustomAction Id="CreatePowerLabTask"
-					  BinaryRef="PLInstallerCADll"
-					  DllEntry="CreatePowerLabAutoStartTask"
-					  Execute="deferred"
-					  Impersonate="no"
-					  Return="check" />
-
-		<CustomAction Id="DeletePowerLabTask"
-              BinaryRef="PLInstallerCADll"
-              DllEntry="DeletePowerLabAutoStartTask"
-              Execute="deferred"
-              Impersonate="no"
-              Return="ignore" />
-
-		<Component Id="AutoStartMarkerComponent" Guid="*">
-			<RegistryValue Root="HKLM" Key="Software\PowerLab" Name="AutoStartTaskName" Type="string" Value="PowerLabAutoStart" KeyPath="yes" />
+		<Component Id="RunAtBootComponent" Guid="*">
+			<RegistryValue
+				Root="HKLM"
+				Key="Software\Microsoft\Windows\CurrentVersion\Run"
+				Name="PowerLab"
+				Value="&quot;[INSTALLFOLDER]$(var.PowerLab.Launcher.TargetFileName)&quot; -hide"
+				Type="string"
+				KeyPath="yes" />
 		</Component>
 	</Fragment>
 </Wix>

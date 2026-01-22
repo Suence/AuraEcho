@@ -4,14 +4,12 @@ using System.Globalization;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Win32;
-using Microsoft.Win32.TaskScheduler;
 using PowerLab.Core.Contracts;
 using PowerLab.Core.Models;
 using PowerLab.Core.Tools;
 using PowerLab.Interfaces;
 using PowerLab.PluginContracts.Events;
 using PowerLab.PluginContracts.Models;
-using PowerLab.Tools;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -99,11 +97,52 @@ public class GeneralSettingsViewModel : BindableBase
         get => _runAtBoot;
         set
         {
-            if (SetProperty(ref _runAtBoot, value))
-            {
-                AutoStartManager.SetAutoStart(value);
-            }
+            SetProperty(ref _runAtBoot, value);
+            SetRunAtBoot(value);
         }
+    }
+
+    private static bool CheckRunAtBoot()
+    {
+        using RegistryKey itemKeyRoot =
+            Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", false);
+
+        if (itemKeyRoot.GetValue("PowerLab") is null) return false;
+
+        using RegistryKey approvedKeyRoot =
+            Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run");
+
+        if (approvedKeyRoot.GetValue("PowerLab") is not byte[] key) return true;
+
+        return key[0] % 2 == 0;
+    }
+
+    private static void SetRunAtBoot(bool isEnabled)
+    {
+        using RegistryKey startupApprovedKey = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run", true);
+        if (startupApprovedKey.GetValue("PowerLab") is not null)
+            startupApprovedKey.DeleteValue("PowerLab");
+
+        using RegistryKey itemKeyRoot = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+        if (isEnabled)
+        {
+            itemKeyRoot.SetValue("PowerLab", $@"""{GetInstallPath()}"" -hide", RegistryValueKind.String);
+            return;
+        }
+
+        if (itemKeyRoot.GetValue("PowerLab") is null) return;
+
+        itemKeyRoot.DeleteValue("PowerLab");
+    }
+
+    private static string GetInstallPath()
+    {
+        const string keyPath = @"Software\PowerLab";
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
+        if (key == null) return null;
+
+        object value = key.GetValue("InstallPath");
+        return value?.ToString();
     }
 
     public DelegateCommand LoadSettingsCommand { get; }
@@ -113,7 +152,7 @@ public class GeneralSettingsViewModel : BindableBase
         AppLanguage = settings.AppLanguage;
         AppTheme = settings.AppTheme;
         HardwareAcceleration = settings.HardwareAcceleration;
-        RunAtBoot = AutoStartManager.IsAutoStartEnabled();
+        RunAtBoot = CheckRunAtBoot();
     }
     private void SaveSettings()
     {
