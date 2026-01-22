@@ -77,7 +77,7 @@ public class InstallingViewModel : BindableBase, INavigationAware
         using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return null;
 
-        object value = key.GetValue("InstallPath");
+        object value = key.GetValue("LauncherPath");
         return value?.ToString();
     }
 

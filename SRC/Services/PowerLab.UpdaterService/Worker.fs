@@ -48,10 +48,10 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
         | null -> None
         | _ -> key.GetValue registryKey |> Option.ofObj |> Option.map string
 
-    let getInstallPath () = getRegistryValue "InstallPath"
+    let getInstallPath () = getRegistryValue "LauncherPath"
 
     let getInstalledVersion () =
-        getRegistryValue "InstallVersion"
+        getRegistryValue "CurrentVersion"
         |> Option.defaultValue "1.0.0"
         |> Version
 

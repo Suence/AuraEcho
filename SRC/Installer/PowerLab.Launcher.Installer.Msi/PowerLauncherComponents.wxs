@@ -9,13 +9,13 @@
 			<Component Id="AppRegistryComponents" Guid="*">
 				<RegistryValue Root="HKLM"
 						   Key="Software\PowerLab"
-						   Name="InstallPath"
+						   Name="LauncherPath"
 						   Type="string"
 						   Value="[INSTALLFOLDER]$(var.PowerLab.Launcher.TargetFileName)"
 						   KeyPath="yes"/>
 				<RegistryValue Root="HKLM"
 						   Key="Software\PowerLab"
-						   Name="InstallVersion"
+						   Name="CurrentVersion"
 						   Type="string"
 						   Value="$(var.BundleVersion)"/>
 			</Component>
@@ -61,7 +61,7 @@
 						   Value="1"
 						   KeyPath="yes"/>
 		</Component>
-		
+
 		<!-- 开机自启 -->
 		<Component Id="RunAtBootComponent" Guid="*">
 			<RegistryValue

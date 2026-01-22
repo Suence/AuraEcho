@@ -15,7 +15,6 @@ using namespace Gdiplus;
 namespace fs = std::filesystem;
 
 const wchar_t* PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
-const std::string APPNAME = "PowerLab.exe";
 
 Image* LoadImageFromResource(HMODULE hMod, int resId, const wchar_t* resType) {
     HRSRC hRes = FindResource(hMod, MAKEINTRESOURCE(resId), resType);
@@ -49,7 +48,7 @@ std::string GetAppInstallPath() {
     std::string result = "";
     HKEY hKey;
     const wchar_t* subKey = L"SOFTWARE\\PowerLab";
-    const wchar_t* valueName = L"InstallPath";
+    const wchar_t* valueName = L"AppPath";
 
     LSTATUS status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, subKey, 0, KEY_READ, &hKey);
 
@@ -72,11 +71,6 @@ std::string GetAppInstallPath() {
                 int size_needed = WideCharToMultiByte(CP_UTF8, 0, wPath.c_str(), (int)wPath.length(), NULL, 0, NULL, NULL);
                 result.resize(size_needed);
                 WideCharToMultiByte(CP_UTF8, 0, wPath.c_str(), (int)wPath.length(), &result[0], size_needed, NULL, NULL);
-
-                fs::path originalPath = result;
-                fs::path newPath = originalPath;
-                newPath.replace_filename(APPNAME);
-                result = newPath.string();
             }
         }
         RegCloseKey(hKey);

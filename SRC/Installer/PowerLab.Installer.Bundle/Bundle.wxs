@@ -36,7 +36,7 @@
 			Variable="DOTNETDESKTOPVERSION" />
 
 		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab" />
-		<ApprovedExeForElevation Id="LaunchMainApp" Key="Software\PowerLab" Value="InstallPath" />
+		<ApprovedExeForElevation Id="LaunchMainApp" Key="Software\PowerLab" Value="LauncherPath" />
 		
 		<Chain DisableSystemRestore="yes">
 

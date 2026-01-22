@@ -4,6 +4,12 @@
 		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER" >
 			<Component Id="MainFile" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
 				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
+				<RegistryValue Root="HKLM"
+							   Key="Software\PowerLab"
+							   Name="AppPath"
+							   Type="string"
+							   Value="[#PowerLab.exe]"
+							   KeyPath="yes"/>
 			</Component>
 
 			<Files Include="$(var.PowerLab.TargetDir)**">
@@ -21,6 +27,7 @@
 				<Exclude Files="Mono.TextTemplating.dll"/>
 				<Exclude Files="System.Composition.*.dll"/>
 			</Files>
+			
 		</ComponentGroup>
 	</Fragment>
 </Wix>
