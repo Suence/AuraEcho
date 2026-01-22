@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Security.Principal;
 using Microsoft.Win32.TaskScheduler;
 using WixToolset.Dtf.WindowsInstaller;
@@ -7,7 +9,7 @@ namespace PowerLabInstaller.CustomAction
 {
     public class CustomActions
     {
-        public const string TaskName = "PowerLabAutoStart";
+        private const string TaskName = "PowerLabAutoStart";
         [CustomAction]
         public static ActionResult CreatePowerLabAutoStartTask(Session session)
         {
@@ -70,6 +72,39 @@ namespace PowerLabInstaller.CustomAction
             {
                 session.Log("删除任务失败: " + ex.Message);
                 return ActionResult.Success; // 卸载时通常建议忽略错误，防止卸载中断
+            }
+        }
+
+        [CustomAction]
+        public static ActionResult MigrationDataBase(Session session)
+        {
+            session.Log("开始迁移数据库...");
+            try
+            {
+                string dataMigratorPath = session["CustomActionData"];
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = dataMigratorPath,
+                    WorkingDirectory = Path.GetDirectoryName(dataMigratorPath),
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (Process process = Process.Start(startInfo))
+                {
+                    process.WaitForExit();
+                    if (process.ExitCode != 0)
+                    {
+                        session.Log("数据库迁移失败，退出代码: " + process.ExitCode);
+                        return ActionResult.Failure;
+                    }
+                }
+                session.Log("数据库迁移成功。");
+                return ActionResult.Success;
+            }
+            catch (Exception ex)
+            {
+                session.Log("数据库迁移失败: " + ex.ToString());
+                return ActionResult.Failure;
             }
         }
     }

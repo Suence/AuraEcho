@@ -155,25 +155,8 @@ public class InstallingViewModel : BindableBase, INavigationAware
             return;
         }
 
-        Message = "正在完成安装...";
-        DataMigration();
 
         _regionManager.RequestNavigateOnUIThread(InstallerRegionNames.MainRegion, InstallerViewNames.InstallFinish);
-    }
-
-    private void DataMigration()
-    {
-        var installFolder = Path.GetDirectoryName(GetInstallPath());
-        var dataMigratorPath = Path.Combine(installFolder, "PowerLab.DataMigrator.exe");
-
-        var dataMigratorStartupInfo = new ProcessStartInfo
-        {
-            FileName = dataMigratorPath,
-            CreateNoWindow = false
-        };
-        var dataMigratorProcess = Process.Start(dataMigratorStartupInfo);
-
-        dataMigratorProcess.WaitForExit();
     }
 
     private void UnsubscriptionInstallEvents()

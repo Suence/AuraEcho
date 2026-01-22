@@ -13,5 +13,9 @@
     <Feature Id="Main">
       <ComponentGroupRef Id="DataMigratorComponents" />
     </Feature>
+
+	  <InstallExecuteSequence>
+		  <Custom Action="ConfigureDatabase" After="InstallFiles" Condition="NOT Installed"/>
+	  </InstallExecuteSequence>
   </Package>
 </Wix>

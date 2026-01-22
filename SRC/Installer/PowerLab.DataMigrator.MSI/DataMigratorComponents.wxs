@@ -1,13 +1,27 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <ComponentGroup Id="DataMigratorComponents" Directory="INSTALLFOLDER">
-		<Component Id="FilesComponent" Guid="D408A01D-73DB-4E57-91DD-D32605B5D2ED">
-			<File Id="PowerLab.DataMigrator.exe" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.exe" />
-			<File Id="PowerLab.DataMigrator.dll" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.dll" />
-			<File Id="FSharp.Core.dll" Source="$(var.PowerLab.DataMigrator.TargetDir)FSharp.Core.dll" />
-			<File Id="PowerLab.DataMigrator.runtimeconfig.json" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.runtimeconfig.json" />
-			<File Id="PowerLab.DataMigrator.deps.json" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.deps.json" />
-		</Component>
-    </ComponentGroup>
-  </Fragment>
+	<Fragment>
+		<ComponentGroup Id="DataMigratorComponents" Directory="INSTALLFOLDER">
+			<Component Id="FilesComponent" Guid="D408A01D-73DB-4E57-91DD-D32605B5D2ED">
+				<File Id="DataMigratorExe" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.exe" />
+				<File Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.dll" />
+				<File Source="$(var.PowerLab.DataMigrator.TargetDir)FSharp.Core.dll" />
+				<File Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.runtimeconfig.json" />
+				<File Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.deps.json" />
+			</Component>
+
+
+		</ComponentGroup>
+		
+		<!-- 执行数据库迁移 -->
+		<Binary Id="PLInstallerCADll" SourceFile="$(var.PowerLabInstaller.CustomAction.TargetDir)PowerLabInstaller.CustomAction.CA.dll" />
+
+		<CustomAction Id="ConfigureDatabase"
+			  BinaryRef="PLInstallerCADll"
+			  DllEntry="MigrationDataBase"
+			  Execute="deferred"
+			  Impersonate="no"
+			  Return="check" />
+		
+		<SetProperty Id="ConfigureDatabase" Value="[#DataMigratorExe]" Sequence="execute" Before="ConfigureDatabase"/>
+	</Fragment>
 </Wix>

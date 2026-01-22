@@ -5,11 +5,15 @@
 		<TargetFramework>net10.0-windows10.0.18362.0</TargetFramework>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="app.manifest" />
 		<Compile Include="Program.fs" />
 	</ItemGroup>
+
+	<ItemGroup />
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
