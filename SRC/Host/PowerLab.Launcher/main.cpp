@@ -14,7 +14,10 @@
 using namespace Gdiplus;
 namespace fs = std::filesystem;
 
-const wchar_t* PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
+const wchar_t* LAUNCHER_SERVICE_PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
+const wchar_t* POWERLAB_PIPE_NAME = L"\\\\.\\pipe\\PowerLab_SingleInstance_Pipe";
+const wchar_t* POWERLAB_MUTEX_ID = L"E2A4C483-C59D-4856-BE14-F9B4AF07042C";
+const std::string APP_SHOW = "ShowWindow";
 
 Image* LoadImageFromResource(HMODULE hMod, int resId, const wchar_t* resType) {
     HRSRC hRes = FindResource(hMod, MAKEINTRESOURCE(resId), resType);
@@ -79,16 +82,15 @@ std::string GetAppInstallPath() {
     return result;
 }
 
-bool SendPipeMessage(const std::string& message) {
+static bool SendPipeMessage(const wchar_t* pipeName, const std::string& message) {
     HANDLE hPipe = CreateFile(
-        PIPE_NAME,
+        pipeName,
         GENERIC_WRITE,
         0,
         NULL,
         OPEN_EXISTING,
         0,
-        NULL
-    );
+        NULL);
 
     if (hPipe != INVALID_HANDLE_VALUE) {
         DWORD bytesWritten;
@@ -101,7 +103,7 @@ bool SendPipeMessage(const std::string& message) {
         return false;
     }
 }
-void EnableWin11RoundedCorner(HWND hwnd)
+static void EnableWin11RoundedCorner(HWND hwnd)
 {
     DWORD preference = DWMWCP_ROUND;
     DwmSetWindowAttribute(
@@ -159,34 +161,12 @@ void CenterWindow(HWND hwnd) {
     SetWindowPos(hwnd, 0, xPos, yPos, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
-bool IsProcessRunning(const std::wstring& processName) {
-    bool exists = false;
-    // 创建系统进程快照
-    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if (hSnapshot != INVALID_HANDLE_VALUE) {
-        PROCESSENTRY32W pe;
-        pe.dwSize = sizeof(PROCESSENTRY32W);
-        // 遍历进程列表
-        if (Process32FirstW(hSnapshot, &pe)) {
-            do {
-                std::wstring currentProc(pe.szExeFile);
-                OutputDebugStringW((L"Scanning: " + currentProc + L"\n").c_str());
-                if (processName == pe.szExeFile) {
-                    
-                    exists = true;
-                    break;
-                }
-            } while (Process32NextW(hSnapshot, &pe));
-        }
-        CloseHandle(hSnapshot);
-    }
-    return exists;
-}
-void StartApp(HWND hwndTarget) {
+
+static void StartApp(HWND hwndTarget) {
     const wchar_t* TARGET_WINDOW_TITLE = L"PowerLab";
 
     std::string message = GetAppInstallPath();
-    bool sendResult = SendPipeMessage(message);
+    bool sendResult = SendPipeMessage(LAUNCHER_SERVICE_PIPE_NAME, message);
 
     if (!sendResult) {
         PostMessage(hwndTarget, WM_CLOSE, 0, 0);
@@ -211,11 +191,28 @@ void StartApp(HWND hwndTarget) {
     PostMessage(hwndTarget, WM_CLOSE, 0, 0);
 }
 
+static bool AppIsRunning() {
+    HANDLE hAppMutex = CreateMutex(NULL, TRUE, POWERLAB_MUTEX_ID);
+    DWORD lastError = GetLastError();
+    if (hAppMutex == NULL || lastError == ERROR_ALREADY_EXISTS) {
+        if (hAppMutex) CloseHandle(hAppMutex);
+        return true;
+    }
+    CloseHandle(hAppMutex);
+    return false;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow) {
+    
+    if (AppIsRunning()) {
+        SendPipeMessage(POWERLAB_PIPE_NAME, APP_SHOW);
+        return 0;
+    }
+
     std::string cmdLine(pCmdLine);
     if (cmdLine.find("-hide") != std::string::npos) {
         std::string message = GetAppInstallPath() += " -hide";
-        SendPipeMessage(message);
+        SendPipeMessage(LAUNCHER_SERVICE_PIPE_NAME, message);
         return 0;
     }
 

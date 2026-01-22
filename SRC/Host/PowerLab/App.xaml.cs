@@ -1,15 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.IO.Pipes;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Threading;
-using DryIoc;
+﻿using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.EntityFrameworkCore;
 using PowerLab.Constants;
@@ -34,6 +23,19 @@ using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using System;
+using System.Globalization;
+using System.IO;
+using System.IO.Pipes;
+using System.Net.Http;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace PowerLab;
 
@@ -191,14 +193,24 @@ public partial class App
     {
         Task.Run(async () =>
         {
+            var pipeSecurity = new PipeSecurity();
+            pipeSecurity.AddAccessRule(
+                new PipeAccessRule(
+                    new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null),
+                    PipeAccessRights.ReadWrite,
+                    AccessControlType.Allow));
+
             while (true)
             {
-                using var server = new NamedPipeServerStream(
+                using var server = NamedPipeServerStreamAcl.Create(
                     PIPE_NAME,
                     PipeDirection.In,
                     1,
                     PipeTransmissionMode.Byte,
-                    PipeOptions.Asynchronous);
+                    PipeOptions.Asynchronous,
+                    0,
+                    0,
+                    pipeSecurity);
 
                 await server.WaitForConnectionAsync();
 
