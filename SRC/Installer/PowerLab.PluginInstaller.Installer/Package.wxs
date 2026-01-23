@@ -1,5 +1,5 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="PowerLab.PluginInstaller" 
+  <Package Name="PowerLabPluginInstaller" 
 		   Manufacturer="Suencesoft" 
 		   Version="$(var.Version)"
 		   Codepage="65001"

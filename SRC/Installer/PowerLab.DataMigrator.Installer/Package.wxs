@@ -1,6 +1,6 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Id="PowerLab.DataMigrator" 
-		   Name="PowerLab.DataMigrator.MSI" 
+		   Name="PowerLabDataMigrator" 
 		   Manufacturer="Suencesoft" 
 		   Codepage="65001"
 		   Version="$(var.Version)"

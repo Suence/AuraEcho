@@ -1,6 +1,5 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-	<Package Id="PowerLab.Launcher"
-			 Name="PowerLab.Launcher.MSI"
+	<Package Name="PowerLabLauncher"
 			 Manufacturer="Suencesoft"
 			 Codepage="65001"
 			 Version="$(var.Version)"
