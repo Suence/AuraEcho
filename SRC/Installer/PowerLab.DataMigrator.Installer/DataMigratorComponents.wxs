@@ -2,18 +2,18 @@
 	<Fragment>
 		<ComponentGroup Id="DataMigratorComponents" Directory="INSTALLFOLDER">
 			<Component Id="FilesComponent" Guid="D408A01D-73DB-4E57-91DD-D32605B5D2ED">
-				<File Id="DataMigratorExe" Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.exe" />
-				<File Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.dll" />
-				<File Source="$(var.PowerLab.DataMigrator.TargetDir)FSharp.Core.dll" />
-				<File Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.runtimeconfig.json" />
-				<File Source="$(var.PowerLab.DataMigrator.TargetDir)PowerLab.DataMigrator.deps.json" />
+				<File Id="DataMigratorExecutable" Source="PowerLab.DataMigrator.exe" />
+				<File Source="PowerLab.DataMigrator.dll" />
+				<File Source="FSharp.Core.dll" />
+				<File Source="PowerLab.DataMigrator.runtimeconfig.json" />
+				<File Source="PowerLab.DataMigrator.deps.json" />
 			</Component>
 
 
 		</ComponentGroup>
 		
 		<!-- 执行数据库迁移 -->
-		<Binary Id="PLInstallerCADll" SourceFile="$(var.PowerLabInstaller.CustomAction.TargetDir)PowerLabInstaller.CustomAction.CA.dll" />
+		<Binary Id="PLInstallerCADll" SourceFile="PowerLabInstaller.CustomAction.CA.dll" />
 
 		<CustomAction Id="ConfigureDatabase"
 			  BinaryRef="PLInstallerCADll"
@@ -22,6 +22,6 @@
 			  Impersonate="no"
 			  Return="check" />
 		
-		<SetProperty Id="ConfigureDatabase" Value="[#DataMigratorExe]" Sequence="execute" Before="ConfigureDatabase"/>
+		<SetProperty Id="ConfigureDatabase" Value="[#DataMigratorExecutable]" Sequence="execute" Before="ConfigureDatabase"/>
 	</Fragment>
 </Wix>

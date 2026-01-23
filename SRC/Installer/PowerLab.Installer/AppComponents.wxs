@@ -3,12 +3,12 @@
 	<Fragment>
 		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER" >
 			<Component Id="MainFile" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
-				<File Id="PowerLab.exe" Source="$(var.PowerLab.TargetDir)PowerLab.exe" />
+				<File Id="PowerLabExecutable" Source="PowerLab.exe" />
 				<RegistryValue Root="HKLM"
 							   Key="Software\PowerLab"
 							   Name="AppPath"
 							   Type="string"
-							   Value="[#PowerLab.exe]"
+							   Value="[#PowerLabExecutable]"
 							   KeyPath="yes"/>
 			</Component>
 
@@ -29,5 +29,6 @@
 			</Files>
 			
 		</ComponentGroup>
+		
 	</Fragment>
 </Wix>

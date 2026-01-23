@@ -28,7 +28,7 @@
 			</Files>
 
 			<Component Id="ProductComponent" Guid="AAABBCB6-0D85-4F1B-88A3-234538A1845F">
-				<File Id="PowerLabUpdaterService.exe" Source="$(var.PowerLab.UpdaterService.TargetDir)PowerLabUpdaterService.exe" />
+				<File Source="PowerLabUpdaterService.exe" />
 				
 				<ServiceInstall Id="InstallUpdaterService"
 					            Name="PowerLabUpdaterService"

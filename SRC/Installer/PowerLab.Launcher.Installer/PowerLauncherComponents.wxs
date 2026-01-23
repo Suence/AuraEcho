@@ -3,7 +3,7 @@
 		<Icon Id="PowerLab.ico" SourceFile="Assets/Icons/PowerLab.ico"/>
 		<ComponentGroup Id="PowerLabLauncherComponents" Directory="INSTALLFOLDER">
 			<Component Id="FilesComponent" Guid="D408AB1D-73DB-4E57-91CD-D3260515D2ED">
-				<File Id="PowerLabLauncher.exe" Source="$(var.PowerLab.Launcher.TargetDir)$(var.PowerLab.Launcher.TargetFileName)" />
+				<File Source="$(var.PowerLab.Launcher.TargetFileName)" />
 			</Component>
 
 			<Component Id="AppRegistryComponents" Guid="*">
