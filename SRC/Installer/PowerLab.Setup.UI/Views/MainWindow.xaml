@@ -8,7 +8,7 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:ui="http://ui.powerlab.com/"
         xmlns:viewmodels="clr-namespace:PowerLab.Installer.Bootstrapper.ViewModels"
-        Title="MainWindow"
+        Title="PowerLab 安装向导"
         Width="750"
         Height="500"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"

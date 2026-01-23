@@ -7,6 +7,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<UseWPF>true</UseWPF>
+		<ApplicationIcon>Assets/Images/PowerLab.ico</ApplicationIcon>
+		<AssemblyTitle>PowerLab 安装向导</AssemblyTitle>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -35,6 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Assets\Images\PowerLab.ico" />
 		<Resource Include="Assets\Images\powerlab.png" />
 	</ItemGroup>
 
