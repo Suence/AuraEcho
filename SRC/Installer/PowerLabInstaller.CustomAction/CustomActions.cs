@@ -79,6 +79,12 @@ namespace PowerLabInstaller.CustomAction
         public static ActionResult MigrationDataBase(Session session)
         {
             session.Log("开始迁移数据库...");
+            using (Record record = new Record(2))
+            {
+                record[1] = "MigrationDataBase";
+                record[2] = "正在配置数据库...";
+                session.Message(InstallMessage.ActionStart, record);
+            }
             try
             {
                 string dataMigratorPath = session["CustomActionData"];
