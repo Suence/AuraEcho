@@ -9,6 +9,8 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<SatelliteResourceLanguages>zh-Hans;en-us</SatelliteResourceLanguages>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationIcon>Assets/PowerLab.ico</ApplicationIcon>
+		<AssemblyTitle>PowerLab 扩展安装向导</AssemblyTitle>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -35,6 +37,10 @@
 		<ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
 		<ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
 		<ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\PowerLab.ico" />
 	</ItemGroup>
 
 </Project>
