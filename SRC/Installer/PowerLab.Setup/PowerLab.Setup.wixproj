@@ -15,13 +15,13 @@
     <PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PowerLab.DataMigrator.MSI\PowerLab.DataMigrator.MSI.wixproj" />
-    <ProjectReference Include="..\PowerLab.Installer.Bootstrapper\PowerLab.Installer.Bootstrapper.csproj" />
-    <ProjectReference Include="..\PowerLab.Installer.MSI\PowerLab.Installer.MSI.wixproj" />
-    <ProjectReference Include="..\PowerLab.Launcher.Installer.Msi\PowerLab.Launcher.Installer.Msi.wixproj" />
-    <ProjectReference Include="..\PowerLab.LauncherService.MSI\PowerLab.LauncherService.MSI.wixproj" />
-    <ProjectReference Include="..\PowerLab.PluginInstaller.MSI\PowerLab.PluginInstaller.MSI.wixproj" />
-    <ProjectReference Include="..\PowerLab.UpdaterService.MSI\PowerLab.UpdaterService.MSI.wixproj" />
+    <ProjectReference Include="..\PowerLab.DataMigrator.Installer\PowerLab.DataMigrator.Installer.wixproj" />
+    <ProjectReference Include="..\PowerLab.Setup.UI\PowerLab.Setup.UI.csproj" />
+    <ProjectReference Include="..\PowerLab.Installer\PowerLab.Installer.wixproj" />
+    <ProjectReference Include="..\PowerLab.Launcher.Installer\PowerLab.Launcher.Installer.wixproj" />
+    <ProjectReference Include="..\PowerLab.LauncherService.Installer\PowerLab.LauncherService.Installer.wixproj" />
+    <ProjectReference Include="..\PowerLab.PluginInstaller.Installer\PowerLab.PluginInstaller.Installer.wixproj" />
+    <ProjectReference Include="..\PowerLab.UpdaterService.Installer\PowerLab.UpdaterService.Installer.wixproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="build.ps1" />

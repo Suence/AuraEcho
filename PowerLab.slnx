@@ -14,26 +14,26 @@
     <Project Path="SRC/Host/PowerLab/PowerLab.csproj" />
   </Folder>
   <Folder Name="/SRC/Installer/">
-    <Project Path="SRC/Installer/PowerLab.DataMigrator.MSI/PowerLab.DataMigrator.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="be58907e-406b-46dc-b585-4d9e455dad21">
+    <Project Path="SRC/Installer/PowerLab.DataMigrator.Installer/PowerLab.DataMigrator.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="be58907e-406b-46dc-b585-4d9e455dad21">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
-    <Project Path="SRC/Installer/PowerLab.Installer.Bootstrapper/PowerLab.Installer.Bootstrapper.csproj" />
-    <Project Path="SRC/Installer/PowerLab.Installer.Bundle/PowerLab.Installer.Bundle.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+    <Project Path="SRC/Installer/PowerLab.Setup.UI/PowerLab.Setup.UI.csproj" />
+    <Project Path="SRC/Installer/PowerLab.Setup/PowerLab.Setup.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
-    <Project Path="SRC/Installer/PowerLab.Installer.MSI/PowerLab.Installer.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+    <Project Path="SRC/Installer/PowerLab.Installer/PowerLab.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
-    <Project Path="SRC/Installer/PowerLab.Launcher.Installer.Msi/PowerLab.Launcher.Installer.Msi.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="f57aeb9a-012e-4a03-b8b5-9cae0b08d85f">
+    <Project Path="SRC/Installer/PowerLab.Launcher.Installer/PowerLab.Launcher.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="f57aeb9a-012e-4a03-b8b5-9cae0b08d85f">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
-    <Project Path="SRC/Installer/PowerLab.LauncherService.MSI/PowerLab.LauncherService.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="a3ada3fe-b108-4f00-9352-690bb468e9bf">
+    <Project Path="SRC/Installer/PowerLab.LauncherService.Installer/PowerLab.LauncherService.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="a3ada3fe-b108-4f00-9352-690bb468e9bf">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
-    <Project Path="SRC/Installer/PowerLab.PluginInstaller.MSI/PowerLab.PluginInstaller.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+    <Project Path="SRC/Installer/PowerLab.PluginInstaller.Installer/PowerLab.PluginInstaller.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
-    <Project Path="SRC/Installer/PowerLab.UpdaterService.MSI/PowerLab.UpdaterService.MSI.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="0504b72a-891f-4992-8688-2e151be66619">
+    <Project Path="SRC/Installer/PowerLab.UpdaterService.Installer/PowerLab.UpdaterService.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="0504b72a-891f-4992-8688-2e151be66619">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>
     <Project Path="SRC/Installer/PowerLabInstaller.CustomAction/PowerLabInstaller.CustomAction.csproj" Id="1e37f1e2-c424-46f2-9a14-8a392ea58287" />

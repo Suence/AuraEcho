@@ -7,24 +7,25 @@
 			Version="$(var.BundleVersion)"
 			SplashScreenSourceFile="Assets/Images/splash_screen.bmp"
 			IconSourceFile="Assets/Icons/PowerLab.ico"
+			InProgressName="PLSU"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
 		
-		<BootstrapperApplication Secondary="true" SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.exe">
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)mbanative.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)DryIoc.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Microsoft.WindowsAPICodePack.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Microsoft.Xaml.Behaviors.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.DryIoc.Wpf.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)Prism.Wpf.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Controls.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Themes.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.PluginContracts.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.UIToolkit.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)WixToolset.BootstrapperApplicationApi.dll" />
-			<Payload SourceFile="$(PowerLab.Installer.Bootstrapper.TargetDir)PowerLab.Installer.Bootstrapper.runtimeconfig.json" />
+		<BootstrapperApplication Secondary="true" SourceFile="PowerLab.Setup.UI.exe">
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)mbanative.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)PowerLab.Setup.UI.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)DryIoc.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)Microsoft.WindowsAPICodePack.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)Microsoft.Xaml.Behaviors.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)Prism.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)Prism.DryIoc.Wpf.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)Prism.Wpf.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)PowerLab.Controls.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)PowerLab.Themes.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)PowerLab.PluginContracts.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)PowerLab.UIToolkit.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)WixToolset.BootstrapperApplicationApi.dll" />
+			<Payload SourceFile="$(PowerLab.Setup.UI.TargetDir)PowerLab.Setup.UI.runtimeconfig.json" />
 
 			<bal:WixPrerequisiteBootstrapperApplication Theme="standard" LogoFile="Assets/Icons/PowerLab.ico" LocalizationFile="Strings/zh-cn.wxl"/>
 		</BootstrapperApplication>
@@ -58,7 +59,7 @@
 			<MsiPackage Id="PowerLabInstallerMSI"
 						Visible="yes"
 						Compressed="yes"
-						SourceFile="PowerLab.Installer.MSI.msi">
+						SourceFile="$(PowerLab.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 			
@@ -67,7 +68,7 @@
 						Visible="yes"
 						Compressed="yes"
 						EnableFeatureSelection="yes"
-						SourceFile="PowerLab.Launcher.Installer.Msi.msi">
+						SourceFile="$(PowerLab.Launcher.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 				<MsiProperty Name="UNINSTALLER_PATH" Value="[UninstallerPath]"/>
 			</MsiPackage>
@@ -76,7 +77,7 @@
 			<MsiPackage Id="PluginInstallerMSI"
 						Visible="yes"
 						Compressed="yes"
-						SourceFile="PowerLab.PluginInstaller.MSI.msi">
+						SourceFile="$(PowerLab.PluginInstaller.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 
@@ -84,7 +85,7 @@
 			<MsiPackage Id="PowerLabDataMigratorMsi"
 						Visible="yes"
 						Compressed="yes"
-						SourceFile="PowerLab.DataMigrator.MSI.msi">
+						SourceFile="$(PowerLab.DataMigrator.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 
@@ -92,7 +93,7 @@
 			<MsiPackage Id="PowerLabUpdaterServiceMsi"
 						Visible="yes"
 						Compressed="yes"
-						SourceFile="PowerLab.UpdaterService.MSI.msi">
+						SourceFile="$(PowerLab.UpdaterService.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 
@@ -100,7 +101,7 @@
 			<MsiPackage Id="PowerLabLauncherServiceMsi"
 						Visible="yes"
 						Compressed="yes"
-						SourceFile="PowerLab.LauncherService.MSI.msi">
+						SourceFile="$(PowerLab.LauncherService.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
 		</Chain>

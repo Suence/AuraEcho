@@ -8,7 +8,7 @@ if (-not (Test-Path $msBuildPath)) {
     exit 1
 }
 
-$bundleProject = "./PowerLab.Installer.Bundle.wixproj"
+$bundleProject = "./PowerLab.Setup.wixproj"
 
 $Config = Read-Host "选择构建配置 [1: Release (默认), 2: Debug]"
 if ($Config -eq "2") { $Config = "Debug" } else { $Config = "Release" }
