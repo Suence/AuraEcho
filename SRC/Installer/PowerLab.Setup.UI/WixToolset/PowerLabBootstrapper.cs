@@ -381,6 +381,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     protected override void OnExecuteFilesInUse(ExecuteFilesInUseEventArgs args)
     {
         base.OnExecuteFilesInUse(args);
+        Engine.Log(LogLevel.Standard, "FilesInUse detected, cancelling operation.");
     }
 
     /// <inheritdoc/>

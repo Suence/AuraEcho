@@ -72,5 +72,15 @@
 				Type="string"
 				KeyPath="yes" />
 		</Component>
+
+		<!-- 清理开机自启注册表项 -->
+		<Binary Id="PLInstallerCADll" SourceFile="PowerLabInstaller.CustomAction.CA.dll" />
+
+		<CustomAction Id="CleanRunAtBootRegistry"
+					  BinaryRef="PLInstallerCADll"
+					  DllEntry="RemoveRunAtBootRegistry"
+					  Execute="deferred"
+					  Impersonate="no"
+					  Return="ignore" />
 	</Fragment>
 </Wix>

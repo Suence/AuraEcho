@@ -18,5 +18,11 @@
 		<Feature Id="RunAtBoot">
 			<ComponentRef Id="RunAtBootComponent" />
 		</Feature>
+
+		<InstallExecuteSequence>
+			<Custom Action="CleanRunAtBootRegistry"
+					After="InstallInitialize"
+					Condition="(REMOVE=&quot;ALL&quot;) AND (NOT UPGRADINGPRODUCTCODE)"/>
+		</InstallExecuteSequence>
 	</Package>
 </Wix>

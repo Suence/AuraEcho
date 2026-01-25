@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Principal;
+using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using WixToolset.Dtf.WindowsInstaller;
 
@@ -64,7 +65,7 @@ namespace PowerLabInstaller.CustomAction
             {
                 using (var ts = new TaskService())
                 {
-                    ts.RootFolder.DeleteTask(TaskName, false); 
+                    ts.RootFolder.DeleteTask(TaskName, false);
                 }
                 return ActionResult.Success;
             }
@@ -111,6 +112,51 @@ namespace PowerLabInstaller.CustomAction
             {
                 session.Log("数据库迁移失败: " + ex.ToString());
                 return ActionResult.Failure;
+            }
+        }
+
+        [CustomAction]
+        public static ActionResult RemoveRunAtBootRegistry(Session session)
+        {
+            session.Log("RemoveRunAtBootRegistry Begin");
+            using (Record record = new Record(2))
+            {
+                record[1] = "CleanRunAtBootRegistry";
+                record[2] = "正在清理启动设置项...";
+                session.Message(InstallMessage.ActionStart, record);
+            }
+            try
+            {
+                const string RUN_KEY_PATH = @"Software\Microsoft\Windows\CurrentVersion\Run";
+                const string STARTUP_APPROVED_KEY_PATH = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
+                using (RegistryKey startupApprovedKey = Registry.LocalMachine.OpenSubKey(STARTUP_APPROVED_KEY_PATH, true))
+                {
+                    if (startupApprovedKey.GetValue("PowerLab") != null)
+                    {
+                        startupApprovedKey.DeleteValue("PowerLab");
+                        session.Log("已删除注册表中的启动批准项。");
+                    }
+                }
+
+                using (RegistryKey itemKeyRoot = Registry.LocalMachine.OpenSubKey(RUN_KEY_PATH, true))
+                {
+                    if (itemKeyRoot.GetValue("PowerLab") != null)
+                    {
+                        itemKeyRoot.DeleteValue("PowerLab");
+                        session.Log("已删除注册表中的启动项。");
+                    }
+                }
+
+                return ActionResult.Success;
+            }
+            catch (Exception ex)
+            {
+                session.Log("删除注册表开机启动项失败: " + ex.ToString());
+                return ActionResult.Failure;
+            }
+            finally
+            {
+                session.Log("RemoveRunAtBootRegistry Begin");
             }
         }
     }
