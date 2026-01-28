@@ -14,12 +14,15 @@
 using namespace Gdiplus;
 namespace fs = std::filesystem;
 
-const wchar_t* LAUNCHER_SERVICE_PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
-const wchar_t* POWERLAB_PIPE_NAME = L"\\\\.\\pipe\\PowerLab_SingleInstance_Pipe";
-const wchar_t* POWERLAB_MUTEX_ID = L"E2A4C483-C59D-4856-BE14-F9B4AF07042C";
+LPCTSTR LAUNCHER_SERVICE_PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
+LPCTSTR POWERLAB_PIPE_NAME = L"\\\\.\\pipe\\PowerLab_SingleInstance_Pipe";
+
+LPCTSTR POWERLAB_MUTEX_ID = TEXT("E2A4C483-C59D-4856-BE14-F9B4AF07042C");
+LPCTSTR INSTALLER_MUTEX_ID = TEXT("17FA29D6-F4BC-4720-A55C-27042D247E35");
+
 const std::string APP_SHOW = "ShowWindow";
 
-Image* LoadImageFromResource(HMODULE hMod, int resId, const wchar_t* resType) {
+Image* LoadImageFromResource(HMODULE hMod, int resId, LPCWSTR resType) {
     HRSRC hRes = FindResource(hMod, MAKEINTRESOURCE(resId), resType);
     if (!hRes) return nullptr;
 
@@ -82,7 +85,7 @@ std::string GetAppInstallPath() {
     return result;
 }
 
-static bool SendPipeMessage(const wchar_t* pipeName, const std::string& message) {
+static bool SendPipeMessage(LPCTSTR pipeName, const std::string& message) {
     HANDLE hPipe = CreateFile(
         pipeName,
         GENERIC_WRITE,
@@ -122,7 +125,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         EnableWin11RoundedCorner(hwnd);
         return 0;
     }
-    
+
     case WM_NCHITTEST: {
         return HTCAPTION;
     }
@@ -163,7 +166,7 @@ void CenterWindow(HWND hwnd) {
 
 
 static void StartApp(HWND hwndTarget) {
-    const wchar_t* TARGET_WINDOW_TITLE = L"PowerLab";
+    LPCWSTR TARGET_WINDOW_TITLE = L"PowerLab";
 
     std::string message = GetAppInstallPath();
     bool sendResult = SendPipeMessage(LAUNCHER_SERVICE_PIPE_NAME, message);
@@ -191,8 +194,8 @@ static void StartApp(HWND hwndTarget) {
     PostMessage(hwndTarget, WM_CLOSE, 0, 0);
 }
 
-static bool AppIsRunning() {
-    HANDLE hAppMutex = CreateMutex(NULL, TRUE, POWERLAB_MUTEX_ID);
+static bool CheckMutex(LPCWSTR mutexId) {
+    HANDLE hAppMutex = CreateMutex(NULL, TRUE, mutexId);
     DWORD lastError = GetLastError();
     if (hAppMutex == NULL || lastError == ERROR_ALREADY_EXISTS) {
         if (hAppMutex) CloseHandle(hAppMutex);
@@ -202,10 +205,23 @@ static bool AppIsRunning() {
     return false;
 }
 
+static bool AppIsRunning() {
+    return CheckMutex(POWERLAB_MUTEX_ID);
+}
+
+static bool AppInstallerIsRunning() {
+    return CheckMutex(INSTALLER_MUTEX_ID);
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow) {
-    
+
     if (AppIsRunning()) {
         SendPipeMessage(POWERLAB_PIPE_NAME, APP_SHOW);
+        return 0;
+    }
+
+    if (AppInstallerIsRunning()) {
+        // Installer is running, just exit.
         return 0;
     }
 
@@ -225,7 +241,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW); 
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 
     RegisterClass(&wc);
