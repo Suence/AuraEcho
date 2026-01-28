@@ -10,8 +10,8 @@ if (-not (Test-Path $msBuildPath)) {
 
 $bundleProject = "./PowerLab.Setup.wixproj"
 
-$Config = Read-Host "选择构建配置 [1: Release (默认), 2: Debug]"
-if ($Config -eq "2") { $Config = "Debug" } else { $Config = "Release" }
+$Config = Read-Host "选择构建配置 [1: Debug (默认), 2: Release]"
+if ($Config -eq "2") { $Config = "Release" } else { $Config = "Debug" }
 
 $Arch = Read-Host "选择目标架构 [1: x64 (默认), 2: x86]"
 if ($Arch -eq "2") { $Arch = "x86" } else { $Arch = "x64" }
@@ -22,7 +22,7 @@ $isRebuild = if ($Mode -eq "2") { $true } else { $false }
 $BundleVersion = "1.0.0"
 $AppVersion = "1.0.0"
 $LauncherVersion = "1.0.0"
-$DataMigratorVersion = "1.0.0" # 和 BundleVersion 保持同步(确保每次更新时迁移数据库)?
+$DataMigratorVersion = $BundleVersion
 $LauncherServiceVersion = "1.0.0"
 $PluginInstallerVersion = "1.0.0"
 $UpdaterServiceVersion = "1.0.0"
