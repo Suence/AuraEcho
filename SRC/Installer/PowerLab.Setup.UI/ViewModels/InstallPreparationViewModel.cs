@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Microsoft.Win32;
 using PowerLab.Installer.Bootstrapper.Constants;
 using PowerLab.Installer.Bootstrapper.WixToolset;
+using PowerLab.PluginContracts.Constants;
+using PowerLab.PluginContracts.Interfaces;
+using PowerLab.PluginContracts.Models;
+using PowerLab.Setup.UI.Utils;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using WixToolset.BootstrapperApplicationApi;
 
 namespace PowerLab.Installer.Bootstrapper.ViewModels;
 
@@ -18,6 +17,7 @@ public class InstallPreparationViewModel : BindableBase
 {
     private readonly PowerLabBootstrapper _ba;
     private readonly IRegionManager _regionManager;
+    private readonly IRegionDialogService _regionDialogService;
     private bool _agreeAgreement;
     private bool _isCreateDesktopFolderShortcut;
     private bool _isRunAtBoot;
@@ -38,8 +38,10 @@ public class InstallPreparationViewModel : BindableBase
     /// </summary>
     public DelegateCommand InstallCommand { get; }
     private bool CanInstall() => AgreeAgreement;
-    private void Install()
+    private async void Install()
     {
+        if (!await StopAppAsync()) return;
+
         _regionManager.RequestNavigate(
             InstallerRegionNames.MainRegion,
             InstallerViewNames.Installing,
@@ -49,7 +51,59 @@ public class InstallPreparationViewModel : BindableBase
                 { "IsRunAtBoot", IsRunAtBoot }
             });
     }
+    private async Task<bool> StopAppAsync()
+    {
+        List<Process> allProcesses =
+            [.. Process.GetProcessesByName(ProcessNames.HostProcess),
+             .. Process.GetProcessesByName(ProcessNames.PluginInstaller)];
 
+        if (allProcesses.Count <= 0) return true;
+
+        string? installFolder = Path.GetDirectoryName(GetInstallPath());
+        List<Process> runningProcesses =
+            [.. allProcesses.Where(p =>
+            {
+                string? exePath = p.GetExecutablePath();
+                if (string.IsNullOrEmpty(exePath)) return false;
+
+                string? processDir = Path.GetDirectoryName(exePath);
+                return String.Equals(processDir, installFolder, StringComparison.OrdinalIgnoreCase);
+            })];
+
+        if (runningProcesses.Count <= 0) return true;
+
+        RegionDialogResult dialogResult =
+            await _regionDialogService.ShowDialogAsync(
+                InstallerRegionNames.MessageRegion,
+                HostRegionDialogTypes.ConfirmDialog,
+                new RegionDialogParameter
+                {
+                    CancelText = "重试",
+                    ConfirmText = "继续",
+                    Message = @"PowerLab 仍在运行，正在等待 PowerLab 退出，选择 ""继续"" 以退出 PowerLab 继续安装。",
+                    Title = "PowerLab 仍在运行"
+                });
+
+        if (dialogResult == RegionDialogResult.Close) return false;
+
+        if (dialogResult != RegionDialogResult.OK)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(0.5));
+            return await StopAppAsync();
+        }
+
+        runningProcesses.ForEach(p => p.Kill());
+        return true;
+    }
+    private static string GetInstallPath()
+    {
+        const string keyPath = @"Software\PowerLab";
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
+        if (key == null) return null;
+
+        object value = key.GetValue("LauncherPath");
+        return value?.ToString();
+    }
     #endregion
 
     #region 属性
@@ -103,10 +157,12 @@ public class InstallPreparationViewModel : BindableBase
     /// <param name="model"></param>
     public InstallPreparationViewModel(
         PowerLabBootstrapper ba,
-        IRegionManager regionManager)
+        IRegionManager regionManager,
+        IRegionDialogService regionDialogService)
     {
         _ba = ba;
         _regionManager = regionManager; 
+        _regionDialogService = regionDialogService;
 
         IsCreateDesktopFolderShortcut = true;
         IsRunAtBoot = true;

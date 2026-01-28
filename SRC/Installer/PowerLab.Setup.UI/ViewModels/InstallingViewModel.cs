@@ -1,15 +1,9 @@
-﻿using Microsoft.Win32;
-using PowerLab.Installer.Bootstrapper.Constants;
+﻿using PowerLab.Installer.Bootstrapper.Constants;
 using PowerLab.Installer.Bootstrapper.Extensions;
 using PowerLab.Installer.Bootstrapper.WixToolset;
-using PowerLab.PluginContracts.Constants;
-using PowerLab.PluginContracts.Interfaces;
-using PowerLab.PluginContracts.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.Diagnostics;
-using System.IO;
 using WixToolset.BootstrapperApplicationApi;
 
 namespace PowerLab.Installer.Bootstrapper.ViewModels;
@@ -18,7 +12,6 @@ public class InstallingViewModel : BindableBase, INavigationAware
 {
     private readonly PowerLabBootstrapper _ba;
     private readonly IRegionManager _regionManager;
-    private readonly IRegionDialogService _regionDialogService;
 
     private string message;
     private int _progress;
@@ -31,54 +24,7 @@ public class InstallingViewModel : BindableBase, INavigationAware
     public DelegateCommand InstallCommand { get; }
     private async void Install()
     {
-        await StopAppAsync();
-
         _ba.Install();
-    }
-
-    private async Task StopAppAsync()
-    {
-        List<Process> allProcesses =
-            [.. Process.GetProcessesByName(ProcessNames.HostProcess),
-             .. Process.GetProcessesByName(ProcessNames.PluginInstaller)];
-
-        if (allProcesses.Count <= 0) return;
-
-        string? installFolder = Path.GetDirectoryName(GetInstallPath());
-        List<Process> runningProcesses =
-            [.. allProcesses.Where(p => Path.GetDirectoryName(p.MainModule.FileName) == installFolder)];
-
-        if (runningProcesses.Count <= 0) return;
-
-        RegionDialogResult dialogResult =
-            await _regionDialogService.ShowDialogAsync(
-                InstallerRegionNames.MessageRegion,
-                HostRegionDialogTypes.ConfirmDialog,
-                new RegionDialogParameter
-                {
-                    CancelText = "重试",
-                    ConfirmText = "继续",
-                    Message = @"PowerLab 仍在运行，正在等待 PowerLab 退出，选择 ""继续"" 以退出 PowerLab 继续安装。",
-                    Title = "PowerLab 仍在运行"
-                });
-        if (dialogResult != RegionDialogResult.OK)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            await StopAppAsync();
-            return;
-        }
-
-        runningProcesses.ForEach(p => p.Kill());
-    }
-
-    private static string GetInstallPath()
-    {
-        const string keyPath = @"Software\PowerLab";
-        using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
-        if (key == null) return null;
-
-        object value = key.GetValue("LauncherPath");
-        return value?.ToString();
     }
 
     public DelegateCommand CancelCommand { get; }
@@ -113,11 +59,10 @@ public class InstallingViewModel : BindableBase, INavigationAware
     /// 构造函数
     /// </summary>
     /// <param name="model"></param>
-    public InstallingViewModel(PowerLabBootstrapper ba, IRegionManager regionManager, IRegionDialogService regionDialogService)
+    public InstallingViewModel(PowerLabBootstrapper ba, IRegionManager regionManager)
     {
         _ba = ba;
         _regionManager = regionManager;
-        _regionDialogService = regionDialogService;
 
         InstallCommand = new DelegateCommand(Install);
         CancelCommand = new DelegateCommand(Cancel);

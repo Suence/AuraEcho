@@ -15,7 +15,7 @@ namespace PowerLab.Installer.Bootstrapper;
 /// </summary>
 public partial class App
 {
-    private readonly Mutex _mutex = new(false, "17FA29D6-F4BC-4720-A55C-27042D247E35");
+    private readonly Mutex _installerMutex = new(false, "17FA29D6-F4BC-4720-A55C-27042D247E35");
     protected override Window CreateShell()
     {
         return Container.Resolve<MainWindow>();
@@ -42,7 +42,7 @@ public partial class App
     {
         try
         {
-            if (!_mutex.WaitOne(TimeSpan.Zero, true))
+            if (!_installerMutex.WaitOne(TimeSpan.Zero, true))
             {
                 new InstallerAlreadyRunningDialog().ShowDialog();
                 Shutdown();
