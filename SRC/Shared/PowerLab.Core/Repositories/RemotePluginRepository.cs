@@ -117,6 +117,28 @@ public class RemotePluginRepository : IRemotePluginRepository
         return plugins;
     }
 
+    public async Task<List<AppPlugin>> GetAllPluginsAsync()
+    {
+        var result = await _httpHelper.GetAsync<ListPluginsResponse>($"{Urls.ServerUrl}/api/plugin/listAll");
+        if (result is null) return null;
+
+        List<AppPlugin> plugins =
+            result.Plugins
+                  .Select(p => new AppPlugin
+                  {
+                      Author = p.Author,
+                      Name = p.Name,
+                      CreateTime = p.CreateTime,
+                      Id = p.Id,
+                      Description = p.Description,
+                      DisplayName = p.DisplayName,
+                      IconFileId = p.IconFileId,
+                  })
+                  .ToList();
+
+        return plugins;
+    }
+
     public async Task<List<PluginPackage>> GetVersionsAsync(Guid pluginId)
     {
         var result = await _httpHelper.GetAsync<GetPluginActivedVerionsResponse>($"{Urls.ServerUrl}/api/plugin/versions?pluginId={pluginId}");

@@ -263,7 +263,7 @@ public class HomepageViewModel : BindableBase
 
     private async Task LoadPluginsAsync()
     {
-        var result = await _remotePluginRepository.GetPluginsAsync();
+        var result = await _remotePluginRepository.GetAllPluginsAsync();
         if (result is null) return;
 
         Plugins = [.. result];
