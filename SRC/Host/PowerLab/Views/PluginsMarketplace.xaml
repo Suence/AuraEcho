@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:models="clr-namespace:PowerLab.Core.Models;assembly=PowerLab.Core"
+             xmlns:models="clr-namespace:PowerLab.Models"
+             xmlns:pm="clr-namespace:PowerLab.PluginContracts.Models;assembly=PowerLab.PluginContracts"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:sv="clr-namespace:PowerLab.Services"
              xmlns:ui="http://ui.powerlab.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:PluginsMarketplaceViewModel}"
@@ -19,7 +21,65 @@
     <UserControl.Resources>
         <ui:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <converters:FileIdToUrlConverter x:Key="FileIdToUrl" />
-        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type models:AppPlugin}">
+        <DataTemplate x:Key="NotInstalledTemplate" DataType="{x:Type models:MarketPlugin}">
+            <Border Height="24"
+                    Margin="8"
+                    Padding="8,4"
+                    HorizontalAlignment="Right"
+                    Background="#10FFFFFF"
+                    CornerRadius="4">
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="免费下载" />
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="DownloadingTemplate" DataType="{x:Type models:MarketPlugin}">
+            <Grid>
+                <Border Height="24"
+                        Margin="8"
+                        Padding="8,4"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Background="#10FFFFFF"
+                        CornerRadius="4">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               d:Text="正在下载(87%)"
+                               Text="{Binding InstallContext.Progress, StringFormat=正在下载({0:F0}%)}" />
+                </Border>
+                <ProgressBar VerticalAlignment="Bottom"
+                             d:Value="66"
+                             Value="{Binding InstallContext.Progress, Mode=OneWay}" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="InstallingTemplate" DataType="{x:Type models:MarketPlugin}">
+            <Grid>
+                <Border Height="24"
+                        Padding="8,4"
+                        Margin="8"
+                        HorizontalAlignment="Right"
+                        Background="#10FFFFFF"
+                        CornerRadius="4">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="正在安装" />
+                </Border>
+                <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="True" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="InstalledTemplate" DataType="{x:Type models:MarketPlugin}">
+            <Border Height="24"
+                    Padding="8,4"
+                    Margin="8"
+                    HorizontalAlignment="Right"
+                    Background="#10FFFFFF"
+                    CornerRadius="4">
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="已拥有" />
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="PluginTemplate" DataType="{x:Type models:MarketPlugin}">
             <Button Width="140"
                     Height="180"
                     Padding="0"
@@ -55,36 +115,51 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
                     <Border Grid.Row="0" CornerRadius="4, 4, 0, 0">
-                        <Border.Background>        
+                        <Border.Background>
                             <VisualBrush AlignmentY="Top" Stretch="UniformToFill">
                                 <VisualBrush.Visual>
-                                    <Image RenderOptions.BitmapScalingMode="LowQuality" Source="{Binding IconFileId, Converter={StaticResource FileIdToUrl}}" />
+                                    <Image RenderOptions.BitmapScalingMode="LowQuality" Source="{Binding PluginInfo.IconFileId, Converter={StaticResource FileIdToUrl}}" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Border.Background>
                     </Border>
-                    <Grid Grid.Row="1" Margin="6">
-                        <TextBlock VerticalAlignment="Top"
+                    <Grid Grid.Row="1">
+                        <TextBlock Margin="8"
+                                   VerticalAlignment="Top"
                                    d:Text="PLUGIN DISPLAY NAME"
                                    FontSize="16"
-                                   Text="{Binding DisplayName}"
+                                   Text="{Binding PluginInfo.DisplayName}"
                                    TextWrapping="Wrap" />
-                        <Button Padding="8,4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Content="INSTALL" />
+                        <ContentControl VerticalAlignment="Bottom"
+                                        d:ContentTemplate="{DynamicResource NotInstalledTemplate}"
+                                        Content="{Binding}">
+                            <i:Interaction.Triggers>
+                                <i:DataTrigger Binding="{Binding InstallContext.Status}" Value="{x:Static pm:TransferStatus.None}">
+                                    <i:ChangePropertyAction PropertyName="ContentTemplate" Value="{StaticResource NotInstalledTemplate}" />
+                                </i:DataTrigger>
+                                <i:DataTrigger Binding="{Binding InstallContext.Status}" Value="{x:Static pm:TransferStatus.Transferring}">
+                                    <i:ChangePropertyAction PropertyName="ContentTemplate" Value="{StaticResource DownloadingTemplate}" />
+                                </i:DataTrigger>
+                                <i:DataTrigger Binding="{Binding InstallContext.Status}" Value="{x:Static pm:TransferStatus.Processing}">
+                                    <i:ChangePropertyAction PropertyName="ContentTemplate" Value="{StaticResource InstallingTemplate}" />
+                                </i:DataTrigger>
+                                <i:DataTrigger Binding="{Binding InstallContext.Status}" Value="{x:Static pm:TransferStatus.Completed}">
+                                    <i:ChangePropertyAction PropertyName="ContentTemplate" Value="{StaticResource InstalledTemplate}" />
+                                </i:DataTrigger>
+                            </i:Interaction.Triggers>
+                        </ContentControl>
                     </Grid>
                 </Grid>
             </Button>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid Margin="16">
+    <Grid Margin="24,36">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"
-                    Margin="0,20"
+                    Margin="0,16"
                     Orientation="Horizontal">
             <TextBlock FontSize="20" Text="PLUGINS MARKETPLACE" />
         </StackPanel>

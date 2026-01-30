@@ -85,6 +85,7 @@ public partial class App
         containerRegistry.RegisterSingleton<IPluginInstallService, PluginInstallService>();
 
         containerRegistry.RegisterSingleton<IFileRepository, FileRepository>();
+        containerRegistry.RegisterSingleton<ITransferManager, TransferManager>();
         containerRegistry.RegisterSingleton<IClientSession, ClientSession>();
         containerRegistry.RegisterSingleton<IAuthRepository, AuthRepository>();
         containerRegistry.RegisterSingleton<IAppPackageRepository, AppPackageRepository>();

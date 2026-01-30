@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using PowerLab.Constants;
 using PowerLab.Core.Contracts;
+using PowerLab.Core.Extensions;
 using PowerLab.Core.Models;
 using PowerLab.Interfaces;
+using PowerLab.Models;
 using PowerLab.PluginContracts.Constants;
 using PowerLab.PluginContracts.Interfaces;
+using PowerLab.Services;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -21,13 +22,15 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
 {
     private readonly IRemotePluginRepository _pluginRespository;
     private readonly INavigationService _navigationService;
+    private readonly IEventAggregator _eventAggregator;
     private readonly IPluginManager _pluginManager;
+    private readonly IPluginInstallService _pluginInstallService;
+    private readonly ITransferManager _transferManager;
 
-    private ObservableCollection<AppPlugin> _plugins;
-    public ObservableCollection<AppPlugin> Plugins
+    public ObservableCollection<MarketPlugin> Plugins
     {
-        get => _plugins;
-        set => SetProperty(ref _plugins, value);
+        get => field;
+        set => SetProperty(ref field, value);
     }
 
     public DelegateCommand LoadPluginsCommand { get; }
@@ -36,19 +39,61 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
         var result = await _pluginRespository.GetPluginsAsync();
         if (result is null) return;
 
-        var installedPluginIds = _pluginManager.Plugins.Select(p => p.Manifest.Id).ToList();
+        List<Guid> installedPluginIds = _pluginManager.Plugins.Select(p => p.Manifest.Id).ToList();
+        List<PluginDownloadTask> inProcessTasks = [.. _transferManager.AllTasks.OfType<PluginDownloadTask>()];
+        ObservableCollection<MarketPlugin> marketPlugins = result.Select(ToMarketPlugin).ToObservableCollection();
 
-        foreach (var plugin in result)
+        Plugins = [.. marketPlugins];
+
+        MarketPlugin ToMarketPlugin(AppPlugin plugin)
         {
-            plugin.IsInstalled = installedPluginIds.Contains(plugin.Id);
-        }
+            if (installedPluginIds.Contains(plugin.Id))
+            {
+                return new MarketPlugin
+                {
+                    PluginInfo = plugin,
+                    InstallContext = PluginDownloadTask.CreateAsCompleted()
+                };
+            }
 
-        Plugins = [.. result];
+            PluginDownloadTask installContext =
+                inProcessTasks.FirstOrDefault(t => t.Id == plugin.Id.ToString()) 
+                ?? new PluginDownloadTask(
+                    _pluginRespository,
+                    _pluginInstallService,
+                    _pluginManager,
+                    _eventAggregator,
+                    plugin.Id,
+                    plugin.DisplayName);
+
+            return new MarketPlugin
+            {
+                PluginInfo = plugin,
+                InstallContext = installContext
+            };
+        }
     }
 
+    public DelegateCommand<MarketPlugin> InstallPluginCommand { get; }
+    private void InstallPlugin(MarketPlugin plugin)
+    {
+        _transferManager.AddTask(plugin.InstallContext);
+    }
 
-    public DelegateCommand<AppPlugin> NavigationToPluginDetailsCommand { get; }
-    private void NavigationToPluginDetails(AppPlugin plugin)
+    public DelegateCommand<MarketPlugin> OpenPluginCommand { get; }
+    private void OpenPlugin(MarketPlugin plugin)
+    {
+        PluginRegistryModel? targetRegistry =
+            _pluginManager.Plugins.FirstOrDefault(p => p.Manifest.Id == plugin.PluginInfo.Id)
+            ?? throw new Exception();
+
+        _navigationService.RequestNavigate(
+            HostRegionNames.MainRegion,
+            targetRegistry.Manifest.DefaultViewName);
+    }
+
+    public DelegateCommand<MarketPlugin> NavigationToPluginDetailsCommand { get; }
+    private void NavigationToPluginDetails(MarketPlugin plugin)
     {
         _navigationService.RequestNavigate(
             HostRegionNames.MainRegion,
@@ -59,14 +104,25 @@ public class PluginsMarketplaceViewModel : BindableBase, IRegionMemberLifetime
             });
     }
 
-    public PluginsMarketplaceViewModel(IPluginManager pluginManager, INavigationService navigationService, IRemotePluginRepository pluginRespository)
+    public PluginsMarketplaceViewModel(
+        IPluginManager pluginManager, 
+        INavigationService navigationService, 
+        IRemotePluginRepository pluginRespository,
+        IPluginInstallService pluginInstallService,
+        IEventAggregator eventAggregator,
+        ITransferManager transferManager)
     {
+        _transferManager = transferManager;
+        _eventAggregator = eventAggregator;
         _pluginRespository = pluginRespository;
+        _pluginInstallService = pluginInstallService;
         _navigationService = navigationService;
         _pluginManager = pluginManager;
 
         LoadPluginsCommand = new DelegateCommand(LoadPlugins);
-        NavigationToPluginDetailsCommand = new DelegateCommand<AppPlugin>(NavigationToPluginDetails);
+        InstallPluginCommand = new DelegateCommand<MarketPlugin>(InstallPlugin);
+        OpenPluginCommand = new DelegateCommand<MarketPlugin>(OpenPlugin);
+        NavigationToPluginDetailsCommand = new DelegateCommand<MarketPlugin>(NavigationToPluginDetails);
         LoadPlugins();
     }
     public bool KeepAlive => false;

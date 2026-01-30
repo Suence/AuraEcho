@@ -5,7 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:PowerLab.PluginContracts.Models;assembly=PowerLab.PluginContracts"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:selectors="clr-namespace:PowerLab.Selectors"
+             xmlns:sv="clr-namespace:PowerLab.Services"
              xmlns:ui="http://ui.powerlab.com/"
              xmlns:viewmodels="clr-namespace:PowerLab.ViewModels"
              Padding="0,36,0,0"
@@ -19,6 +22,57 @@
     <UserControl.Resources>
         <ui:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
         <converters:FileIdToUrlConverter x:Key="FileIdToUrl" />
+        <DataTemplate x:Key="NotInstalledTemplate" DataType="{x:Type models:TransferStatus}">
+            <Button Width="200"
+                    Height="48"
+                    Padding="16,0"
+                    HorizontalContentAlignment="Left"
+                    Command="{Binding Source={StaticResource BindingProxy}, Path=Data.InstallCommand}"
+                    Content="INSTALL"
+                    FontSize="16"
+                    Style="{DynamicResource PrimaryButtonStyle}" />
+        </DataTemplate>
+        <DataTemplate x:Key="DownloadingTemplate" DataType="{x:Type models:TransferStatus}">
+            <Border Width="200"
+                    Height="48"
+                    Background="#10FFFFFF"
+                    CornerRadius="4">
+                <DockPanel LastChildFill="True">
+                    <ProgressBar DockPanel.Dock="Top" Value="{Binding Source={StaticResource BindingProxy}, Path=Data.MarketPlugin.InstallContext.Progress, Mode=OneWay}" d:Value="80"/>
+                    <TextBlock Margin="16,0,0,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontSize="14"
+                               d:Text="正在下载(87.23%)"
+                               Text="{Binding Source={StaticResource BindingProxy}, Path=Data.MarketPlugin.InstallContext.Progress, StringFormat=正在下载({0:F2}%)}" />
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="InstallingTemplate" DataType="{x:Type models:TransferStatus}">
+            <Border Width="200"
+                    Height="48"
+                    Background="#10FFFFFF"
+                    CornerRadius="4">
+                <DockPanel LastChildFill="True">
+                    <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" />
+                    <TextBlock Margin="16,0,0,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontSize="14"
+                               Text="正在安装..." />
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="InstalledTemplate" DataType="{x:Type models:TransferStatus}">
+            <Button Width="200"
+                    Height="48"
+                    Padding="16,0"
+                    HorizontalContentAlignment="Left"
+                    Command="{Binding Source={StaticResource BindingProxy}, Path=Data.OpenPluginCommand}"
+                    Content="OPEN"
+                    FontSize="16"
+                    Style="{DynamicResource PrimaryButtonStyle}" />
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer Padding="32">
@@ -30,29 +84,59 @@
                             CornerRadius="8"
                             DockPanel.Dock="Left">
                         <Border.Background>
-                            <ImageBrush d:ImageSource="/Assets/Icons/PowerLab.ico" ImageSource="{Binding Plugin.IconFileId, Converter={StaticResource FileIdToUrl}}" />
+                            <ImageBrush d:ImageSource="/Assets/Icons/PowerLab.ico" ImageSource="{Binding MarketPlugin.PluginInfo.IconFileId, Converter={StaticResource FileIdToUrl}}" />
                         </Border.Background>
                     </Border>
                     <StackPanel>
                         <TextBlock Margin="0,0,0,4"
                                    d:Text="Plugin Name"
                                    FontSize="24"
-                                   Text="{Binding Plugin.DisplayName}" />
+                                   Text="{Binding MarketPlugin.PluginInfo.DisplayName}" />
                         <TextBlock d:Text="Plugin author"
                                    FontSize="16"
-                                   Text="{Binding Plugin.Author}" />
+                                   Text="{Binding MarketPlugin.PluginInfo.Author}" />
                     </StackPanel>
                 </DockPanel>
                 <TextBlock Margin="0,0,0,16"
                            FontSize="14"
-                           Text="{Binding Plugin.Description}" />
-
+                           Text="{Binding MarketPlugin.PluginInfo.Description}" />
+                <ContentControl Margin="0,0,0,24"
+                                HorizontalAlignment="Left"
+                                d:ContentTemplate="{StaticResource DownloadingTemplate}"
+                                Content="{Binding MarketPlugin.InstallContext.Status}">
+                    <ContentControl.ContentTemplateSelector>
+                        <selectors:MarketPluginStateTemplateSelector DownloadingTemplate="{StaticResource DownloadingTemplate}"
+                                                                     InstalledTemplate="{StaticResource InstalledTemplate}"
+                                                                     InstallingTemplate="{StaticResource InstallingTemplate}"
+                                                                     NotInstalledTemplate="{StaticResource NotInstalledTemplate}" />
+                    </ContentControl.ContentTemplateSelector>
+                </ContentControl>
+                <!--<TextBlock Text="{Binding MarketPlugin.InstallContext.Progress, StringFormat=Installing {0:F2}%}"
+                           Margin="0, 0, 0, 4" />
+                <ProgressBar Width="200"
+                             Margin="0,0,0,4"
+                             HorizontalAlignment="Left"
+                             Maximum="100"
+                             Minimum="0"
+                             Value="{Binding MarketPlugin.InstallContext.Progress, Mode=OneWay}" />
+                <Button Padding="16,0"
+                        HorizontalAlignment="Left"
+                        Width="200"
+                        Height="48"
+                        Margin="0, 0, 0, 24"
+                        HorizontalContentAlignment="Left"
+                        Command="{Binding InstallCommand}"
+                        Content="{Binding MarketPlugin.InstallContext.Status}"
+                        FontSize="16"
+                        Style="{DynamicResource PrimaryButtonStyle}" />
                 <Grid Width="200"
                       Height="48"
                       Margin="0,0,0,24"
+                      Visibility="Collapsed"
                       HorizontalAlignment="Left">
                     <i:Interaction.Triggers>
-                        <i:DataTrigger Binding="{Binding Plugin.IsInstalled}" Value="True">
+                        <i:DataTrigger Binding="{Binding Plugin.IsInstalled}"
+                                       Value="True">
                             <i:ChangePropertyAction PropertyName="Visibility"
                                                     TargetName="InstallButton"
                                                     Value="{x:Static Visibility.Hidden}" />
@@ -60,7 +144,8 @@
                                                     TargetName="OpenButton"
                                                     Value="{x:Static Visibility.Visible}" />
                         </i:DataTrigger>
-                        <i:DataTrigger Binding="{Binding Plugin.IsInstalled}" Value="False">
+                        <i:DataTrigger Binding="{Binding Plugin.IsInstalled}"
+                                       Value="False">
                             <i:ChangePropertyAction PropertyName="Visibility"
                                                     TargetName="InstallButton"
                                                     Value="{x:Static Visibility.Visible}" />
@@ -83,7 +168,7 @@
                             Content="OPEN"
                             FontSize="16"
                             Style="{DynamicResource PrimaryButtonStyle}" />
-                </Grid>
+                </Grid>-->
 
                 <Border Margin="0,0,0,16"
                         Background="{DynamicResource Themes.Brushes.SecondaryContainer}"
@@ -100,7 +185,7 @@
                               Y2="0" />
                         <TextBlock Margin="16"
                                    d:Text="这是此扩展的描述文本"
-                                   Text="{Binding Plugin.Description}" />
+                                   Text="{Binding MarketPlugin.PluginInfo.Description}" />
                     </StackPanel>
                 </Border>
 
@@ -128,7 +213,7 @@
                                 </Canvas>
                                 <StackPanel>
                                     <TextBlock Margin="0,0,0,8" Text="AUTHOR" />
-                                    <TextBlock d:Text="plugin author" Text="{Binding Plugin.Author}" />
+                                    <TextBlock d:Text="plugin author" Text="{Binding MarketPlugin.PluginInfo.Author}" />
                                 </StackPanel>
                             </DockPanel>
                             <DockPanel Width="200" LastChildFill="True">
@@ -167,7 +252,7 @@
                                 </Canvas>
                                 <StackPanel>
                                     <TextBlock Margin="0,0,0,8" Text="PUBLISH" />
-                                    <TextBlock d:Text="1970/1/1" Text="{Binding Plugin.CreateTime, StringFormat={}{0:yyyy/MM/dd}}" />
+                                    <TextBlock d:Text="1970/1/1" Text="{Binding MarketPlugin.PluginInfo.CreateTime, StringFormat={}{0:yyyy/MM/dd}}" />
                                 </StackPanel>
                             </DockPanel>
                             <DockPanel Width="200" LastChildFill="True">

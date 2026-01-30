@@ -63,8 +63,8 @@
                                            HorizontalAlignment="Left">
                                     <Grid Name="Animation" ClipToBounds="True">
                                         <Border Name="PART_GlowRect"
-                                                Width="50"
-                                                Margin="0,0,0,0"
+                                                Width="100"
+                                                Margin="-100,0,0,0"
                                                 HorizontalAlignment="Left"
                                                 Background="{TemplateBinding Foreground}"
                                                 CornerRadius="2" />
