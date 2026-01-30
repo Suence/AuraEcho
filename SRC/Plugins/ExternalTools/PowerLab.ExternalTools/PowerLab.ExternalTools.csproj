@@ -25,7 +25,9 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj"/>
+		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj">
+			<Private>false</Private>
+		</ProjectReference>
 		<ProjectReference Include="..\PowerLab.ExternalTools.Themes\PowerLab.ExternalTools.Themes.csproj" />
 	</ItemGroup>
 	<ItemGroup>

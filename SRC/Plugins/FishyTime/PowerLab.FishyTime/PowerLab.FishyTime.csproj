@@ -19,7 +19,9 @@
 		<Folder Include="Events\" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj"/>
+		<ProjectReference Include="..\..\..\Shared\PowerLab.PluginContracts\PowerLab.PluginContracts.csproj">
+			<Private>false</Private>
+		</ProjectReference>
 		<ProjectReference Include="..\PowerLab.FishyTime.Themes\PowerLab.FishyTime.Themes.csproj" />
 	</ItemGroup>
 	<ItemGroup>
