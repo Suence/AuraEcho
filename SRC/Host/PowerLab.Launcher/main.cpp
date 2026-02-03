@@ -2,10 +2,13 @@
 #include <gdiplus.h>
 #include <string>
 #include <dwmapi.h>
+#include <shlobj.h>
 #include <vector>
-#include <tlhelp32.h>
 #include <thread>
 #include <filesystem>
+#include <fstream>
+#include <chrono>
+#include <iomanip>
 
 #include "resource.h"
 #pragma comment(lib, "gdiplus.lib")
@@ -16,11 +19,39 @@ namespace fs = std::filesystem;
 
 LPCTSTR LAUNCHER_SERVICE_PIPE_NAME = L"\\\\.\\pipe\\POWERLAB_LAUNCHER_SERVICE_PIPE";
 LPCTSTR POWERLAB_PIPE_NAME = L"\\\\.\\pipe\\PowerLab_SingleInstance_Pipe";
+LPCTSTR INSTALLER_PIPE_NAME = L"\\\\.\\pipe\\PowerLab_Installer_Pipe";
 
 LPCTSTR POWERLAB_MUTEX_ID = TEXT("E2A4C483-C59D-4856-BE14-F9B4AF07042C");
-LPCTSTR INSTALLER_MUTEX_ID = TEXT("17FA29D6-F4BC-4720-A55C-27042D247E35");
+LPCTSTR INSTALLER_MUTEX_ID = TEXT("Global\\17FA29D6-F4BC-4720-A55C-27042D247E35");
 
 const std::string APP_SHOW = "ShowWindow";
+const std::string LAUNCH_APP_WHEN_INSTALLED = "LaunchAppWhenInstalled";
+
+void WriteLog(const std::string& text) {
+
+    PWSTR path_tmp;
+    if (SHGetKnownFolderPath(FOLDERID_ProgramData, 0, NULL, &path_tmp) == S_OK) {
+
+        std::filesystem::path logPath(path_tmp);
+        CoTaskMemFree(path_tmp); // 释放内存
+
+        logPath /= "PowerLab\\Launcher";
+
+        // 确保文件夹存在
+        std::error_code ec;
+        std::filesystem::create_directories(logPath, ec);
+
+        logPath /= "launcher.log";
+        std::ofstream logFile(logPath, std::ios_base::out | std::ios_base::app);
+
+        auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        struct tm timeInfo;
+
+        if (localtime_s(&timeInfo, &now) == 0) {
+            logFile << std::put_time(&timeInfo, "%Y-%m-%d %H:%M:%S") << " - " << text << std::endl;
+        }
+    }
+}
 
 Image* LoadImageFromResource(HMODULE hMod, int resId, LPCWSTR resType) {
     HRSRC hRes = FindResource(hMod, MAKEINTRESOURCE(resId), resType);
@@ -194,43 +225,69 @@ static void StartApp(HWND hwndTarget) {
     PostMessage(hwndTarget, WM_CLOSE, 0, 0);
 }
 
-static bool CheckMutex(LPCWSTR mutexId) {
-    HANDLE hAppMutex = CreateMutex(NULL, TRUE, mutexId);
-    DWORD lastError = GetLastError();
-    if (hAppMutex == NULL || lastError == ERROR_ALREADY_EXISTS) {
-        if (hAppMutex) CloseHandle(hAppMutex);
+static bool CheckMutex(LPCWSTR mutexId, DWORD timeoutMs) {
+    HANDLE hAppMutex = CreateMutex(NULL, FALSE, mutexId);
+
+    if (hAppMutex == NULL) {
         return true;
     }
+
+    // WAIT_OBJECT_0: 成功获取到了互斥体
+    // WAIT_TIMEOUT: 在指定时间内没等到
+    DWORD result = WaitForSingleObject(hAppMutex, timeoutMs);
+
+    if (result == WAIT_OBJECT_0) {
+        ReleaseMutex(hAppMutex); 
+        CloseHandle(hAppMutex);
+        return false;
+    }
+
+    // 超时或其他错误 (WAIT_TIMEOUT, WAIT_ABANDONED, WAIT_FAILED)
     CloseHandle(hAppMutex);
-    return false;
+    return true;
 }
 
 static bool AppIsRunning() {
-    return CheckMutex(POWERLAB_MUTEX_ID);
+    return CheckMutex(POWERLAB_MUTEX_ID, 0);
 }
 
 static bool AppInstallerIsRunning() {
-    return CheckMutex(INSTALLER_MUTEX_ID);
+    return CheckMutex(INSTALLER_MUTEX_ID, 1000);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow) {
+    WriteLog("--- Application Starting ---");
+
+    std::string cmdLine(pCmdLine);
+    bool isHideRunning = cmdLine.find("-hide") != std::string::npos;
 
     if (AppIsRunning()) {
+        WriteLog("Info: App is already running. Sending APP_SHOW to pipe and exiting.");
         SendPipeMessage(POWERLAB_PIPE_NAME, APP_SHOW);
         return 0;
     }
 
     if (AppInstallerIsRunning()) {
-        // Installer is running, just exit.
+        if (isHideRunning) {
+            WriteLog("Info: Installer is running and '-hide' flag detected. Sending LaunchAppWhenInstalled to pipe.");
+            SendPipeMessage(INSTALLER_PIPE_NAME, LAUNCH_APP_WHEN_INSTALLED);
+            return 0;
+        }
+
+        WriteLog("Warning: Installer is currently running. Exiting process.");
         return 0;
     }
 
-    std::string cmdLine(pCmdLine);
-    if (cmdLine.find("-hide") != std::string::npos) {
+    WriteLog("CmdLine received: " + cmdLine);
+
+    if (isHideRunning) {
         std::string message = GetAppInstallPath() += " -hide";
+        WriteLog("Info: Found '-hide' flag. Sending message to Launcher Service: " + message);
         SendPipeMessage(LAUNCHER_SERVICE_PIPE_NAME, message);
         return 0;
     }
+
+    WriteLog("Success: Proceeding to main application initialization.");
 
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;

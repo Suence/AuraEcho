@@ -132,7 +132,7 @@ public class InstallPreparationViewModel : BindableBase
         set => SetProperty(ref _agreeAgreement, value);
     }
 
-    public string Version => _ba.Version;
+    public Version Version => _ba.Version;
 
     public string TargetInstallFolder
     {

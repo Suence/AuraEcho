@@ -7,7 +7,7 @@
 			Version="$(var.BundleVersion)"
 			SplashScreenSourceFile="Assets/Images/splash_screen.bmp"
 			IconSourceFile="Assets/Icons/PowerLab.ico"
-			InProgressName="PLSU"
+			InProgressName="PowerLab Installing"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
 
 		<BootstrapperApplication Secondary="true" SourceFile="PowerLab.Setup.UI.exe">

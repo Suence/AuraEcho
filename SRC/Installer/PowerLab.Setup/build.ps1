@@ -19,13 +19,13 @@ if ($Arch -eq "2") { $Arch = "x86" } else { $Arch = "x64" }
 $Mode = Read-Host "选择构建模式 [1: Build (增量, 默认), 2: Rebuild (全量)]"
 $isRebuild = if ($Mode -eq "2") { $true } else { $false }
 
-$BundleVersion = "1.0.0"
-$AppVersion = "1.0.0"
-$LauncherVersion = "1.0.0"
+$BundleVersion = "1.2.0"
+$AppVersion = "1.2.0"
+$LauncherVersion = "1.2.0"
 $DataMigratorVersion = $BundleVersion
-$LauncherServiceVersion = "1.0.0"
-$PluginInstallerVersion = "1.0.0"
-$UpdaterServiceVersion = "1.0.0"
+$LauncherServiceVersion = "1.2.0"
+$PluginInstallerVersion = "1.2.0"
+$UpdaterServiceVersion = "1.2.0"
 
 Write-Host "`n--------------------------------------------------" -ForegroundColor Gray
 Write-Host "构建计划:" -ForegroundColor Cyan
