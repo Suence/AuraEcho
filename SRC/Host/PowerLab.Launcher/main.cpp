@@ -226,6 +226,7 @@ static void StartApp(HWND hwndTarget) {
 }
 
 static bool CheckMutex(LPCWSTR mutexId, DWORD timeoutMs) {
+
     HANDLE hAppMutex = CreateMutex(NULL, FALSE, mutexId);
 
     if (hAppMutex == NULL) {
@@ -236,13 +237,13 @@ static bool CheckMutex(LPCWSTR mutexId, DWORD timeoutMs) {
     // WAIT_TIMEOUT: 在指定时间内没等到
     DWORD result = WaitForSingleObject(hAppMutex, timeoutMs);
 
-    if (result == WAIT_OBJECT_0) {
+    if (result == WAIT_OBJECT_0 || result == WAIT_ABANDONED) {
         ReleaseMutex(hAppMutex); 
         CloseHandle(hAppMutex);
         return false;
     }
 
-    // 超时或其他错误 (WAIT_TIMEOUT, WAIT_ABANDONED, WAIT_FAILED)
+    // 超时或其他错误 (WAIT_TIMEOUT, WAIT_FAILED)
     CloseHandle(hAppMutex);
     return true;
 }
@@ -252,7 +253,7 @@ static bool AppIsRunning() {
 }
 
 static bool AppInstallerIsRunning() {
-    return CheckMutex(INSTALLER_MUTEX_ID, 1000);
+    return CheckMutex(INSTALLER_MUTEX_ID, 10000);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow) {
