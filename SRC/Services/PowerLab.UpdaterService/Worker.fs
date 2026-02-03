@@ -1,7 +1,6 @@
 ﻿namespace PowerLab.UpdaterService
 
 open System
-open System.Collections.Generic
 open System.Threading
 open System.Threading.Tasks
 open Microsoft.Extensions.Hosting
@@ -12,16 +11,25 @@ open PowerLab.PluginContracts.Interfaces
 open Microsoft.Win32
 open System.Diagnostics
 open Microsoft.Data.Sqlite
+open System.Text.Json
 
+[<CLIMutable>]
 type AppUpdateInfo = {
     Version: string
     FilePath: string
 }
 
+[<CLIMutable>]
 type PluginUpdateInfo = {
     PluginId: Guid
     Version: string
     FilePath: string
+}
+
+[<CLIMutable>]
+type PendingUpdate = {
+    mutable App: AppUpdateInfo option
+    mutable Plugins: Map<Guid, PluginUpdateInfo>
 }
 
 type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
@@ -32,15 +40,32 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
                      "PowerLab", "UpdaterService", "Download")
 
     let appPackageCachePath = Path.Combine(basePath, "PackageCache")
-
     let pluginPackageCachePath = Path.Combine(basePath, "PluginCache")
+    let configFilePath = Path.Combine(basePath, "pending_updates.json")
     
-    let mutable cachedAppUpdateInfo: AppUpdateInfo option = None
-    let cachedPluginUpdateInfo = Dictionary<Guid, PluginUpdateInfo>()
+    let mutable pendingUpdate = { App = None; Plugins = Map.empty }
+
+    let saveState (state: PendingUpdate) =
+        try
+            let options = JsonSerializerOptions(WriteIndented = true)
+            let json = JsonSerializer.Serialize(state, options)
+            File.WriteAllText(configFilePath, json)
+        with ex -> logger.Information $"保存状态文件失败: {ex.Message}"
+
+    let loadState () =
+        try
+            if File.Exists configFilePath then
+                let json = File.ReadAllText(configFilePath)
+                pendingUpdate <- JsonSerializer.Deserialize<PendingUpdate>(json)
+                logger.Information "成功从本地恢复待更新状态"
+        with ex -> 
+            logger.Information $"加载状态文件失败，将重新开始: {ex.Message}"
+            pendingUpdate <- { App = None; Plugins = Map.empty }
 
     do
         [basePath; appPackageCachePath; pluginPackageCachePath]
-        |> List.iter(fun path -> Directory.CreateDirectory path |> ignore)
+        |> List.iter (fun path -> path |> Directory.CreateDirectory |> ignore)
+        loadState()
 
     let getRegistryValue registryKey = 
         use key = Registry.LocalMachine.OpenSubKey @"Software\PowerLab"
@@ -73,19 +98,19 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
         let! latestInfo = packageRepo.GetLatestAsync() |> Async.AwaitTask
         let newestVersion = if isNull latestInfo then "1.0.0" else latestInfo.Version
 
-        logger.Information $"当前版本: {currentVersion}, 最新版本: {newestVersion}"
-
         let newestVer = Version newestVersion
-        let cachedVer = cachedAppUpdateInfo |> Option.map (fun i -> Version i.Version) |> Option.defaultValue (Version "0.0.0")
+        let cachedVer = pendingUpdate.App |> Option.map (fun i -> Version i.Version) |> Option.defaultValue (Version "0.0.0")
 
         if newestVer > currentVersion && newestVer > cachedVer then
-            logger.Information "正在下载新版本安装包"
+            logger.Information $"发现新版本 {newestVersion}，正在下载..."
             let targetPath = Path.Combine(appPackageCachePath, latestInfo.FileName)
             let! success = packageRepo.DownloadLatestAsync("stable", targetPath, Progress<double> ignore) |> Async.AwaitTask
             if success then
-                cachedAppUpdateInfo <- Some { Version = newestVersion; FilePath = targetPath }
+                pendingUpdate.App <- Some { Version = newestVersion; FilePath = targetPath }
+                saveState pendingUpdate
+                logger.Information "客户端下载完成并已保存状态"
         else
-            logger.Information "未检测到新版本"
+            logger.Information "未检测到更高版本的客户端"
     }
 
     let downloadPluginPackage (localRepo: ILocalPluginRepository, remoteRepo: IRemotePluginRepository) = async {
@@ -97,75 +122,76 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
             let! latestPackage = remoteRepo.GetLatestAsync plugin.Manifest.Id |> Async.AwaitTask
             let latestVersion = if isNull latestPackage then Version "0.0.0" else Version latestPackage.Version
             
-            logger.Information $"{plugin.Manifest.PluginName} 当前版本: {plugin.Manifest.Version}, 最新版本: {latestVersion}"
-
             let cachedVersion = 
-                match cachedPluginUpdateInfo.TryGetValue plugin.Manifest.Id with
-                | true, info -> Version info.Version
-                | _ -> Version "0.0.0"
+                match pendingUpdate.Plugins.TryFind plugin.Manifest.Id with
+                | Some info -> Version info.Version
+                | None -> Version "0.0.0"
 
             if latestVersion > Version plugin.Manifest.Version && latestVersion > cachedVersion then
                 let targetPath = Path.Combine(pluginPackageCachePath, latestPackage.FileName)
                 let! result = remoteRepo.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, null) |> Async.AwaitTask
                 if result then
-                    cachedPluginUpdateInfo.[plugin.Manifest.Id] <- { PluginId = plugin.Manifest.Id; Version = latestPackage.Version; FilePath = targetPath}
+                    let newPlugins = pendingUpdate.Plugins.Add(plugin.Manifest.Id, { PluginId = plugin.Manifest.Id; Version = latestPackage.Version; FilePath = targetPath})
+                    pendingUpdate.Plugins <- newPlugins
+                    saveState pendingUpdate
+                    logger.Information $"插件 {plugin.Manifest.PluginName} 下载完成"
                 else
-                    logger.Information "插件安装包下载失败"
+                    logger.Information $"插件 {plugin.Manifest.PluginName} 下载失败"
     }
 
     let installAppPackage () = async {
-        match cachedAppUpdateInfo with
-        | None -> logger.Information "没有新版本需要安装"
+        match pendingUpdate.App with
+        | None -> ()
         | Some info ->
+
             logger.Information "开始启动客户端安装程序"
-            let psi = ProcessStartInfo(info.FilePath, Arguments = "/quiet", UseShellExecute = false, CreateNoWindow = true)
-            use p = Process.Start psi  
-            if not (isNull p) then
-                do! p.WaitForExitAsync() |> Async.AwaitTask
-                logger.Information "客户端安装程序执行完成"
-                File.Delete info.FilePath
-                cachedAppUpdateInfo <- None
-            else
-                logger.Information "客户端安装程序启动失败"
+            let psi = ProcessStartInfo(info.FilePath, Arguments = "/quiet /log debug.log", UseShellExecute = false, CreateNoWindow = true)
+            try
+                use p = Process.Start psi  
+                if not (isNull p) then
+                    pendingUpdate.App <- None
+                    saveState pendingUpdate
+
+                    do! p.WaitForExitAsync() |> Async.AwaitTask
+                    logger.Information "客户端更新完成"
+                    if File.Exists info.FilePath then File.Delete info.FilePath
+            with ex -> logger.Information $"安装客户端时发生异常: {ex.Message}"
     }
 
-    let installPluginPackageCore cachedPluginIdList installFolder = task {
+    let installPluginPackageCore (pluginIds: Guid list) installFolder = task {
         let pluginInstallerPath = Path.Combine(installFolder, "PluginInstaller.exe")
         
-        for pluginId in cachedPluginIdList do
-            let info = cachedPluginUpdateInfo.[pluginId]
-            logger.Information $"开始安装插件 {pluginId} 的新版本 {info.Version}"
-            
-            let psi = ProcessStartInfo(pluginInstallerPath, UseShellExecute = false, CreateNoWindow = true)
-            psi.ArgumentList.Add info.FilePath
-            psi.ArgumentList.Add "--nowindow"
+        for pluginId in pluginIds do
+            match pendingUpdate.Plugins.TryFind pluginId with
+            | Some info ->
+                logger.Information $"正在更新插件: {pluginId}"
+                let psi = ProcessStartInfo(pluginInstallerPath, UseShellExecute = false, CreateNoWindow = true)
+                psi.ArgumentList.Add info.FilePath
+                psi.ArgumentList.Add "--nowindow"
 
-            try
-                use p = Process.Start psi
-                if not (isNull p) then
-                    do! p.WaitForExitAsync() |> Async.AwaitTask
-                    
-                    logger.Information $"插件 {pluginId} 的安装程序执行完成。"
-                    if File.Exists info.FilePath then File.Delete info.FilePath
-                    cachedPluginUpdateInfo.Remove pluginId |> ignore
-                else
-                    logger.Information $"插件 {pluginId} 的安装程序启动失败。"
-            with ex ->
-                logger.Information $"安装插件 {pluginId} 时发生异常: {ex.Message}"
+                try
+                    use p = Process.Start psi
+                    if not (isNull p) then
+                        do! p.WaitForExitAsync() |> Async.AwaitTask
+                        if File.Exists info.FilePath then File.Delete info.FilePath
+                        pendingUpdate.Plugins <- pendingUpdate.Plugins.Remove pluginId
+                        saveState pendingUpdate
+                with ex -> logger.Information $"安装插件 {pluginId} 时异常: {ex.Message}"
+            | None -> ()
     }
 
     let installPluginPackage () = async {
-       
-        let cachedPluginIdList = cachedPluginUpdateInfo.Keys |> Seq.toList
-        let installPathOpt = getInstallPath() |> Option.map Path.GetDirectoryName
+        let cachedPluginIdList = pendingUpdate.Plugins.Keys |> Seq.toList
+        if List.isEmpty cachedPluginIdList then return ()
 
+        let installPathOpt = getInstallPath() |> Option.map Path.GetDirectoryName
         match installPathOpt with
-        | None -> logger.Information "找不到客户端的安装目录"
+        | None -> logger.Information "找不到客户端的安装目录，无法安装插件"
         | Some installFolder -> do! installPluginPackageCore cachedPluginIdList installFolder |> Async.AwaitTask
     }
 
     override _.ExecuteAsync(stoppingToken: CancellationToken) = task {
-        logger.Information "ExecuteAsync 已启动"
+        logger.Information "更新服务工作循环已启动"
         
         while not stoppingToken.IsCancellationRequested do
             try
@@ -174,25 +200,26 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
                 let localRepo = scope.ServiceProvider.GetRequiredService<ILocalPluginRepository>()
                 let remoteRepo = scope.ServiceProvider.GetRequiredService<IRemotePluginRepository>()
 
-                do! Task.Delay(TimeSpan.FromSeconds 10.0, stoppingToken)
-
-                do! downloadAppPackage packageRepo |> Async.StartAsTask :> Task
-                do! downloadPluginPackage (localRepo, remoteRepo) |> Async.StartAsTask :> Task
+                do! downloadAppPackage packageRepo |> Async.StartAsTask
+                do! downloadPluginPackage (localRepo, remoteRepo) |> Async.StartAsTask
 
                 if not (isAppRunning()) then
-                    do! installPluginPackage () |> Async.StartAsTask :> Task
-                    do! installAppPackage () |> Async.StartAsTask :> Task
+                    do! installPluginPackage () |> Async.StartAsTask
+                    do! installAppPackage () |> Async.StartAsTask
                 else
-                    logger.Information "检测到程序正在运行，跳过安装阶段"
+                    if pendingUpdate.App.IsSome || not pendingUpdate.Plugins.IsEmpty then
+                        logger.Information "检测到待更新项，但程序正在运行，等待退出后安装"
+
+                do! Task.Delay(TimeSpan.FromMinutes 1.0, stoppingToken)
 
             with ex ->
                 logger.Information $"工作循环中发生错误: {ex.Message}"
     }
 
     override _.StartAsync ct = 
-        logger.Information "StartAsync"
+        logger.Information "Updater Service Starting..."
         base.StartAsync ct
 
     override _.StopAsync ct = 
-        logger.Information "StopAsync"
+        logger.Information "Updater Service Stopping..."
         base.StopAsync ct
