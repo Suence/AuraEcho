@@ -8,6 +8,8 @@ internal static class BundleVar
     public const string InstallDirectory = "InstallFolder";
 
     public const string UninstallerPath = "UninstallerPath";
+
+    public const string BundleFileName = "BundleFileName";
     /// <summary>
     /// Gets the variable name for the layout directory
     /// where bundle payloads are cached.

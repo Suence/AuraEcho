@@ -22,7 +22,6 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
 
     private const string PIPE_NAME = "PowerLab_Installer_Pipe";
     private Dispatcher _dispatcher;
-    private const string POWERLAB_BUNDLE_FILENAME = "PowerLabSetup.exe"; // refactory to Bundle var
     private bool _isAutoPlan;
     private ExecuteMsiMessageEventArgs _currentAction;
     private ManualResetEventSlim _elevateLock = new(false);
@@ -41,6 +40,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     private WixBooleanVariable _launchOnStartupVar;
     private WixStringVariable _versionVar;
     private WixStringVariable _bundleElevated;
+    private WixStringVariable _bundleFileName;
 
     public event EventHandler? OnActionRequested;
     public event EventHandler? OnActionCompleted;
@@ -73,6 +73,12 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         set => _launchOnStartupVar.Set(value);
     }
 
+    public string BundleFileName
+    {
+        get => _bundleFileName.Get();
+        set => _bundleFileName.Set(value);
+    }
+
     public Version Version => Version.Parse(_versionVar.Get());
     public bool IsBundleElevated => _bundleElevated.Get() is "1";
     public bool CancelRequested { get; private set; }
@@ -86,6 +92,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
 
         _installDirVar = new(Engine, BundleVar.InstallDirectory);
         _createShortcutVar = new(Engine, BundleVar.CreateDesktopShortcut);
+        _bundleFileName = new(Engine, BundleVar.BundleFileName);
         _launchOnStartupVar = new(Engine, BundleVar.LaunchOnStartup);
         _uninstallerPath = new(Engine, BundleVar.UninstallerPath);
         _versionVar = new(Engine, BundleVar.Version);
@@ -107,7 +114,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "Package Cache",
                 Engine.GetVariableString("WixBundleProviderKey"),
-                POWERLAB_BUNDLE_FILENAME);
+                BundleFileName);
         _uninstallerPath.Set(uninstallPath);
     }
 

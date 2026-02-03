@@ -19,13 +19,14 @@ if ($Arch -eq "2") { $Arch = "x86" } else { $Arch = "x64" }
 $Mode = Read-Host "选择构建模式 [1: Build (增量, 默认), 2: Rebuild (全量)]"
 $isRebuild = if ($Mode -eq "2") { $true } else { $false }
 
-$BundleVersion = "1.2.0"
-$AppVersion = "1.2.0"
-$LauncherVersion = "1.2.0"
+$BundleVersion = "1.2.1"
+$AppVersion = "1.2.1"
+$LauncherVersion = "1.2.1"
+$LauncherServiceVersion = "1.2.1"
+$PluginInstallerVersion = "1.2.1"
+$UpdaterServiceVersion = "1.2.1"
 $DataMigratorVersion = $BundleVersion
-$LauncherServiceVersion = "1.2.0"
-$PluginInstallerVersion = "1.2.0"
-$UpdaterServiceVersion = "1.2.0"
+$BundleFileName = "PowerLabSetup"
 
 Write-Host "`n--------------------------------------------------" -ForegroundColor Gray
 Write-Host "构建计划:" -ForegroundColor Cyan
@@ -51,6 +52,7 @@ $buildArgs = @(
     "/tl"
     "/p:WarningLevel=0",
 
+    "/p:BundleFileName=$BundleFileName",
     "/p:BundleVersion=$BundleVersion",
     "/p:AppVersion=$AppVersion",
     "/p:LauncherVersion=$LauncherVersion",
