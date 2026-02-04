@@ -4,8 +4,9 @@
 		<Cultures>zh-CN;</Cultures>
 		<BundleFileName Condition="'$(BundleFileName)' == ''">PowerLabSetup</BundleFileName>
 		<BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
+		<IncludeRuntime Condition="'$(IncludeRuntime)' == ''">yes</IncludeRuntime>
 		<OutputName>$(BundleFileName)</OutputName>
-		<DefineConstants>BundleVersion=$(BundleVersion);BundleFileName=$(BundleFileName)</DefineConstants>
+		<DefineConstants>BundleVersion=$(BundleVersion);BundleFileName=$(BundleFileName);IncludeRuntime=$(IncludeRuntime)</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Include="Assets\Icons\PowerLab.ico" />

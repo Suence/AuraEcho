@@ -1,7 +1,7 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
 	 xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
 	 xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
-	
+
 	<Bundle Name="PowerLab"
 			Manufacturer="Suencesoft"
 			Version="$(var.BundleVersion)"
@@ -9,8 +9,13 @@
 			IconSourceFile="Assets/Icons/PowerLab.ico"
 			InProgressName="PowerLab Installing"
 			UpgradeCode="73725F25-4E6A-4817-B1EC-69A577E59D25">
-
-		<BootstrapperApplication Secondary="true" SourceFile="PowerLab.Setup.UI.exe">
+		
+		<netfx:DotNetCoreSearch RuntimeType="desktop" MajorVersion="10" Platform="x64" Variable="DOTNETDESKTOPVERSION" />
+		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab" />
+		<Variable Name="BundleFileName" Value="$(var.BundleFileName).exe" Type="string" />
+		<ApprovedExeForElevation Id="LaunchMainApp" Key="Software\PowerLab" Value="LauncherPath" />
+		
+		<BootstrapperApplication SourceFile="PowerLab.Setup.UI.exe" Secondary="$(var.IncludeRuntime)">
 			<Payload SourceFile="mbanative.dll" />
 			<Payload SourceFile="PowerLab.Setup.UI.dll" />
 			<Payload SourceFile="DryIoc.dll" />
@@ -27,21 +32,16 @@
 			<Payload SourceFile="WixToolset.BootstrapperApplicationApi.dll" />
 			<Payload SourceFile="PowerLab.Setup.UI.runtimeconfig.json" />
 
+			<?if $(var.IncludeRuntime) = "yes" ?>
 			<bal:WixPrerequisiteBootstrapperApplication Theme="standard" LogoFile="Assets/Icons/PowerLab.ico" LocalizationFile="Strings/zh-cn.wxl"/>
+			<?endif ?>
+
 		</BootstrapperApplication>
 
-		<netfx:DotNetCoreSearch
-			RuntimeType="desktop"
-			MajorVersion="10"
-			Platform="x64"
-			Variable="DOTNETDESKTOPVERSION" />
-
-		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab" />
-		<Variable Name="BundleFileName" Value="$(var.BundleFileName).exe" Type="string" />
-		<ApprovedExeForElevation Id="LaunchMainApp" Key="Software\PowerLab" Value="LauncherPath" />
-		
 		<Chain DisableSystemRestore="yes">
 
+			<!-- Runtime -->
+			<?if $(var.IncludeRuntime) = "yes" ?>
 			<!-- Permanent: 永久(卸载时保留) or 指定卸载参数 UninstallArguments="/uninstall /quiet /norestart" -->
 			<ExePackage Id="DotNetDesktop"
 						DetectCondition="DOTNETDESKTOPVERSION &gt;= &quot;10.0.0&quot;"
@@ -55,7 +55,8 @@
 						UninstallArguments="windowsdesktop-runtime-10.0.0-win-x64.exe /uninstall /quiet /norestart">
 				<ExePackagePayload SourceFile="ExePackageFiles/windowsdesktop-runtime-10.0.0-win-x64.exe" />
 			</ExePackage>
-			
+			<?endif ?>
+
 			<!-- PowerLab -->
 			<MsiPackage Id="PowerLabInstallerMSI"
 						Visible="yes"
@@ -63,7 +64,7 @@
 						SourceFile="$(PowerLab.Installer.TargetFileName)">
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 			</MsiPackage>
-			
+
 			<!-- PowerLab Launcher -->
 			<MsiPackage Id="PowerLabLauncherMSI"
 						Visible="yes"
@@ -73,7 +74,7 @@
 				<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]"/>
 				<MsiProperty Name="UNINSTALLER_PATH" Value="[UninstallerPath]"/>
 			</MsiPackage>
-			
+
 			<!-- Plugin Installer -->
 			<MsiPackage Id="PluginInstallerMSI"
 						Visible="yes"

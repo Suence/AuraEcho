@@ -16,8 +16,11 @@ if ($Config -eq "2") { $Config = "Release" } else { $Config = "Debug" }
 $Arch = Read-Host "选择目标架构 [1: x64 (默认), 2: x86]"
 if ($Arch -eq "2") { $Arch = "x86" } else { $Arch = "x64" }
 
-$Mode = Read-Host "选择构建模式 [1: Build (增量, 默认), 2: Rebuild (全量)]"
-$isRebuild = if ($Mode -eq "2") { $true } else { $false }
+$Mode = Read-Host "选择构建模式 [1: Rebuild (默认), 2: Build]"
+$isRebuild = if ($Mode -eq "2") { $false } else { $true }
+
+$Runtime = Read-Host "选择构建版本 [1: Slim (默认), 2: Full]"
+$isFull = if ($Runtime -eq "2") { "yes" } else { "no" }
 
 $BundleVersion = "1.2.1"
 $AppVersion = "1.2.1"
@@ -33,6 +36,7 @@ Write-Host "构建计划:" -ForegroundColor Cyan
 Write-Host ">> 配置: $Config"
 Write-Host ">> 架构: $Arch"
 Write-Host ">> 模式: $(if($isRebuild){"Rebuild"}else{"Build"})"
+Write-Host ">> 版本: $(if($isFull){"Full"}else{"Slim"})"
 Write-Host "--------------------------------------------------`n" -ForegroundColor Gray
 
 if ($isRebuild) {
@@ -53,6 +57,7 @@ $buildArgs = @(
     "/p:WarningLevel=0",
 
     "/p:BundleFileName=$BundleFileName",
+    "/p:IncludeRuntime=$isFull",
     "/p:BundleVersion=$BundleVersion",
     "/p:AppVersion=$AppVersion",
     "/p:LauncherVersion=$LauncherVersion",
