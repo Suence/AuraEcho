@@ -49,6 +49,7 @@
                 <Button Width="40"
                         ui:ControlHelper.CornerRadius="0"
                         Click="Button_Click"
+                        IsTabStop="False"
                         Style="{DynamicResource IconButtonStyle}">
                     <Button.Content>
                         <Viewbox Width="20" Height="20">
@@ -59,6 +60,7 @@
                     </Button.Content>
                 </Button>
                 <Button Width="40"
+                        IsTabStop="False"
                         ui:ControlHelper.CornerRadius="0"
                         Command="{Binding ExitCommand}"
                         Style="{DynamicResource IconButtonStyle}">
