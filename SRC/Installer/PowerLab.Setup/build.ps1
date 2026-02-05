@@ -36,7 +36,7 @@ Write-Host "构建计划:" -ForegroundColor Cyan
 Write-Host ">> 配置: $Config"
 Write-Host ">> 架构: $Arch"
 Write-Host ">> 模式: $(if($isRebuild){"Rebuild"}else{"Build"})"
-Write-Host ">> 版本: $(if($isFull){"Full"}else{"Slim"})"
+Write-Host ">> 版本: $(if($Runtime -eq 2){"Full"}else{"Slim"})"
 Write-Host "--------------------------------------------------`n" -ForegroundColor Gray
 
 if ($isRebuild) {
