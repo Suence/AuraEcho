@@ -40,7 +40,7 @@
                     ContextMenu="{StaticResource SysTrayMenu}"
                     DoubleClickCommand="{Binding ShowWindowCommand}"
                     IconSource="/Assets/Icons/PowerLab.ico"
-                    ToolTipText="PowerLab v1.0.0">
+                    ToolTipText="PowerLab">
         <!--<tb:TaskbarIcon.DataContext>
             <vm:NotifyIconViewModel />
         </tb:TaskbarIcon.DataContext>-->
