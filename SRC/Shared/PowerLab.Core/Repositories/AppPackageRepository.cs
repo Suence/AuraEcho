@@ -28,11 +28,11 @@ public class AppPackageRepository : IAppPackageRepository
         return result;
     }
 
-    public async Task<bool> DownloadLatestAsync(string build, string outputPath, IProgress<double> progress)
+    public async Task<bool> DownloadLatestAsync(bool isFull, string outputPath, IProgress<double> progress)
     {
         try
         {
-            using var response = await _httpHelper.GetAsync($"{Urls.ServerUrl}/api/package/download?build={build}", HttpCompletionOption.ResponseHeadersRead);
+            using var response = await _httpHelper.GetAsync($"{Urls.ServerUrl}/api/package/download?isFull={isFull}", HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;

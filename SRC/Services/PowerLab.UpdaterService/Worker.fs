@@ -104,7 +104,7 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
         if newestVer > currentVersion && newestVer > cachedVer then
             logger.Information $"发现新版本 {newestVersion}，正在下载..."
             let targetPath = Path.Combine(appPackageCachePath, latestInfo.FileName)
-            let! success = packageRepo.DownloadLatestAsync("stable", targetPath, Progress<double> ignore) |> Async.AwaitTask
+            let! success = packageRepo.DownloadLatestAsync(false, targetPath, Progress<double> ignore) |> Async.AwaitTask
             if success then
                 pendingUpdate.App <- Some { Version = newestVersion; FilePath = targetPath }
                 saveState pendingUpdate
