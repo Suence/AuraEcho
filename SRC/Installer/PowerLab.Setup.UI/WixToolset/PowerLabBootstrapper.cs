@@ -125,7 +125,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
 
     protected override void Run()
     {
-        if (Environment.GetCommandLineArgs().Contains("-debug", StringComparer.OrdinalIgnoreCase))
+        if (Command.ParseCommandLine().UnknownCommandLineArgs.Contains("-debug", StringComparer.OrdinalIgnoreCase))
             Debugger.Launch();
 
         try
