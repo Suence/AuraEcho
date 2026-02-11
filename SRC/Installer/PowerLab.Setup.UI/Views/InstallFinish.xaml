@@ -27,8 +27,8 @@
                     FontSize="18"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Command="{Binding FinishedCommand}"
                     Content="立即体验"
+                    Click="FinishedButton_Click"
                     Style="{DynamicResource PrimaryButtonStyle}" />
         </Grid>
     </Grid>

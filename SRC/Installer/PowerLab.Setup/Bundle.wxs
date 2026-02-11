@@ -13,7 +13,7 @@
 		<netfx:DotNetCoreSearch RuntimeType="desktop" MajorVersion="10" Platform="x64" Variable="DOTNETDESKTOPVERSION" />
 		<Variable Name="InstallFolder" Type="string" Value="[ProgramFiles6432Folder]PowerLab" />
 		<Variable Name="BundleFileName" Value="$(var.BundleFileName).exe" Type="string" />
-		<ApprovedExeForElevation Id="LaunchMainApp" Key="Software\PowerLab" Value="LauncherPath" />
+		<Variable Name="AppLauncherExeName" Type="string" Value="PowerLabLauncher.exe" />
 		
 		<BootstrapperApplication SourceFile="PowerLab.Setup.UI.exe" Secondary="$(var.IncludeRuntime)">
 			<Payload SourceFile="mbanative.dll" />

@@ -136,16 +136,15 @@ public class InstallPreparationViewModel : BindableBase
 
     public string TargetInstallFolder
     {
-        get => _ba.Engine.GetVariableString("InstallFolder");
+        get => _ba.InstallDirectory;
         set
         {
-            var targetFolder = value;
+            string targetFolder = value;
             if (Directory.GetFiles(targetFolder).Length != 0 || Directory.GetDirectories(targetFolder).Length != 0)
             {
                 targetFolder = Path.Combine(targetFolder, "PowerLab");
             }
             _ba.InstallDirectory = targetFolder;
-            //_ba.Engine.SetVariableString(targetFolder, value, false);
         }
     }
     #endregion 

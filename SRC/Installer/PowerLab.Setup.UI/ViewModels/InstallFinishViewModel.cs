@@ -11,7 +11,7 @@ public class InstallFinishViewModel : BindableBase
     public DelegateCommand FinishedCommand { get; }
     private async void Finished()
     {
-        _ba.Engine.LaunchApprovedExe(IntPtr.Zero, "LaunchMainApp", null);
+        _ba.LaunchExecutedExe(_ba.AppLauncherFullName, null!);
         App.Current.Shutdown();
     }
 

@@ -41,6 +41,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     private WixStringVariable _versionVar;
     private WixStringVariable _bundleElevated;
     private WixStringVariable _bundleFileName;
+    private WixStringVariable _appLauncherName;
 
     public event EventHandler? OnActionRequested;
     public event EventHandler? OnActionCompleted;
@@ -54,6 +55,9 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         get => _installDirVar.Get();
         set => _installDirVar.Set(value);
     }
+
+    public string AppLauncherFullName 
+        => Path.Combine(InstallDirectory, _appLauncherName.Get());
 
     public string UninstallerPath
     {
@@ -91,6 +95,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         Engine.Log(LogLevel.Standard, $"Command: {Command.Action} | Display: {Command.Display}");
 
         _installDirVar = new(Engine, BundleVar.InstallDirectory);
+        _appLauncherName = new(Engine, BundleVar.AppLauncherName);
         _createShortcutVar = new(Engine, BundleVar.CreateDesktopShortcut);
         _bundleFileName = new(Engine, BundleVar.BundleFileName);
         _launchOnStartupVar = new(Engine, BundleVar.LaunchOnStartup);
@@ -246,6 +251,11 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         _progressPhases = args.PhaseCount;
     }
 
+    public void LaunchExecutedExe(string command, string args)
+    {
+        Process.Start(command, args);
+    }
+
     /// <inheritdoc/>
     protected override void OnApplyComplete(ApplyCompleteEventArgs args)
     {
@@ -255,7 +265,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         if (!_isAutoPlan) return;
 
         if (IsLauchAppWhenInstalled)
-            Engine.LaunchApprovedExe(IntPtr.Zero, "LaunchMainApp", "-hide");
+            LaunchExecutedExe(AppLauncherFullName, "-hide");
 
         _dispatcher.InvokeShutdown();
         return;
