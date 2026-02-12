@@ -19,7 +19,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="10.0.1" />
 		<PackageReference Include="Serilog.Extensions.Hosting" Version="10.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
 	</ItemGroup>
