@@ -7,7 +7,9 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using PowerLab.Setup.UI.Constants;
+using PowerLab.Setup.UI.WixToolset;
 using WixToolset.BootstrapperApplicationApi;
 using ErrorEventArgs = WixToolset.BootstrapperApplicationApi.ErrorEventArgs;
 
@@ -29,7 +31,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     public IEngine Engine { get; private set; }
     public IBootstrapperCommand Command { get; private set; }
     private readonly object _syncRoot = new();
-    public Version RelatedBundleVersion { get; private set; }
+    public RelatedBundleInfo RelatedBundle { get; private set; }
     private int _progressPhases;
     private int _cacheProgress;
     private int _executeProgress;
@@ -56,7 +58,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         set => _installDirVar.Set(value);
     }
 
-    public string AppLauncherFullName 
+    public string AppLauncherFullName
         => Path.Combine(InstallDirectory, _appLauncherName.Get());
 
     public string UninstallerPath
@@ -102,7 +104,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         _uninstallerPath = new(Engine, BundleVar.UninstallerPath);
         _versionVar = new(Engine, BundleVar.Version);
         _bundleElevated = new(Engine, BundleVar.BundleElevated);
-        RelatedBundleVersion = new Version(0, 0, 0);
+        RelatedBundle = new();
         InitVariables();
     }
 
@@ -205,6 +207,44 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         });
     }
 
+    private string GetRelatedBundleInstallationFolder()
+    {
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey(@"Software\PowerLab", false);
+        return key?.GetValue("LauncherPath") is string launcherPath
+               ? Path.GetDirectoryName(launcherPath)
+               : String.Empty;
+    }
+    private Dictionary<string, bool> LoadRelatedFeatureStatus()
+    {
+        return new Dictionary<string, bool>
+        {
+            ["DesktopShortcut"] = LoadDesktopShortcutFeatureStatus(),
+            ["RunAtBoot"] = CheckRunAtBoot()
+        };
+
+        static bool CheckRunAtBoot()
+        {
+            using RegistryKey itemKeyRoot =
+                Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", false);
+
+            if (itemKeyRoot.GetValue("PowerLab") is null) return false;
+
+            using RegistryKey approvedKeyRoot =
+                Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run");
+
+            if (approvedKeyRoot.GetValue("PowerLab") is not byte[] key) return true;
+
+            return key[0] % 2 == 0;
+        }
+        static bool LoadDesktopShortcutFeatureStatus()
+        {
+            const string keyPath = @"Software\PowerLab";
+            using RegistryKey key = Registry.CurrentUser.OpenSubKey(keyPath);
+
+            return key?.GetValue("DesktopShortcutInstalled") is not null;
+        }
+    }
+
     private void LaunchApp()
     {
         _elevateLock.Wait();
@@ -225,13 +265,14 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         }
 
         _isAutoPlan = true;
+
         Engine.Detect();
         Dispatcher.Run();
     }
 
     public void Install()
     {
-        if (RelatedBundleVersion == Version)
+        if (RelatedBundle.Version == Version)
         {
             Plan(LaunchAction.Repair);
             return;
@@ -346,7 +387,7 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
         base.OnDetectComplete(args);
         if (Command.Action is not LaunchAction.Uninstall)
         {
-            Downgrade = RelatedBundleVersion > Version;
+            Downgrade = RelatedBundle.Version > Version;
         }
 
         OnActionRequested?.Invoke(this, EventArgs.Empty);
@@ -387,7 +428,13 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     {
         base.OnDetectRelatedBundle(args);
 
-        RelatedBundleVersion = Version.Parse(args.Version);
+        RelatedBundle.Version = Version.Parse(args.Version);
+        RelatedBundle.FeatureStatus = LoadRelatedFeatureStatus();
+        RelatedBundle.InstallationFolder = GetRelatedBundleInstallationFolder();
+
+        if (!_isAutoPlan) return;
+
+        InstallDirectory = RelatedBundle.InstallationFolder;
     }
 
     /// <inheritdoc/>
@@ -531,7 +578,19 @@ public sealed partial class PowerLabBootstrapper : BootstrapperApplication
     {
         base.OnPlanMsiFeature(args);
 
-        PlanFeature?.Invoke(this, args);
+        if (!_isAutoPlan)
+        {
+            PlanFeature?.Invoke(this, args);
+            return;
+        }
+
+        if (RelatedBundle.FeatureStatus.TryGetValue(args.FeatureId, out bool isInstalled))
+        {
+            args.State = isInstalled ? FeatureState.Local : FeatureState.Absent;
+            return;
+        }
+
+        args.State = FeatureState.Local;
     }
 
     /// <inheritdoc/>
