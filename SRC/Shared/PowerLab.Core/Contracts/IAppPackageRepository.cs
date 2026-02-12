@@ -5,7 +5,7 @@ namespace PowerLab.Core.Contracts;
 
 public interface IAppPackageRepository
 {
-    Task<Guid?> CreatePackageAsync(Guid fileId, string name, string version);
+    Task<Guid?> CreatePackageAsync(Guid fullFileId, Guid updateFileId, string name, string version);
     Task<List<AppPackageDetail>> GetUploadedPackagesAsync();
     Task<AppVersionInfo> GetLatestAsync();
     Task<bool> DownloadLatestAsync(bool isFull, string outputPath, IProgress<double> progress);

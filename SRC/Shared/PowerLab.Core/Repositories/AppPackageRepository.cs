@@ -15,17 +15,17 @@ public class AppPackageRepository : IAppPackageRepository
     {
         _httpHelper = httpHelper;
     }
-    public async Task<Guid?> CreatePackageAsync(Guid fileId, string name, string version)
+    public async Task<Guid?> CreatePackageAsync(Guid fullFileId, Guid updateFileId, string name, string version)
     {
-        var request = new CreatePackageRequest { Name = name, Version = version, FileId = fileId };
+        var request = new CreatePackageRequest { Name = name, Version = version, FullFileId = fullFileId, UpdateFileId = updateFileId };
         var response = await _httpHelper.PostAsync<CreatePackageResponse>($"{Urls.ServerUrl}/api/package/create", request);
         return response?.PackageId;
     }
 
     public async Task<bool> DeleteAsync(Guid packageId)
     {
-        bool result = await _httpHelper.DeleteAsync($"{Urls.ServerUrl}/api/package/delete/{packageId}");
-        return result;
+        var resp = await _httpHelper.DeleteAsync($"{Urls.ServerUrl}/api/package/delete/{packageId}");
+        return resp;
     }
 
     public async Task<bool> DownloadLatestAsync(bool isFull, string outputPath, IProgress<double> progress)
@@ -51,7 +51,7 @@ public class AppPackageRepository : IAppPackageRepository
                 if (totalBytes > 0)
                 {
                     double percent = totalRead * 100.0 / totalBytes;
-                    progress.Report(percent);
+                    progress?.Report(percent);
                 }
             }
             return true;
@@ -69,28 +69,35 @@ public class AppPackageRepository : IAppPackageRepository
 
         return new AppVersionInfo
         {
-            FileId = result.FileId,
             Version = result.Version,
-            FileName = result.FileName,
-            FileSize = result.FileSize,
+            FullFileId = result.FullFileId,
+            FullFileName = result.FullFileName,
+            FullFileSize = result.FullFileSize,
+            UpdateFileId = result.UpdateFileId,
+            UpdateFileName = result.UpdateFileName,
+            UpdateFileSize = result.UpdateFileSize,
             ReleaseDate = result.ReleaseDate,
         };
     }
 
     public async Task<List<AppPackageDetail>> GetUploadedPackagesAsync()
     {
-        var result = await _httpHelper.GetAsync<ListPackagesResponse>($"{Urls.ServerUrl}/api/package/list");
+        var result = await _httpHelper.GetAsync<ListAllPackagesResponse>($"{Urls.ServerUrl}/api/package/listAll");
         if (result is null) return null;
 
         List<AppPackageDetail> packages =
             result.Packages.Select(p => new AppPackageDetail
             {
-                FileName = p.FileName,
+                IsActive = p.IsActive,
                 CreateTime = p.CreateTime,
-                FileId = p.FileId,
+                FullFileId = p.FullFileId,
+                FullFileName = p.FullFileName,
+                FullFileSize = p.FullFileSize,
+                UpdateFileId = p.UpdateFileId,
+                UpdateFileName = p.UpdateFileName,
+                UpdateFileSize = p.UpdateFileSize,
                 Id = p.Id,
                 Name = p.Name,
-                Size = p.Size,
                 Version = p.Version,
             }).ToList();
         return packages;

@@ -103,12 +103,14 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
 
         if newestVer > currentVersion && newestVer > cachedVer then
             logger.Information $"发现新版本 {newestVersion}，正在下载..."
-            let targetPath = Path.Combine(appPackageCachePath, latestInfo.FileName)
+            let targetPath = Path.Combine(appPackageCachePath, latestInfo.UpdateFileName)
             let! success = packageRepo.DownloadLatestAsync(false, targetPath, Progress<double> ignore) |> Async.AwaitTask
-            if success then
+            match success with
+            | true -> 
                 pendingUpdate.App <- Some { Version = newestVersion; FilePath = targetPath }
                 saveState pendingUpdate
                 logger.Information "客户端下载完成并已保存状态"
+            | false -> logger.Information "客户端下载失败"
         else
             logger.Information "未检测到更高版本的客户端"
     }
@@ -129,7 +131,7 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
 
             if latestVersion > Version plugin.Manifest.Version && latestVersion > cachedVersion then
                 let targetPath = Path.Combine(pluginPackageCachePath, latestPackage.FileName)
-                let! result = remoteRepo.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, null) |> Async.AwaitTask
+                let! result = remoteRepo.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, Progress<double> ignore) |> Async.AwaitTask
                 if result then
                     let newPlugins = pendingUpdate.Plugins.Add(plugin.Manifest.Id, { PluginId = plugin.Manifest.Id; Version = latestPackage.Version; FilePath = targetPath})
                     pendingUpdate.Plugins <- newPlugins

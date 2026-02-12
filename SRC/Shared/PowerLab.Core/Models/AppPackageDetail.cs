@@ -7,12 +7,22 @@ public class AppPackageDetail : BindableBase
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string FileName { get; set; }
     public string Version { get; set; }
-    public Guid FileId { get; set; }
-    public long Size { get; set; }
-    public DateTime CreateTime { get; set; }
 
+    public Guid? FullFileId { get; set; }
+    public string? FullFileName { get; set; }
+    public long? FullFileSize { get; set; }
+
+    public Guid? UpdateFileId { get; set; }
+    public string? UpdateFileName { get; set; }
+    public long? UpdateFileSize { get; set; }
+
+    public DateTime CreateTime { get; set; }
+    public bool IsActive
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
     private double _progress;
 
     [JsonIgnore]
