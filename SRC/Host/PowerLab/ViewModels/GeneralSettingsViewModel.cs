@@ -126,7 +126,7 @@ public class GeneralSettingsViewModel : BindableBase
         using RegistryKey itemKeyRoot = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
         if (isEnabled)
         {
-            itemKeyRoot.SetValue("PowerLab", $@"""{GetInstallPath()}"" -hide", RegistryValueKind.String);
+            itemKeyRoot.SetValue("PowerLab", $@"""{GetAppLauncherPath()}"" -hide", RegistryValueKind.String);
             return;
         }
 
@@ -135,7 +135,7 @@ public class GeneralSettingsViewModel : BindableBase
         itemKeyRoot.DeleteValue("PowerLab");
     }
 
-    private static string GetInstallPath()
+    private static string GetAppLauncherPath()
     {
         const string keyPath = @"Software\PowerLab";
         using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);

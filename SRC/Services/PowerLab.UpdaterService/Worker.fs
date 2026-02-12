@@ -73,7 +73,7 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
         | null -> None
         | _ -> key.GetValue registryKey |> Option.ofObj |> Option.map string
 
-    let getInstallPath () = getRegistryValue "LauncherPath"
+    let getInstallPath () = getRegistryValue "InstallPath"
 
     let getInstalledVersion () =
         getRegistryValue "CurrentVersion"
@@ -184,8 +184,7 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
         let cachedPluginIdList = pendingUpdate.Plugins.Keys |> Seq.toList
         if List.isEmpty cachedPluginIdList then return ()
 
-        let installPathOpt = getInstallPath() |> Option.map Path.GetDirectoryName
-        match installPathOpt with
+        match getInstallPath() with
         | None -> logger.Information "找不到客户端的安装目录，无法安装插件"
         | Some installFolder -> do! installPluginPackageCore cachedPluginIdList installFolder |> Async.AwaitTask
     }

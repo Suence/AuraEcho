@@ -59,15 +59,15 @@ public class InstallPreparationViewModel : BindableBase
 
         if (allProcesses.Count <= 0) return true;
 
-        string? installFolder = Path.GetDirectoryName(GetInstallPath());
+        DirectoryInfo installFolder = new DirectoryInfo(GetInstallPath());
         List<Process> runningProcesses =
             [.. allProcesses.Where(p =>
             {
                 string? exePath = p.GetExecutablePath();
-                if (string.IsNullOrEmpty(exePath)) return false;
+                if (String.IsNullOrEmpty(exePath)) return false;
 
-                string? processDir = Path.GetDirectoryName(exePath);
-                return String.Equals(processDir, installFolder, StringComparison.OrdinalIgnoreCase);
+                DirectoryInfo processDir = new DirectoryInfo(Path.GetDirectoryName(exePath));
+                return String.Equals(processDir.FullName, installFolder.FullName, StringComparison.OrdinalIgnoreCase);
             })];
 
         if (runningProcesses.Count <= 0) return true;
@@ -101,7 +101,7 @@ public class InstallPreparationViewModel : BindableBase
         using RegistryKey key = Registry.LocalMachine.OpenSubKey(keyPath);
         if (key == null) return null;
 
-        object value = key.GetValue("LauncherPath");
+        object value = key.GetValue("InstallPath");
         return value?.ToString();
     }
     #endregion

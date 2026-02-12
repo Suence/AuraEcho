@@ -18,6 +18,11 @@
 						   Name="CurrentVersion"
 						   Type="string"
 						   Value="$(var.BundleVersion)"/>
+				<RegistryValue Root="HKLM"
+							   Key="Software\PowerLab"
+							   Name="InstallPath"
+							   Type="string"
+							   Value="[INSTALLFOLDER]"/>
 			</Component>
 		</ComponentGroup>
 
@@ -43,7 +48,7 @@
 					  Name="PowerLab"
 					  Icon="PowerLab.ico"
 					  Advertise="no"
-					  Description="PowerLab by suence"
+					  Description="PowerLab by Suencesoft"
 					  Target="[INSTALLFOLDER]$(var.PowerLab.Launcher.TargetFileName)"
 					  WorkingDirectory="INSTALLFOLDER"/>
 			<Shortcut Id="StartMenuUninstallShortcut"
