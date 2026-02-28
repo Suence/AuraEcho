@@ -130,15 +130,16 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
                 | None -> Version "0.0.0"
 
             if latestVersion > Version plugin.Manifest.Version && latestVersion > cachedVersion then
+                logger.Information $"发现 {plugin.Manifest.PluginName} 插件新版本 {latestVersion}，正在下载..."
                 let targetPath = Path.Combine(pluginPackageCachePath, latestPackage.FileName)
                 let! result = remoteRepo.DownloadLatestAsync(plugin.Manifest.Id, "stable", targetPath, Progress<double> ignore) |> Async.AwaitTask
-                if result then
+                match result with
+                | true -> 
                     let newPlugins = pendingUpdate.Plugins.Add(plugin.Manifest.Id, { PluginId = plugin.Manifest.Id; Version = latestPackage.Version; FilePath = targetPath})
                     pendingUpdate.Plugins <- newPlugins
                     saveState pendingUpdate
                     logger.Information $"插件 {plugin.Manifest.PluginName} 下载完成"
-                else
-                    logger.Information $"插件 {plugin.Manifest.PluginName} 下载失败"
+                | false -> logger.Information $"插件 {plugin.Manifest.PluginName} 下载失败"
     }
 
     let installAppPackage () = async {
@@ -149,14 +150,18 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
             logger.Information "开始启动客户端安装程序"
             let psi = ProcessStartInfo(info.FilePath, Arguments = "/quiet /log debug.log", UseShellExecute = false, CreateNoWindow = true)
             try
-                use p = Process.Start psi  
-                if not (isNull p) then
+                use p = Process.Start psi
+                match p |> Option.ofObj with
+                | None -> logger.Information $"无法启动客户端安装程序 {info.FilePath}"
+                | Some proc -> 
+                    logger.Information $"客户端安装程序已启动，进程ID: {proc.Id}"
                     pendingUpdate.App <- None
                     saveState pendingUpdate
 
                     do! p.WaitForExitAsync() |> Async.AwaitTask
                     logger.Information "客户端更新完成"
                     if File.Exists info.FilePath then File.Delete info.FilePath
+
             with ex -> logger.Information $"安装客户端时发生异常: {ex.Message}"
     }
 
@@ -173,11 +178,16 @@ type Worker(logger: IAppLogger, serviceProvider: IServiceProvider) =
 
                 try
                     use p = Process.Start psi
-                    if not (isNull p) then
+                    match p |> Option.ofObj with
+                    | None -> logger.Information $"无法启动插件安装程序 {pluginInstallerPath}"
+                    | Some proc -> 
+                        logger.Information $"插件安装程序已启动，进程ID: {proc.Id}"
                         do! p.WaitForExitAsync() |> Async.AwaitTask
                         if File.Exists info.FilePath then File.Delete info.FilePath
                         pendingUpdate.Plugins <- pendingUpdate.Plugins.Remove pluginId
                         saveState pendingUpdate
+                        logger.Information $"插件 {pluginId} 更新完成"
+
                 with ex -> logger.Information $"安装插件 {pluginId} 时异常: {ex.Message}"
             | None -> ()
     }
