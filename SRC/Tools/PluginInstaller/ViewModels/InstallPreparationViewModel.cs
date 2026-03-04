@@ -1,10 +1,10 @@
-﻿using System.IO;
+using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 using PluginInstaller.Constants;
-using PowerLab.Core.Constants;
-using PowerLab.Core.Models;
-using PowerLab.PluginContracts.Interfaces;
+using AuraEcho.Core.Constants;
+using AuraEcho.Core.Models;
+using AuraEcho.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;

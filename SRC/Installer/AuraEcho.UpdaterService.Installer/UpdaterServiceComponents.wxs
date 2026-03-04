@@ -1,0 +1,38 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<ComponentGroup Id="UpdaterServiceFileComponents" Directory="UpdaterServiceFolder">
+			<Files Include="$(var.AuraEcho.UpdaterService.TargetDir)**">
+				<Exclude Files="*.pdb"/>
+				<Exclude Files="AuraEchoUpdaterService.exe"/>
+
+				<Exclude Files="Microsoft.Extensions.DependencyModel.dll"/>
+				<Exclude Files="Microsoft.WindowsAPICodePack.dll"/>
+				<Exclude Files="Microsoft.WindowsAPICodePack.Shell.dll"/>
+				<Exclude Files="Microsoft.Xaml.Behaviors.dll"/>
+				<Exclude Files="Prism.Wpf.dll"/>
+				<Exclude Files="Rougamo.dll"/>
+			</Files>
+
+			<Component Id="ProductComponent" Guid="AAABBCB6-0D85-4F1B-88A3-234538A1845F">
+				<File Source="AuraEchoUpdaterService.exe" />
+
+				<ServiceInstall Id="InstallUpdaterService"
+					            Name="AuraEchoUpdaterService"
+					            DisplayName="AuraEcho Updater Service"
+					            Description="此服务用于检测、下载和安装 AuraEcho 的更新。如果此服务被禁用，AuraEcho 将无法自动更新。"
+					            Start="auto"
+					            Type="ownProcess"
+					            ErrorControl="normal"
+					            Vital="yes"
+					            Account="LocalSystem" />
+
+				<ServiceControl Id="ControlUpdaterService"
+					            Name="AuraEchoUpdaterService"
+					            Start="install"
+					            Stop="both"
+					            Remove="uninstall"
+					            Wait="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

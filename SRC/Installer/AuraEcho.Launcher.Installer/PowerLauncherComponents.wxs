@@ -1,0 +1,93 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<Icon Id="AuraEcho.ico" SourceFile="Assets/Icons/AuraEcho.ico"/>
+		<Icon Id="uninstaller.ico" SourceFile="Assets/Icons/uninstaller.ico"/>
+		<ComponentGroup Id="AuraEchoLauncherComponents" Directory="INSTALLFOLDER">
+			<Component Id="FilesComponent" Guid="D408AB1D-73DB-4E57-91CD-D3260515D2ED">
+				<File Source="$(var.AuraEcho.Launcher.TargetFileName)" />
+			</Component>
+
+			<Component Id="AppRegistryComponents" Guid="*">
+				<RegistryValue Root="HKLM"
+						   Key="Software\AuraEcho"
+						   Name="LauncherPath"
+						   Type="string"
+						   Value="[INSTALLFOLDER]$(var.AuraEcho.Launcher.TargetFileName)"
+						   KeyPath="yes"/>
+				<RegistryValue Root="HKLM"
+						   Key="Software\AuraEcho"
+						   Name="CurrentVersion"
+						   Type="string"
+						   Value="$(var.BundleVersion)"/>
+				<RegistryValue Root="HKLM"
+							   Key="Software\AuraEcho"
+							   Name="InstallPath"
+							   Type="string"
+							   Value="[INSTALLFOLDER]"/>
+			</Component>
+		</ComponentGroup>
+
+		<Component Id="DesktopShortcutComponent" Guid="*">
+			<Shortcut Id="DesktopShortcut"
+					  Directory="DesktopFolder"
+					  Name="AuraEcho"
+					  Target="[INSTALLFOLDER]$(var.AuraEcho.Launcher.TargetFileName)"
+					  WorkingDirectory="INSTALLFOLDER"
+					  Icon="AuraEcho.ico"
+					  Advertise="no" />
+			<RegistryValue Root="HKCU"
+						   Key="Software\AuraEcho"
+						   Name="DesktopShortcutInstalled"
+						   Type="string"
+						   Value="1"
+						   KeyPath="yes"/>
+		</Component>
+
+		<!-- 开始菜单快捷方式 -->
+		<Component Id="StartMenuShortcutComponent" Guid="*" Directory="ProductMenuFolder" >
+			<Shortcut Id="StartMenuShortcut"
+					  Name="AuraEcho"
+					  Icon="AuraEcho.ico"
+					  Advertise="no"
+					  Description="AuraEcho by Suencesoft"
+					  Target="[INSTALLFOLDER]$(var.AuraEcho.Launcher.TargetFileName)"
+					  WorkingDirectory="INSTALLFOLDER"/>
+			<Shortcut Id="StartMenuUninstallShortcut"
+					  Name="卸载 AuraEcho"
+				      Description="卸载 AuraEcho"
+					  Icon="uninstaller.ico"
+					  Target="[UNINSTALLER_PATH]"
+					  Arguments="/uninstall"
+					  WorkingDirectory="ProgramMenuFolder" />
+
+			<RemoveFolder Id="RemoveProductFolder" On="uninstall" Directory="ProductMenuFolder"/>
+			<RegistryValue Root="HKCU"
+						   Key="Software\AuraEcho"
+						   Name="StartMenuShortcutInstalled"
+						   Type="string"
+						   Value="1"
+						   KeyPath="yes"/>
+		</Component>
+
+		<!-- 开机自启 -->
+		<Component Id="RunAtBootComponent" Guid="*">
+			<RegistryValue
+				Root="HKLM"
+				Key="Software\Microsoft\Windows\CurrentVersion\Run"
+				Name="AuraEcho"
+				Value="&quot;[INSTALLFOLDER]$(var.AuraEcho.Launcher.TargetFileName)&quot; -hide"
+				Type="string"
+				KeyPath="yes" />
+		</Component>
+
+		<!-- 清理开机自启注册表项 -->
+		<Binary Id="AEInstallerCADll" SourceFile="AuraEchoInstaller.CustomAction.CA.dll" />
+
+		<CustomAction Id="CleanRunAtBootRegistry"
+					  BinaryRef="AEInstallerCADll"
+					  DllEntry="RemoveRunAtBootRegistry"
+					  Execute="deferred"
+					  Impersonate="no"
+					  Return="ignore" />
+	</Fragment>
+</Wix>

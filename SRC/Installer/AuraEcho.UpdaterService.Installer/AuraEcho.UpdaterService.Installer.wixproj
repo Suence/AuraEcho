@@ -1,0 +1,10 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <Cultures>zh-CN;</Cultures>
+	  <UpdaterServiceVersion Condition="'$(UpdaterServiceVersion)' == ''">1.0.0</UpdaterServiceVersion>
+	  <DefineConstants>Version=$(UpdaterServiceVersion)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\AuraEcho.UpdaterService\AuraEcho.UpdaterService.fsproj" />
+  </ItemGroup>
+</Project>

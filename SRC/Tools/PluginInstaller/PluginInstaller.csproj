@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
@@ -9,8 +9,8 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<SatelliteResourceLanguages>zh-Hans;en-us</SatelliteResourceLanguages>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<ApplicationIcon>Assets/PowerLab.ico</ApplicationIcon>
-		<AssemblyTitle>PowerLab 扩展安装向导</AssemblyTitle>
+		<ApplicationIcon>Assets/AuraEcho.ico</ApplicationIcon>
+		<AssemblyTitle>AuraEcho 扩展安装向导</AssemblyTitle>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -34,13 +34,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
-		<ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
-		<ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
+		<ProjectReference Include="..\..\Shared\AuraEcho.Core\AuraEcho.Core.csproj" />
+		<ProjectReference Include="..\..\Shared\AuraEcho.Themes\AuraEcho.Themes.csproj" />
+		<ProjectReference Include="..\..\Shared\AuraEcho.UIToolkit\AuraEcho.UIToolkit.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="Assets\PowerLab.ico" />
+	  <Resource Include="Assets\AuraEcho.ico" />
 	</ItemGroup>
 
 </Project>

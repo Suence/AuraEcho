@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
@@ -16,9 +16,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\PowerLab.Core\PowerLab.Core.csproj" />
-		<ProjectReference Include="..\..\Shared\PowerLab.Themes\PowerLab.Themes.csproj" />
-		<ProjectReference Include="..\..\Shared\PowerLab.UIToolkit\PowerLab.UIToolkit.csproj" />
+		<ProjectReference Include="..\..\Shared\AuraEcho.Core\AuraEcho.Core.csproj" />
+		<ProjectReference Include="..\..\Shared\AuraEcho.Themes\AuraEcho.Themes.csproj" />
+		<ProjectReference Include="..\..\Shared\AuraEcho.UIToolkit\AuraEcho.UIToolkit.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

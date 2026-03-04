@@ -1,0 +1,103 @@
+using System.Net.Http;
+using System.Net.Http.Json;
+using AuraEcho.Core.Constants;
+using AuraEcho.Core.Contracts;
+using AuraEcho.Core.Events;
+using AuraEcho.Core.Models;
+using AuraEcho.Core.Models.Api;
+using AuraEcho.Core.Tools;
+using AuraEcho.Core.Tools.HttpClientPipelines;
+using AuraEcho.PluginContracts.Interfaces;
+using Prism.Events;
+using Prism.Mvvm;
+
+namespace AuraEcho.Core.Services;
+
+public class ClientSession : BindableBase, IClientSession
+{
+    private readonly HttpClient _httpClient;
+    private readonly SemaphoreSlim _refreshLock = new(1, 1);
+    private readonly IClock _clock;
+    private readonly IEventAggregator _eventAggregator;
+
+    public ClientSession(IClock clock, IAppLogger logger, IEventAggregator eventAggregator)
+    {
+        _clock = clock;
+        var logHandler = new LoggingHandler(logger);
+        logHandler.InnerHandler = new HttpClientHandler();
+        _httpClient = new HttpClient(logHandler);
+
+        _eventAggregator = eventAggregator;
+    }
+
+    public bool IsSignedIn => AppToken is not null;
+
+    public AppToken? AppToken { get; private set; }
+    
+    public UserProfile? CurrentUser
+    {
+        get;
+        private set => SetProperty(ref field, value);
+    }
+
+    private bool IsExpired()
+    {
+        return _clock.UtcNow >= AppToken.ExpiresAt;
+    }
+
+    public void SignIn(AppToken appToken)
+    {
+        AppToken = appToken;
+        SecureStore.Save(SecureStoreKeys.RefreshToken, appToken.RefreshToken);
+
+        _eventAggregator.GetEvent<SignedInEvent>().Publish();
+    }
+
+    public void SignOut()
+    {
+        CurrentUser = null;
+        AppToken = null;
+        SecureStore.Delete(SecureStoreKeys.RefreshToken);
+
+        _eventAggregator.GetEvent<SignedOutEvent>().Publish();
+    }
+
+    public async Task<bool> TryRefreshTokenAsync()
+    {
+        await _refreshLock.WaitAsync();
+        try
+        {
+            if (!IsExpired())
+                return true;
+
+            if (string.IsNullOrWhiteSpace(AppToken?.RefreshToken))
+                return false;
+
+            var response = await _httpClient.PostAsJsonAsync(
+                $"{Urls.ServerUrl}/api/auth/refresh",
+                new RefreshTokenRequest
+                {
+                    RefreshToken = AppToken.RefreshToken
+                });
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var token = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();
+            if (token is null)
+                return false;
+
+            SignIn(new AppToken
+            { 
+                AccessToken = token.AccessToken,
+                RefreshToken = token.RefreshToken,
+                ExpiresAt = token.ExpiresAt
+            });
+
+            return true;
+        }
+        finally
+        {
+            _refreshLock.Release();
+        }
+    }
+}

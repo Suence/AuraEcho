@@ -1,7 +1,0 @@
-﻿namespace PowerLab.Core.Models.Api;
-
-public class AppUserDto
-{
-    public Guid UserId { get; set; }
-    public string UserName { get; set; } = null!;
-}

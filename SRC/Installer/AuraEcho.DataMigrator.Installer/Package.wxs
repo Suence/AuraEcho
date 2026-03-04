@@ -1,0 +1,21 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Id="AuraEcho.DataMigrator"
+		   Name="AuraEchoDataMigrator"
+		   Manufacturer="Suencesoft" 
+		   Codepage="65001"
+		   Version="$(var.Version)"
+		   Scope="perMachine"
+		   UpgradeCode="61AE8CCC-20A7-4B74-9DBC-982B1726C138">
+	  <MajorUpgrade DowngradeErrorMessage="不允许降级安装" />
+
+	  <MediaTemplate EmbedCab="yes"/>
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="DataMigratorComponents" />
+    </Feature>
+
+	  <InstallExecuteSequence>
+		  <Custom Action="ConfigureDatabase" After="InstallFiles" Condition="NOT Installed"/>
+	  </InstallExecuteSequence>
+  </Package>
+</Wix>

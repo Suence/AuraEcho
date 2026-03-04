@@ -1,0 +1,11 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <Cultures>zh-CN;</Cultures>
+    <DataMigratorVersion Condition="'$(DataMigratorVersion)' == ''">1.0.0</DataMigratorVersion>
+    <DefineConstants>Version=$(DataMigratorVersion)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tools\AuraEcho.DataMigrator\AuraEcho.DataMigrator.fsproj" />
+    <ProjectReference Include="..\AuraEchoInstaller.CustomAction\AuraEchoInstaller.CustomAction.csproj" />
+  </ItemGroup>
+</Project>

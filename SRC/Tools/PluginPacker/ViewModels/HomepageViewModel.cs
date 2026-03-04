@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -7,12 +7,12 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Windows;
 using PluginPacker.Models;
-using PowerLab.Core.Constants;
-using PowerLab.Core.Contracts;
-using PowerLab.Core.Models;
-using PowerLab.Core.Tools;
-using PowerLab.PluginContracts.Attributes;
-using PowerLab.PluginContracts.Interfaces;
+using AuraEcho.Core.Constants;
+using AuraEcho.Core.Contracts;
+using AuraEcho.Core.Models;
+using AuraEcho.Core.Tools;
+using AuraEcho.PluginContracts.Attributes;
+using AuraEcho.PluginContracts.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 

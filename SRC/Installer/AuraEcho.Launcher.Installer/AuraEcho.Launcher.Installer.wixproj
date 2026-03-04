@@ -1,0 +1,16 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <Cultures>zh-CN;</Cultures>
+    <BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
+    <LauncherVersion Condition="'$(LauncherVersion)' == ''">1.0.0</LauncherVersion>
+    <DefineConstants>BundleVersion=$(BundleVersion);Version=$(LauncherVersion)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\AuraEcho.ico" />
+    <Content Include="Assets\Icons\uninstaller.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Host\AuraEcho.Launcher\AuraEcho.Launcher.vcxproj" />
+    <ProjectReference Include="..\AuraEchoInstaller.CustomAction\AuraEchoInstaller.CustomAction.csproj" />
+  </ItemGroup>
+</Project>

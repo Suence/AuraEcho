@@ -1,0 +1,122 @@
+<UserControl x:Class="AuraEcho.Views.GeneralSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pm="clr-namespace:AuraEcho.PluginContracts.Models;assembly=AuraEcho.PluginContracts"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:viewmodels="clr-namespace:AuraEcho.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:GeneralSettingsViewModel}"
+             d:DesignHeight="425"
+             d:DesignWidth="495"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadSettingsCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <StackPanel Margin="24,0,24,24">
+            <TextBlock Margin="0,0,0,24"
+                       HorizontalAlignment="Left"
+                       FontSize="20"
+                       Text="GENERAL" />
+            <TextBlock Margin="0,0,0,4"
+                       FontSize="16"
+                       Text="LANGUAGES" />
+            <Border Height="40"
+                    Margin="0,0,0,16"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <ComboBox x:Name="LanguagesComboBox"
+                              Width="150"
+                              Margin="4"
+                              VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              SelectedIndex="0"
+                              SelectedItem="{Binding AppLanguage}">
+                        <ComboBox.ItemsSource>
+                            <x:Array Type="{x:Type pm:AppLanguage}">
+                                <x:Static Member="pm:AppLanguage.ChineseSimplified" />
+                                <x:Static Member="pm:AppLanguage.English" />
+                            </x:Array>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="CHOOSE THE LANGUAGE USED BY AURAECHO" />
+                </DockPanel>
+            </Border>
+            <TextBlock Margin="0,0,0,4"
+                       FontSize="16"
+                       Text="THEMES" />
+            <Border Height="40"
+                    Margin="0,0,0,16"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <ComboBox x:Name="ThemesComboBox"
+                              Width="150"
+                              Margin="4"
+                              VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              SelectedIndex="0"
+                              SelectedItem="{Binding AppTheme}">
+                        <ComboBox.ItemsSource>
+                            <x:Array Type="{x:Type pm:AppTheme}">
+                                <x:Static Member="pm:AppTheme.Light" />
+                                <x:Static Member="pm:AppTheme.Dark" />
+                                <x:Static Member="pm:AppTheme.FollowSystem" />
+                            </x:Array>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="CHOOSE THE THEME USED BY AURAECHO" />
+                </DockPanel>
+            </Border>
+
+            <TextBlock Margin="0,0,0,4"
+                       FontSize="16"
+                       Text="HARDWARE ACCELERATION" />
+            <Border Height="40"
+                    Margin="0,0,0,16"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <CheckBox VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              IsChecked="{Binding HardwareAcceleration}" />
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="BETTER USER EXPERIENCE, MAY USE MORE MEMORY." />
+                </DockPanel>
+            </Border>
+
+            <TextBlock Margin="0,0,0,4"
+                       FontSize="16"
+                       Text="RUN AT BOOT" />
+            <Border Height="40"
+                    Margin="0,0,0,8"
+                    Padding="8,0"
+                    BorderBrush="#333333"
+                    BorderThickness="1">
+                <DockPanel LastChildFill="True">
+                    <CheckBox VerticalAlignment="Center"
+                              DockPanel.Dock="Right"
+                              Style="{DynamicResource ToggleSwitchCheckBox}"
+                              IsChecked="{Binding RunAtBoot}" />
+                    <TextBlock Margin="0,0,8,0"
+                               VerticalAlignment="Center"
+                               Text="AURAECHO RUN AT SYSTEM BOOT." />
+                </DockPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -6,15 +6,15 @@ using DryIoc;
 using Microsoft.EntityFrameworkCore;
 using PluginInstaller.Tools;
 using PluginInstaller.Views;
-using PowerLab.Core.Attributes;
-using PowerLab.Core.Constants;
-using PowerLab.Core.Contracts;
-using PowerLab.Core.Data;
-using PowerLab.Core.Native.Win32;
-using PowerLab.Core.Repositories;
-using PowerLab.Core.Services;
-using PowerLab.PluginContracts.Interfaces;
-using PowerLab.UIToolkit.RegionDialog;
+using AuraEcho.Core.Attributes;
+using AuraEcho.Core.Constants;
+using AuraEcho.Core.Contracts;
+using AuraEcho.Core.Data;
+using AuraEcho.Core.Native.Win32;
+using AuraEcho.Core.Repositories;
+using AuraEcho.Core.Services;
+using AuraEcho.PluginContracts.Interfaces;
+using AuraEcho.UIToolkit.RegionDialog;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -36,7 +36,7 @@ public partial class App : PrismApplication
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-        containerRegistry.Register<PowerLabDbContext>(provider => DbContextFactory.CreateDbContext());
+        containerRegistry.Register<AuraEchoDbContext>(provider => DbContextFactory.CreateDbContext());
 
         containerRegistry.RegisterInstance(_logger);
         containerRegistry.RegisterSingleton<IPathProvider, PathProvider>();
@@ -92,7 +92,7 @@ public partial class App : PrismApplication
 
         if (!File.Exists(ApplicationPaths.HostDataBase))
         {
-            using var pluginDbContext = Container.Resolve<PowerLabDbContext>();
+            using var pluginDbContext = Container.Resolve<AuraEchoDbContext>();
             pluginDbContext.Database.Migrate();
         }
 

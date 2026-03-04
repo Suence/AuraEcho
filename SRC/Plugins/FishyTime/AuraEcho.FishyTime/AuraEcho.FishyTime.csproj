@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows10.0.18362.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" >
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="Prism.Wpf" Version="8.1.97" >
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Management" Version="9.0.6" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Events\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\AuraEcho.PluginContracts\AuraEcho.PluginContracts.csproj">
+			<Private>false</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\AuraEcho.FishyTime.Themes\AuraEcho.FishyTime.Themes.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Strings\FishyTimeStrings.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>FishyTimeStrings.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Strings\FishyTimeStrings.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>FishyTimeStrings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="PluginInstaller.Views.PickPluginInstallFile"
+<UserControl x:Class="PluginInstaller.Views.PickPluginInstallFile"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -38,7 +38,7 @@
             <StackPanel Margin="0,0,0,8"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">
-                <TextBlock Foreground="#8C8C8C" Text="将模块文件从文件资源管理器或桌面拖放到此处即可安装 PowerLab 模块" />
+                <TextBlock Foreground="#8C8C8C" Text="将模块文件从文件资源管理器或桌面拖放到此处即可安装 AuraEcho 模块" />
             </StackPanel>
             <Button Padding="12,4"
                     HorizontalAlignment="Center"

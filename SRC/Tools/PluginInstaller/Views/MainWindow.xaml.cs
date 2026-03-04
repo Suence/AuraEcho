@@ -1,4 +1,4 @@
-﻿using PowerLab.Core.Attributes;
+using AuraEcho.Core.Attributes;
 using System.Windows;
 
 namespace PluginInstaller.Views;

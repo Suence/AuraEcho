@@ -1,0 +1,31 @@
+using AuraEcho.Core.Data.Entities;
+using AuraEcho.Core.Models;
+
+namespace AuraEcho.Core.Contracts;
+
+public interface ILocalPluginRepository
+{
+    /// <summary>
+    /// 获取插件信息列表
+    /// </summary>
+    /// <returns></returns>
+    List<PluginRegistryModel> GetPluginRegistries();
+
+    /// <summary>
+    /// 添加插件信息
+    /// </summary>
+    /// <param name="pluginRegistry"></param>
+    void AddPluginRegistry(PluginRegistryModel pluginRegistryModel);
+
+    /// <summary>
+    /// 移除插件信息
+    /// </summary>
+    /// <param name="pluginRegistryId"></param>
+    void RemovePluginRegistry(string pluginRegistryId);
+
+    /// <summary>
+    /// 更新插件信息
+    /// </summary>
+    /// <param name="pluginRegistry"></param>
+    void UpdatePluginRegistry(PluginRegistryModel pluginRegistryModel);
+}

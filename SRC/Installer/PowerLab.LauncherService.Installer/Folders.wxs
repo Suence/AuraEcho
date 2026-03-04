@@ -1,9 +1,0 @@
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-	<Fragment>
-		<StandardDirectory Id="ProgramFiles6432Folder">
-			<Directory Id="INSTALLFOLDER" Name="PowerLab">
-				<Directory Id="LauncherServiceFolder" Name="LauncherService" />
-			</Directory>
-		</StandardDirectory>
-	</Fragment>
-</Wix>

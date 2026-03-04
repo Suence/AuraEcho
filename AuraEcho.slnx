@@ -1,0 +1,69 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/DOC/" />
+  <Folder Name="/SRC/" />
+  <Folder Name="/SRC/Host/">
+    <Project Path="SRC/Host/AuraEcho.Launcher/AuraEcho.Launcher.vcxproj" Id="bf3f5db7-8727-4b92-999b-72e29c7e3031">
+      <Platform Solution="*|ARM64" Project="x64" />
+    </Project>
+    <Project Path="SRC/Host/AuraEcho/AuraEcho.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Installer/">
+    <Project Path="SRC/Installer/AuraEcho.DataMigrator.Installer/AuraEcho.DataMigrator.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="be58907e-406b-46dc-b585-4d9e455dad21">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEcho.Setup.UI/AuraEcho.Setup.UI.csproj" />
+    <Project Path="SRC/Installer/AuraEcho.Setup/AuraEcho.Setup.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEcho.Installer/AuraEcho.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEcho.Launcher.Installer/AuraEcho.Launcher.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="f57aeb9a-012e-4a03-b8b5-9cae0b08d85f">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEcho.LauncherService.Installer/AuraEcho.LauncherService.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="a3ada3fe-b108-4f00-9352-690bb468e9bf">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEcho.PluginInstaller.Installer/AuraEcho.PluginInstaller.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEcho.UpdaterService.Installer/AuraEcho.UpdaterService.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" Id="0504b72a-891f-4992-8688-2e151be66619">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+    <Project Path="SRC/Installer/AuraEchoInstaller.CustomAction/AuraEchoInstaller.CustomAction.csproj" Id="1e37f1e2-c424-46f2-9a14-8a392ea58287" />
+  </Folder>
+  <Folder Name="/SRC/Plugins/" />
+  <Folder Name="/SRC/Plugins/ExternalTools/">
+    <Project Path="SRC/Plugins/ExternalTools/AuraEcho.ExternalTools.Themes/AuraEcho.ExternalTools.Themes.csproj" Id="caa32d5b-faf9-4a7d-85c0-b9a10dd24934" />
+    <Project Path="SRC/Plugins/ExternalTools/AuraEcho.ExternalTools/AuraEcho.ExternalTools.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Plugins/FishyTime/">
+    <Project Path="SRC/Plugins/FishyTime/AuraEcho.FishyTime.Themes/AuraEcho.FishyTime.Themes.csproj" Id="3ea07b88-81a0-4819-95ad-55220defbf59" />
+    <Project Path="SRC/Plugins/FishyTime/AuraEcho.FishyTime/AuraEcho.FishyTime.csproj" />
+  </Folder>
+  <Folder Name="/SRC/Services/">
+    <Project Path="SRC/Services/AuraEcho.LauncherService/AuraEcho.LauncherService.fsproj" Id="4daa4c66-2268-4427-8f23-d639b6a5d739" />
+    <Project Path="SRC/Services/AuraEcho.UpdaterService/AuraEcho.UpdaterService.fsproj" Id="f522eebc-7ca7-4b1c-94ee-57fb452206ea" />
+  </Folder>
+  <Folder Name="/SRC/Shared/">
+    <Project Path="SRC/Shared/AuraEcho.Controls/AuraEcho.Controls.csproj" />
+    <Project Path="SRC/Shared/AuraEcho.Core/AuraEcho.Core.csproj" />
+    <Project Path="SRC/Shared/AuraEcho.PluginContracts/AuraEcho.PluginContracts.csproj" Id="88f69dd3-259f-4c4d-b8e2-f23f4baa8823" />
+    <Project Path="SRC/Shared/AuraEcho.Themes/AuraEcho.Themes.csproj" />
+    <Project Path="SRC/Shared/AuraEcho.UIToolkit/AuraEcho.UIToolkit.csproj" Id="ca0e586d-0fd5-4f8d-8bbe-f9b45765068c" />
+  </Folder>
+  <Folder Name="/SRC/Tools/">
+    <Project Path="SRC/Tools/PluginInstaller/PluginInstaller.csproj" />
+    <Project Path="SRC/Tools/PluginPacker/PluginPacker.csproj" />
+    <Project Path="SRC/Tools/AuraEcho.DataMigrator/AuraEcho.DataMigrator.fsproj" Id="cbb40445-b602-44f8-b27f-9a3ca89b7b21" />
+  </Folder>
+  <Folder Name="/TEST/">
+    <Project Path="TEST/AuraEcho.Control.Tests/AuraEcho.Control.Tests.csproj" />
+  </Folder>
+</Solution>

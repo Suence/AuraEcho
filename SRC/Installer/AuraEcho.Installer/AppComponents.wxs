@@ -1,0 +1,34 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+		<ComponentGroup Id="AppFileComponents" Directory="INSTALLFOLDER" >
+			<Component Id="MainFile" Guid="F2F37407-114F-4E5E-8B26-5872152FD721">
+				<File Id="AuraEchoExecutable" Source="AuraEcho.exe" />
+				<RegistryValue Root="HKLM"
+							   Key="Software\AuraEcho"
+							   Name="AppPath"
+							   Type="string"
+							   Value="[#AuraEchoExecutable]"
+							   KeyPath="yes"/>
+			</Component>
+
+			<Files Include="$(var.AuraEcho.TargetDir)**">
+				<Exclude Files="*.pdb"/>
+				<Exclude Files="AuraEcho.exe"/>
+
+				<Exclude Files="zh-Hans\Microsoft.CodeAnalysis*"/>
+
+				<Exclude Files="Humanizer.dll"/>
+				<Exclude Files="Microsoft.CodeAnalysis.dll"/>
+				<Exclude Files="Microsoft.Bcl.AsyncInterfaces.dll"/>
+				<Exclude Files="Microsoft.Build.Locator.dll"/>
+				<Exclude Files="Microsoft.CodeAnalysis.*.dll"/>
+				<Exclude Files="Microsoft.EntityFrameworkCore.Design.dll"/>
+				<Exclude Files="Mono.TextTemplating.dll"/>
+				<Exclude Files="System.Composition.*.dll"/>
+			</Files>
+			
+		</ComponentGroup>
+		
+	</Fragment>
+</Wix>

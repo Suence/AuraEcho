@@ -1,0 +1,32 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <Cultures>zh-CN;</Cultures>
+    <BundleFileName Condition="'$(BundleFileName)' == ''">AuraEchoSetup</BundleFileName>
+    <BundleVersion Condition="'$(BundleVersion)' == ''">1.0.0</BundleVersion>
+    <IncludeRuntime Condition="'$(IncludeRuntime)' == ''">yes</IncludeRuntime>
+    <OutputName>$(BundleFileName)</OutputName>
+    <DefineConstants>BundleVersion=$(BundleVersion);BundleFileName=$(BundleFileName);IncludeRuntime=$(IncludeRuntime)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\AuraEcho.ico" />
+    <Content Include="Assets\Images\splash_screen.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.BootstrapperApplications.wixext" Version="6.0.1" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AuraEcho.DataMigrator.Installer\AuraEcho.DataMigrator.Installer.wixproj" />
+    <ProjectReference Include="..\AuraEcho.Setup.UI\AuraEcho.Setup.UI.csproj" />
+    <ProjectReference Include="..\AuraEcho.Installer\AuraEcho.Installer.wixproj" />
+    <ProjectReference Include="..\AuraEcho.Launcher.Installer\AuraEcho.Launcher.Installer.wixproj" />
+    <ProjectReference Include="..\AuraEcho.LauncherService.Installer\AuraEcho.LauncherService.Installer.wixproj" />
+    <ProjectReference Include="..\AuraEcho.PluginInstaller.Installer\AuraEcho.PluginInstaller.Installer.wixproj" />
+    <ProjectReference Include="..\AuraEcho.UpdaterService.Installer\AuraEcho.UpdaterService.Installer.wixproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build.ps1" />
+    <None Include="ExePackageFiles\windowsdesktop-runtime-10.0.0-win-x64.exe" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,34 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="LauncherServiceFileComponents" Directory="LauncherServiceFolder">
+		<Files Include="$(var.AuraEcho.LauncherService.TargetDir)**">
+			<Exclude Files="*.pdb"/>
+			<Exclude Files="AuraEchoLauncherService.exe"/>
+
+			<Exclude Files="Microsoft.Windows.SDK.NET.dll"/>
+			<Exclude Files="System.Diagnostics.EventLog.Messages.dll"/>
+			<Exclude Files="WinRT.Runtime.dll"/>
+		</Files>
+		<Component Id="ProductComponent" Guid="1577B0BC-EFED-4FC6-AD98-68DE350FACBC">
+			<File Source="AuraEchoLauncherService.exe" />
+
+			<ServiceInstall Id="InstallLauncherService"
+							Name="AuraEchoLauncherService"
+							DisplayName="AuraEcho Launcher Service"
+							Description="此服务用于启动和管理 AuraEcho 的核心组件。如果此服务被禁用，AuraEcho 可能无法正常启动或运行。"
+							Start="auto"
+							Type="ownProcess"
+							ErrorControl="normal"
+							Vital="yes"
+							Account="LocalSystem" />
+
+			<ServiceControl Id="ControlLauncherService"
+							Name="AuraEchoLauncherService"
+							Start="install"
+							Stop="both"
+							Remove="uninstall"
+							Wait="yes" />
+		</Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

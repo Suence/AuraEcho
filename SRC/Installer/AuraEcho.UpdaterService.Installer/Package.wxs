@@ -1,0 +1,14 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Name="AuraEchoUpdaterService"
+			 Manufacturer="Suencesoft"
+			 Version="$(var.Version)"
+			 Codepage="65001"
+			 Scope="perMachine"
+			 UpgradeCode="FDE1BB05-00BD-4250-88B0-08E3A3E1AC0B">
+		<MajorUpgrade DowngradeErrorMessage="不允许降级安装" />
+
+		<Feature Id="Main">
+			<ComponentGroupRef Id="UpdaterServiceFileComponents" />
+		</Feature>
+	</Package>
+</Wix>

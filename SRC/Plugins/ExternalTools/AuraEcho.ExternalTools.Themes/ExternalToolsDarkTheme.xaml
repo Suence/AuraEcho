@@ -1,0 +1,7 @@
+<ResourceDictionary x:Class="AuraEcho.ExternalTools.Themes.ExternalToolsDarkTheme"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Dark/Brushes.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

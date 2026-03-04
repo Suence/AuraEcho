@@ -1,5 +1,5 @@
-﻿using PluginInstaller.Constants;
-using PowerLab.Core.Contracts;
+using PluginInstaller.Constants;
+using AuraEcho.Core.Contracts;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -28,7 +28,7 @@ public class PickPluginInstallFileViewModel : BindableBase, IRegionMemberLifetim
     public DelegateCommand PickPluginInstallFileCommand { get; }
     private void PickPluginInstallFile()
     {
-        var filePath = _fileDialogService.OpenFile("选择 PowerLab 模块安装文件", "PowerLab 模块安装文件|*.plix");
+        var filePath = _fileDialogService.OpenFile("选择 AuraEcho 模块安装文件", "AuraEcho 模块安装文件|*.plix");
         if (filePath is null) return;
 
         NavigationToInstallPreparation(filePath);

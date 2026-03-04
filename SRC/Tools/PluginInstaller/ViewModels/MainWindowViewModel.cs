@@ -1,4 +1,4 @@
-﻿using PluginInstaller.Constants;
+using PluginInstaller.Constants;
 using PluginInstaller.Tools;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -10,7 +10,7 @@ namespace PluginInstaller.ViewModels;
 public class MainWindowViewModel : BindableBase
 {
     #region private members
-    private string _title = "PowerLab 扩展安装向导";
+    private string _title = "AuraEcho 扩展安装向导";
     private readonly IRegionManager _regionManager;
     #endregion
 
