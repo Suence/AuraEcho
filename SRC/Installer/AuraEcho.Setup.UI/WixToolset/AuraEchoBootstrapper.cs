@@ -24,6 +24,7 @@ public sealed partial class AuraEchoBootstrapper : BootstrapperApplication
     private const string PIPE_NAME = "AuraEcho_Installer_Pipe";
     private Dispatcher _dispatcher;
     private bool _isAutoPlan;
+    private bool _isCurrentBundleRegistered;
     private ExecuteMsiMessageEventArgs _currentAction;
     private ManualResetEventSlim _elevateLock = new(false);
     public bool Downgrade { get; private set; }
@@ -271,7 +272,7 @@ public sealed partial class AuraEchoBootstrapper : BootstrapperApplication
 
     public void Install()
     {
-        if (RelatedBundle.Version == Version)
+        if (_isCurrentBundleRegistered || RelatedBundle.Version == Version)
         {
             Plan(LaunchAction.Repair);
             return;
@@ -378,6 +379,8 @@ public sealed partial class AuraEchoBootstrapper : BootstrapperApplication
     protected override void OnDetectBegin(DetectBeginEventArgs args)
     {
         base.OnDetectBegin(args);
+
+        _isCurrentBundleRegistered = args.RegistrationType != RegistrationType.None;
     }
 
     /// <inheritdoc/>
