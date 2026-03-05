@@ -1,8 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
-using AuraEcho.Installer.Bootstrapper.ViewModels;
+using AuraEcho.Setup.UI.ViewModels;
 
-namespace AuraEcho.Installer.Bootstrapper.Views;
+namespace AuraEcho.Setup.UI.Views;
 
 /// <summary>
 /// Interaction logic for InstallFinish

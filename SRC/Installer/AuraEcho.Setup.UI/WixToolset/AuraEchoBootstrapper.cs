@@ -9,11 +9,10 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using AuraEcho.Setup.UI.Constants;
-using AuraEcho.Setup.UI.WixToolset;
 using WixToolset.BootstrapperApplicationApi;
 using ErrorEventArgs = WixToolset.BootstrapperApplicationApi.ErrorEventArgs;
 
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 public sealed partial class AuraEchoBootstrapper : BootstrapperApplication
 {

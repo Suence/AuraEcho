@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WixToolset.BootstrapperApplicationApi;
 
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 /// <summary>
 /// Represents a Boolean Wix variable that can be retrieved from and set on the Bootstrapper engine.

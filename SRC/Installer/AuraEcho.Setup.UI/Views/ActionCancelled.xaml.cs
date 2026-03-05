@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace AuraEcho.Installer.Bootstrapper.Views;
+namespace AuraEcho.Setup.UI.Views;
 
 /// <summary>
 /// Interaction logic for ActionCancelled

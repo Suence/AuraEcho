@@ -1,8 +1,9 @@
-using AuraEcho.Installer.Bootstrapper.WixToolset;
+using AuraEcho.Setup.UI;
+using AuraEcho.Setup.UI.WixToolset;
 using Prism.Commands;
 using Prism.Mvvm;
 
-namespace AuraEcho.Installer.Bootstrapper.ViewModels;
+namespace AuraEcho.Setup.UI.ViewModels;
 
 public class InstallFinishViewModel : BindableBase
 {

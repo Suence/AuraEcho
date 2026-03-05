@@ -1,4 +1,4 @@
-namespace AuraEcho.Installer.Bootstrapper.Constants;
+namespace AuraEcho.Setup.UI.Constants;
 
 public static class ProcessNames
 {

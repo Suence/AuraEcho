@@ -1,4 +1,4 @@
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 /// <summary>
 /// Represents the state of upgrade detection relative to other bundles.

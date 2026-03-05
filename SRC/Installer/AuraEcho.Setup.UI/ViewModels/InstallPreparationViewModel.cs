@@ -1,8 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
-using AuraEcho.Installer.Bootstrapper.Constants;
-using AuraEcho.Installer.Bootstrapper.WixToolset;
+using AuraEcho.Setup.UI.WixToolset;
 using AuraEcho.PluginContracts.Constants;
 using AuraEcho.PluginContracts.Interfaces;
 using AuraEcho.PluginContracts.Models;
@@ -10,8 +9,9 @@ using AuraEcho.Setup.UI.Utils;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using AuraEcho.Setup.UI.Constants;
 
-namespace AuraEcho.Installer.Bootstrapper.ViewModels;
+namespace AuraEcho.Setup.UI.ViewModels;
 
 public class InstallPreparationViewModel : BindableBase
 {

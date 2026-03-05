@@ -1,14 +1,15 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
-using AuraEcho.Installer.Bootstrapper.Views;
-using AuraEcho.Installer.Bootstrapper.WixToolset;
+using AuraEcho.Setup.UI.Views;
+using AuraEcho.Setup.UI.WixToolset;
 using AuraEcho.PluginContracts.Interfaces;
+using AuraEcho.Setup.UI.Views;
 using AuraEcho.UIToolkit.RegionDialog;
 using Prism.Ioc;
 using WixToolset.BootstrapperApplicationApi;
 
-namespace AuraEcho.Installer.Bootstrapper;
+namespace AuraEcho.Setup.UI;
 
 /// <summary>
 /// Interaction logic for App.xaml

@@ -1,8 +1,8 @@
-using AuraEcho.Installer.Bootstrapper.ViewModels;
+using AuraEcho.Setup.UI.ViewModels;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace AuraEcho.Installer.Bootstrapper.Views;
+namespace AuraEcho.Setup.UI.Views;
 
 /// <summary>
 /// Interaction logic for Installing

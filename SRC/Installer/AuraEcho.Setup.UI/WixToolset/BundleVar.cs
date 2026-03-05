@@ -1,4 +1,4 @@
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 internal static class BundleVar
 {

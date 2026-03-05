@@ -1,6 +1,7 @@
+using AuraEcho.Setup.UI;
 using Prism.Regions;
 
-namespace AuraEcho.Installer.Bootstrapper.Extensions;
+namespace AuraEcho.Setup.UI.Extensions;
 
 public static class IRegionManagerExtensions
 {

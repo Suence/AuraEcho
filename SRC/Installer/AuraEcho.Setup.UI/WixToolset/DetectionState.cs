@@ -1,4 +1,4 @@
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 /// <summary>
 /// Represents the detection state of a product on the target system.

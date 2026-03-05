@@ -1,6 +1,6 @@
 using WixToolset.BootstrapperApplicationApi;
 
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 /// <summary>
 /// Represents a String Wix variable that can be retrieved from and set on the Bootstrapper engine.

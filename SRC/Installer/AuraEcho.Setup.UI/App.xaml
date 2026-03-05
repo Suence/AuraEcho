@@ -1,7 +1,6 @@
-<prism:PrismApplication x:Class="AuraEcho.Installer.Bootstrapper.App"
+<prism:PrismApplication x:Class="AuraEcho.Setup.UI.App"
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:local="clr-namespace:AuraEcho.Installer.Bootstrapper"
                         xmlns:prism="http://prismlibrary.com/"
                         xmlns:ui="http://ui.auraecho.com/">
     <Application.Resources>

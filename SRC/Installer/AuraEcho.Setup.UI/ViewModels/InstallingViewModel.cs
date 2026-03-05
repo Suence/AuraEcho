@@ -1,12 +1,12 @@
-using AuraEcho.Installer.Bootstrapper.Constants;
-using AuraEcho.Installer.Bootstrapper.Extensions;
-using AuraEcho.Installer.Bootstrapper.WixToolset;
+using AuraEcho.Setup.UI.WixToolset;
+using AuraEcho.Setup.UI.Constants;
+using AuraEcho.Setup.UI.Extensions;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using WixToolset.BootstrapperApplicationApi;
 
-namespace AuraEcho.Installer.Bootstrapper.ViewModels;
+namespace AuraEcho.Setup.UI.ViewModels;
 
 public class InstallingViewModel : BindableBase, INavigationAware
 {

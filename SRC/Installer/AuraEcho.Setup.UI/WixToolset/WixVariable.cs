@@ -1,4 +1,4 @@
-namespace AuraEcho.Installer.Bootstrapper.WixToolset;
+namespace AuraEcho.Setup.UI.WixToolset;
 
 /// <summary>
 /// Base class for strongly-typed Wix variables, providing a name and abstract methods

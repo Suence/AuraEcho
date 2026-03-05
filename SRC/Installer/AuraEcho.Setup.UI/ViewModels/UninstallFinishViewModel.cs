@@ -1,7 +1,8 @@
+using AuraEcho.Setup.UI;
 using Prism.Commands;
 using Prism.Mvvm;
 
-namespace AuraEcho.Installer.Bootstrapper.ViewModels;
+namespace AuraEcho.Setup.UI.ViewModels;
 
 public class UninstallFinishViewModel : BindableBase
 {
